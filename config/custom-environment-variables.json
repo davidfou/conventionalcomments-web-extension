@@ -1,0 +1,9 @@
+{
+  "codeceptjs": {
+    "gitlab": {
+      "username": "E2E_GITLAB_USERNAME",
+      "password": "E2E_GITLAB_PASSWORD",
+      "token":    "E2E_GITLAB_TOKEN"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+/.git
+/node_modules/
+/public/build/
+/config/local*
+/output
+
+yarn-debug.log*
+yarn-error.log*
+
+.DS_Store

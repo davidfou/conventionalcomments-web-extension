@@ -1,0 +1,31 @@
+{
+  "manifest_version": 2,
+  "name": "Conventional: comments",
+  "version": "0.1.0",
+  "description": "Write conventional comments directly in your favorite repository manager.",
+  "icons": {
+    "48": "icons/48.png",
+    "96": "icons/96.png"
+  },
+  "browser_action": {
+    "default_icon": {
+      "19": "icons/19.png",
+      "38": "icons/38.png"
+    },
+    "default_title": "Conventional: comments",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://gitlab.com/*"
+      ],
+      "js": [
+        "build/contentScript.js"
+      ],
+      "css": [
+        "build/contentScript.css"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+image: node:14.16.0
+stages:
+  - build
+  - test
+  - release
+
+default:
+  cache:
+    paths:
+      - .yarn
+  before_script:
+    - yarn install --cache-folder .yarn
+
+extension:
+  stage: build
+  script:
+    - yarn build
+  artifacts:
+    paths:
+      - public/build
+  only:
+    - branches
+
+e2e-image: 
+  image: docker:latest
+  stage: build
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - docker pull $CI_REGISTRY_IMAGE:branch-master || true
+    - docker pull $CI_REGISTRY_IMAGE:branch-$CI_COMMIT_REF_NAME || true
+    - >
+      docker build --pull
+      --cache-from $CI_REGISTRY_IMAGE:branch-master
+      --cache-from $CI_REGISTRY_IMAGE:branch-$CI_COMMIT_REF_NAME
+      --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+      .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+    - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA $CI_REGISTRY_IMAGE:branch-$CI_COMMIT_REF_NAME
+    - docker push $CI_REGISTRY_IMAGE:branch-$CI_COMMIT_REF_NAME
+  only:
+    - branches
+
+lint:
+  stage: test
+  script:
+    - yarn lint
+  only:
+    - branches
+
+jest:
+  stage: test
+  script:
+    - yarn test
+  only:
+    - branches
+
+e2e:
+  variables:
+    GIT_STRATEGY: none
+  image: "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
+  stage: test
+  cache: {}
+  before_script: []
+  script:
+    - cd /app
+    - yarn codeceptjs
+  only:
+    - branches
+
+publish:
+  stage: build
+  script:
+    - yarn build
+    - yarn web-ext-submit
+  artifacts:
+    paths:
+      - "web-ext-artifacts/*.zip"
+  only:
+    - tags
+
+release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  before_script: []
+  script:
+    - >
+      release-cli create --name "Release $CI_COMMIT_TAG"
+      --tag-name $CI_COMMIT_TAG
+      --assets-link "{\"name\":\"conventional_comments-$CI_COMMIT_TAG.zip\",\"url\":\"https://gitlab.example.com/api/v4/projects/$CI_PROJECT_ID/jobs/artifacts/$CI_COMMIT_TAG/raw/web-ext-artifacts/conventional_comments-${CI_COMMIT_TAG:1}.zip?job=build\"}"
+  only:
+    - tags
