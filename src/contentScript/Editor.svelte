@@ -25,6 +25,8 @@
       decorations.set(event.detail);
     }
   }
+
+  const style = `color: ${getComputedStyle(textarea).color};`;
 </script>
 
 <style>
@@ -34,7 +36,7 @@
 </style>
 
 {#if $isActive}
-  <div>
+  <div {style}>
     <OriginalTextareaWrapper {textarea} />
     <div class="cc-select-wrapper" data-qa="label-selector">
       <Select
