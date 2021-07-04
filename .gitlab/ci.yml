@@ -75,7 +75,7 @@ publish:
   script:
     - yarn build
     - yarn web-ext-submit
-    - yarn webstore upload --source "web-ext-artifacts/conventional_comments-$CI_COMMIT_TAG.zip" --auto-publish
+    - yarn webstore upload --source "web-ext-artifacts/conventional_comments-${CI_COMMIT_TAG:1}.zip" --auto-publish
   artifacts:
     paths:
       - "web-ext-artifacts/*.zip"
