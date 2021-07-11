@@ -8766,10 +8766,10 @@ svelte-preprocess@^4.0.0:
     detect-indent "^6.0.0"
     strip-indent "^3.0.0"
 
-svelte-select@3.15.0:
-  version "3.15.0"
-  resolved "https://registry.yarnpkg.com/svelte-select/-/svelte-select-3.15.0.tgz#40b2c7dd252bfc40bba568848afdabd0ef499607"
-  integrity sha512-g7xL8I6+Yh87EWP9B7W9yZ+V8R0Hi8XLFyu33altWa+Ts0H//hl+uMa9xNgT/Ty335yWECnuSEpvhaHHFObOpQ==
+svelte-select@4.2.5:
+  version "4.2.5"
+  resolved "https://registry.yarnpkg.com/svelte-select/-/svelte-select-4.2.5.tgz#d51434ce1e3808f653fb11ebc31eabce339f0519"
+  integrity sha512-pg5l0s885wu+zKanjmriq8Cv+5pu9kNyOnfrHFYVArbN+6nGQdNE+fKx3pQ/qZqODS77sJR711bktp4/5djH+w==
 
 svelte@3.31.0:
   version "3.31.0"
