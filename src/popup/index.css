@@ -1,3 +1,7 @@
 :root {
   --font-family-sans: "Roboto", sans-serif;
 }
+
+body {
+  width: 600px;
+}
