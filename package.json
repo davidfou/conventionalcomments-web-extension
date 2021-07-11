@@ -1,7 +1,7 @@
 {
   "name": "conventionalcomments-web-ext",
   "license": "GPL-3.0-only",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "scripts": {
     "postinstall": "get-google-fonts -o ./public/fonts -i 'https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap' && node scripts/patchSvelteSelect.js",
     "rollup:popup": "rollup -c rollup/popup.config.js",
