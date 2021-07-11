@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y \
 
 COPY package.json package.json
 COPY yarn.lock yarn.lock
+COPY scripts scripts
 
 RUN yarn install --frozen-lockfile
 

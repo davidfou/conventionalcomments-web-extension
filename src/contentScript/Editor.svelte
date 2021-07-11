@@ -44,7 +44,7 @@
         Item={SelectItem}
         isClearable={false}
         on:select={onSelectLabel}
-        selectedValue={$label}
+        value={$label}
         listPlacement="bottom" />
     </div>
     <div class="cc-select-wrapper" data-qa="decoration-selector">
@@ -53,7 +53,7 @@
         Item={SelectItem}
         isMulti={true}
         on:select={onSelectDecoration}
-        selectedValue={$decorations}
+        value={$decorations}
         listPlacement="bottom" />
     </div>
   </div>
