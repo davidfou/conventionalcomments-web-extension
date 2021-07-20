@@ -36,18 +36,6 @@ exports.config = {
     screenshotOnFail: {
       enabled: true,
     },
-    autoLogin: {
-      enabled: true,
-      users: {
-        gitlab: {
-          login: () => {
-            const { GitlabPage } = inject();
-            GitlabPage.login();
-          },
-          check: () => {},
-        },
-      },
-    },
     customLocator: {
       enabled: true,
       attribute: "data-qa",

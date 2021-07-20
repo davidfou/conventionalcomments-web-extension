@@ -28,7 +28,6 @@ module.exports = {
     }
 
     I.amOnPage("https://gitlab.com/users/sign_in");
-    I.waitForNavigation();
     this.waitPageIsReady();
     I.fillField("#user_login", config.get("codeceptjs.gitlab.username"));
     I.fillField(

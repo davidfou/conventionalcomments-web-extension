@@ -5,9 +5,9 @@ Feature("Edit BDD");
 let thread1 = null;
 let thread2 = null;
 
-BeforeSuite(async ({ I, login }) => {
-  await login("gitlab");
-  await I.removeAllThreads();
+BeforeSuite(async ({ I, GitlabPage }) => {
+  GitlabPage.login();
+  I.removeAllThreads();
   thread1 = await I.createCreateThread(
     ["**question:** any reason not to format comments", "No idea"],
     1,

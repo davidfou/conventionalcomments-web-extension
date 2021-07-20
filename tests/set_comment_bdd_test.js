@@ -2,9 +2,9 @@ const config = require("config");
 
 Feature("Set comment BDD");
 
-BeforeSuite(async ({ I, login }) => {
-  await login("gitlab");
-  await I.removeAllThreads();
+BeforeSuite(({ I, GitlabPage }) => {
+  GitlabPage.login();
+  I.removeAllThreads();
 });
 
 Before(({ I, GitlabPage }) => {
