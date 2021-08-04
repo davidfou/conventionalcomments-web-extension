@@ -57,9 +57,10 @@ jest:
   only:
     - branches
 
-e2e:
+e2e-gitlab:
   variables:
     GIT_STRATEGY: none
+    E2E_PRODUCT: "gitlab"
   image: "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
   stage: test
   cache: {}

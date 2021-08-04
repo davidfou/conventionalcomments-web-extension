@@ -1,17 +1,15 @@
-const config = require("config");
-
 Feature("Toggle BDD");
 
-BeforeSuite(({ I, GitlabPage }) => {
-  GitlabPage.login();
+BeforeSuite(({ I, MainPage }) => {
+  MainPage.login();
   I.removeAllThreads();
 });
 
-Before(({ I, GitlabPage }) => {
-  I.amOnPage(config.get("codeceptjs.gitlab.mainPage"));
-  GitlabPage.waitPageIsReady();
+Before(({ I, MainPage }) => {
+  MainPage.goToMainPage();
+  MainPage.waitPageIsReady();
   I.clearLocalStorage();
-  GitlabPage.openNewThread();
+  MainPage.openNewThread();
 });
 
 Scenario("removes label and decoration selects", ({ I }) => {
@@ -24,12 +22,12 @@ Scenario("removes label and decoration selects", ({ I }) => {
   I.dontSeeElement(locate("$decoration-selector").find("input"));
 });
 
-Scenario("cursor keeps the same position", ({ I, GitlabPage }) => {
+Scenario("cursor keeps the same position", ({ I, MainPage }) => {
   I.type("my comment");
   I.setSelectionRange(18, 18);
 
   I.click("$toggle-button");
-  I.seeElementIsFocused(GitlabPage.getTextareaSelector());
+  I.seeElementIsFocused(MainPage.getTextareaSelector());
   I.seeSelectedText(18, 18);
 });
 
@@ -45,32 +43,32 @@ Scenario("allows user to select all the text", ({ I }) => {
 
 Scenario(
   "prepends default label with empty string (reactivation)",
-  ({ I, GitlabPage }) => {
+  ({ I, MainPage }) => {
     I.click("$toggle-button");
     I.pressKey(["Control", "A"]);
     I.pressKey("Backspace");
 
     I.click("$toggle-button");
-    I.seeInField(GitlabPage.getTextareaSelector(), "**praise:** ");
+    I.seeInField(MainPage.getTextareaSelector(), "**praise:** ");
   }
 );
 
 Scenario(
   "prepends default label with subject (reactivation)",
-  ({ I, GitlabPage }) => {
+  ({ I, MainPage }) => {
     I.click("$toggle-button");
     I.pressKey(["Control", "A"]);
     I.pressKey("Backspace");
     I.type("my comment");
 
     I.click("$toggle-button");
-    I.seeInField(GitlabPage.getTextareaSelector(), "**praise:** my comment");
+    I.seeInField(MainPage.getTextareaSelector(), "**praise:** my comment");
   }
 );
 
 Scenario(
   "keeps valid label and decoration (reactivation)",
-  ({ I, GitlabPage }) => {
+  ({ I, MainPage }) => {
     I.click("$toggle-button");
     I.pressKey(["Control", "A"]);
     I.pressKey("Backspace");
@@ -78,7 +76,7 @@ Scenario(
 
     I.click("$toggle-button");
     I.seeInField(
-      GitlabPage.getTextareaSelector(),
+      MainPage.getTextareaSelector(),
       "**nitpick (non-blocking):** my comment"
     );
   }

@@ -2,6 +2,7 @@ const { deferConfig } = require("config/defer");
 
 module.exports = {
   codeceptjs: {
+    product: "gitlab",
     headless: false,
     gitlab: {
       username: undefined,

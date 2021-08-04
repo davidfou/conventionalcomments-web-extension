@@ -36,6 +36,12 @@ module.exports = {
     );
     I.click("Sign in");
   },
+  goToMainPage() {
+    I.amOnPage(config.get("codeceptjs.gitlab.mainPage"));
+  },
+  goToOverviewPage() {
+    I.amOnPage(config.get("codeceptjs.gitlab.overviewPage"));
+  },
   waitPageIsReady() {
     I.waitForElement("body.page-initialised");
   },

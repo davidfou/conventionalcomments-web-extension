@@ -1,5 +1,6 @@
 {
   "codeceptjs": {
+    "product": "E2E_PRODUCT",
     "gitlab": {
       "username": "E2E_GITLAB_USERNAME",
       "password": "E2E_GITLAB_PASSWORD",

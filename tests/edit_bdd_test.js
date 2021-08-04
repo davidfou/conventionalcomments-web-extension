@@ -1,12 +1,10 @@
-const config = require("config");
-
 Feature("Edit BDD");
 
 let thread1 = null;
 let thread2 = null;
 
-BeforeSuite(async ({ I, GitlabPage }) => {
-  GitlabPage.login();
+BeforeSuite(async ({ I, MainPage }) => {
+  MainPage.login();
   I.removeAllThreads();
   thread1 = await I.createCreateThread(
     ["**question:** any reason not to format comments", "No idea"],
@@ -23,9 +21,9 @@ BeforeSuite(async ({ I, GitlabPage }) => {
   );
 });
 
-Before(({ I, GitlabPage }) => {
-  I.amOnPage(config.get("codeceptjs.gitlab.mainPage"));
-  GitlabPage.waitPageIsReady();
+Before(({ I, MainPage }) => {
+  MainPage.goToMainPage();
+  MainPage.waitPageIsReady();
   I.clearLocalStorage();
 });
 
@@ -48,9 +46,9 @@ Data([
     expectedDecorations: ["if-minor", "non-blocking"],
     toString: () => "Comment respecting convention",
   },
-]).Scenario("Plugin is activated", async ({ I, GitlabPage, current }) => {
+]).Scenario("Plugin is activated", async ({ I, MainPage, current }) => {
   const { threadId, noteId } = current.getData();
-  I.click(GitlabPage.getEditCommentSelector(threadId, noteId));
+  I.click(MainPage.getEditCommentSelector(threadId, noteId));
   I.see(current.expectedLabel, "$label-selector");
   I.see(current.expectedDecorations.join("\n"), "$decoration-selector");
 });
@@ -70,9 +68,9 @@ Data([
     }),
     toString: () => "Comment not respecting convention",
   },
-]).Scenario("Plugin isn't activated", ({ I, GitlabPage, current }) => {
+]).Scenario("Plugin isn't activated", ({ I, MainPage, current }) => {
   const { threadId, noteId } = current.getData();
-  I.click(GitlabPage.getEditCommentSelector(threadId, noteId));
+  I.click(MainPage.getEditCommentSelector(threadId, noteId));
   I.seeElement("$toggle-button");
   I.dontSeeElement("$label-selector");
   I.dontSeeElement("$decoration-selector");
@@ -80,8 +78,8 @@ Data([
 
 Scenario(
   "Plugin isn't activated when adding a new comment to a thread",
-  ({ I, GitlabPage }) => {
-    I.click(GitlabPage.getReplySelector(thread1.id));
+  ({ I, MainPage }) => {
+    I.click(MainPage.getReplySelector(thread1.id));
     I.seeElement("$toggle-button");
     I.dontSeeElement("$label-selector");
     I.dontSeeElement("$decoration-selector");
