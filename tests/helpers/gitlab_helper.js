@@ -61,7 +61,7 @@ class GitlabHelper extends Helper {
     );
   }
 
-  async createCreateThread(comments, oldLine, newLine) {
+  async createThread(comments, oldLine, newLine) {
     const [baseComment, ...noteComments] = comments;
     const mergeRequest = await this.api.MergeRequests.show(this.projectPath, 1);
 

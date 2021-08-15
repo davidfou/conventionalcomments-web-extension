@@ -6,12 +6,12 @@ let thread2 = null;
 BeforeSuite(async ({ I, MainPage }) => {
   MainPage.login();
   I.removeAllThreads();
-  thread1 = await I.createCreateThread(
+  thread1 = await I.createThread(
     ["**question:** any reason not to format comments", "No idea"],
     1,
     null
   );
-  thread2 = await I.createCreateThread(
+  thread2 = await I.createThread(
     [
       "Check this out",
       "**nitpick (if-minor, non-blocking):** let's use conventional comments",
