@@ -4,10 +4,12 @@ import { addStore, removeStore } from "./store";
 import Button from "./Button.svelte";
 import Editor from "./Editor.svelte";
 
-const noteHolders: Map<
-  HTMLElement,
-  { id: string; button: Button; editor: Editor }
-> = new Map();
+const noteHolders: {
+  id: string;
+  button: Button;
+  editor: Editor;
+  textarea: HTMLTextAreaElement;
+}[] = [];
 
 const forceQuerySelector = (el: Element, selector: string): Element => {
   const foundEl = el.querySelector(selector);
@@ -70,21 +72,25 @@ const observer = new MutationObserver((mutations) => {
         navList.insertBefore(navItem, lastItem);
         navList.insertBefore(document.createTextNode(" "), lastItem);
 
-        noteHolders.set(mainEl, { id, button, editor });
+        noteHolders.push({ id, button, editor, textarea });
       });
 
     Array.from(mutation.removedNodes)
       .filter((node): node is HTMLElement => node instanceof HTMLElement)
-      .forEach((noteHolderEl) => {
-        const noteHolder = noteHolders.get(noteHolderEl);
-        if (noteHolder === undefined) {
+      .forEach((node) => {
+        const index = noteHolders.findIndex(({ textarea }) =>
+          node.contains(textarea)
+        );
+
+        if (index === -1) {
           return;
         }
 
-        noteHolder.button.$destroy();
-        noteHolder.editor.$destroy();
-        removeStore(noteHolder.id);
-        noteHolders.delete(noteHolderEl);
+        const { button, editor, id } = noteHolders[index];
+        button.$destroy();
+        editor.$destroy();
+        removeStore(id);
+        noteHolders.splice(index, 1);
       });
   });
 });
