@@ -10,15 +10,6 @@
   }
 </script>
 
-<style>
-  h1 {
-    margin-bottom: 0;
-  }
-  h1 > strong {
-    color: #6b46c1;
-  }
-</style>
-
 <Container>
   <Row>
     <Col size="12">
@@ -26,7 +17,9 @@
       <p class="text-center">
         Comments that are easy to
         <a
-          href="https://en.wikipedia.org/wiki/Grok#In_computer_programmer_culture">grok</a>
+          href="https://en.wikipedia.org/wiki/Grok#In_computer_programmer_culture"
+          >grok</a
+        >
         and
         <a href="https://en.wikipedia.org/wiki/Grep">grep</a>
       </p>
@@ -39,9 +32,18 @@
       This extension is under development. Feedback is welcome and would help
       its development.
     </p>
-    <Button error on:click={() => onReport('Bug')}>Bug Report</Button>
-    <Button success on:click={() => onReport('Feature')}>
+    <Button error on:click={() => onReport("Bug")}>Bug Report</Button>
+    <Button success on:click={() => onReport("Feature")}>
       Feature Request
     </Button>
   </Row>
 </Container>
+
+<style>
+  h1 {
+    margin-bottom: 0;
+  }
+  h1 > strong {
+    color: #6b46c1;
+  }
+</style>

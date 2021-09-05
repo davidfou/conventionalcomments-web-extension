@@ -29,12 +29,6 @@
   const style = `color: ${getComputedStyle(textarea).color};`;
 </script>
 
-<style>
-  .cc-select-wrapper {
-    padding: 10px 0 0 0;
-  }
-</style>
-
 {#if $isActive}
   <div {style}>
     <OriginalTextareaWrapper {textarea} />
@@ -45,7 +39,8 @@
         isClearable={false}
         on:select={onSelectLabel}
         value={$label}
-        listPlacement="bottom" />
+        listPlacement="bottom"
+      />
     </div>
     <div class="cc-select-wrapper" data-qa="decoration-selector">
       <Select
@@ -54,7 +49,14 @@
         isMulti={true}
         on:select={onSelectDecoration}
         value={$decorations}
-        listPlacement="bottom" />
+        listPlacement="bottom"
+      />
     </div>
   </div>
 {/if}
+
+<style>
+  .cc-select-wrapper {
+    padding: 10px 0 0 0;
+  }
+</style>

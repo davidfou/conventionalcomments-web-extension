@@ -12,6 +12,15 @@
   }
 </script>
 
+<button
+  on:click={onClick}
+  class:cc-ext-hover={isHover}
+  class:cc-ext-active={isActive}
+>
+  <span>{item.value}</span>
+  {@html marked(item.description)}
+</button>
+
 <style>
   button,
   button:focus,
@@ -43,11 +52,3 @@
     margin: 10px 0 0 0;
   }
 </style>
-
-<button
-  on:click={onClick}
-  class:cc-ext-hover={isHover}
-  class:cc-ext-active={isActive}>
-  <span>{item.value}</span>
-  {@html marked(item.description)}
-</button>
