@@ -1,4 +1,4 @@
-FROM node:14.16.0-buster
+FROM node:14.17.6-buster
 ARG DEBIAN_FRONTEND noninteractive
 ENV NODE_ENV ci
 
