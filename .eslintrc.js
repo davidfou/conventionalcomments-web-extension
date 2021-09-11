@@ -30,6 +30,8 @@ module.exports = {
       },
     ],
     "no-undef": "off", // check by tsc
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["error"],
   },
   overrides: [
     {
