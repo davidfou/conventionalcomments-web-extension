@@ -48,7 +48,7 @@ Data([
   },
 ]).Scenario("Plugin is activated", async ({ I, MainPage, current }) => {
   const { threadId, noteId } = current.getData();
-  I.click(MainPage.getEditCommentSelector(threadId, noteId));
+  MainPage.editComment(threadId, noteId);
   I.see(current.expectedLabel, "$label-selector");
   I.see(current.expectedDecorations.join("\n"), "$decoration-selector");
 });
@@ -70,7 +70,7 @@ Data([
   },
 ]).Scenario("Plugin isn't activated", ({ I, MainPage, current }) => {
   const { threadId, noteId } = current.getData();
-  I.click(MainPage.getEditCommentSelector(threadId, noteId));
+  MainPage.editComment(threadId, noteId);
   I.seeElement("$toggle-button");
   I.dontSeeElement("$label-selector");
   I.dontSeeElement("$decoration-selector");

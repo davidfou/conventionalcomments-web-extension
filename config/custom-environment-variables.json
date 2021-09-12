@@ -4,7 +4,13 @@
     "gitlab": {
       "username": "E2E_GITLAB_USERNAME",
       "password": "E2E_GITLAB_PASSWORD",
-      "token":    "E2E_GITLAB_TOKEN"
+      "token": "E2E_GITLAB_TOKEN"
+    },
+    "github": {
+      "username": "E2E_GITHUB_USERNAME",
+      "password": "E2E_GITHUB_PASSWORD",
+      "token": "E2E_GITHUB_TOKEN",
+      "twoFactorSecret": "E2E_GITHUB_2FA_SECRET"
     }
   }
 }

@@ -5,5 +5,8 @@ module.exports = {
     gitlab: {
       project: "web-ext-test-ci",
     },
+    github: {
+      project: "web-ext-test-ci",
+    },
   },
 };

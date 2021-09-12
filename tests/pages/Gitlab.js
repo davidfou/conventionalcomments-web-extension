@@ -66,11 +66,13 @@ module.exports = {
       "data-qa-selector": "reply_field",
     });
   },
-  getEditCommentSelector(threadId, noteId) {
-    return locate("#diffs")
-      .find(locate("*").withAttr(getThreadSelectorAttribute(threadId)))
-      .find(locate("*").withAttr(getNoteSelectorAttribute(noteId)))
-      .find(locate("*").withAttr(getEditButtonAttribute()));
+  editComment(threadId, noteId) {
+    I.click(
+      locate("#diffs")
+        .find(locate("*").withAttr(getThreadSelectorAttribute(threadId)))
+        .find(locate("*").withAttr(getNoteSelectorAttribute(noteId)))
+        .find(locate("*").withAttr(getEditButtonAttribute()))
+    );
   },
   getReplySelector(threadId) {
     return locate("#diffs")

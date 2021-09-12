@@ -18,6 +18,9 @@ const detectProduct = (): keyof typeof commentEditorExtractors => {
     case "gitlab.com": {
       return "gitlab";
     }
+    case "github.com": {
+      return "github";
+    }
     default:
       throw new Error("Product not detected");
   }

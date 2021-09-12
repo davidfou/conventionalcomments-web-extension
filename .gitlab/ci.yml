@@ -71,6 +71,20 @@ e2e-gitlab:
   only:
     - branches
 
+e2e-github:
+  variables:
+    GIT_STRATEGY: none
+    E2E_PRODUCT: "github"
+  image: "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
+  stage: test
+  cache: {}
+  before_script: []
+  script:
+    - cd /app
+    - yarn codeceptjs
+  only:
+    - branches
+
 publish:
   stage: build
   script:

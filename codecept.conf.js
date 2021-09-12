@@ -17,6 +17,16 @@ const configs = {
       MainPage: "./tests/pages/Gitlab.js",
     },
   },
+  github: {
+    helpers: {
+      Github: {
+        require: "./tests/helpers/github_helper.js",
+      },
+    },
+    include: {
+      MainPage: "./tests/pages/Github.js",
+    },
+  },
 };
 
 const product = config.get("codeceptjs.product");
@@ -33,6 +43,7 @@ exports.config = merge(
     output: "./output",
     helpers: {
       Playwright: {
+        url: config.get(`codeceptjs.${product}.baseUrl`),
         require: "./tests/helpers/custom_playwright_helper.js",
         show: config.get("codeceptjs.headless"),
         browser: "firefox",
