@@ -16,6 +16,7 @@
   on:click={onClick}
   class:cc-ext-hover={isHover}
   class:cc-ext-active={isActive}
+  data-qa={`option-${item.label}`}
 >
   <span>{item.value}</span>
   {@html marked(item.description)}

@@ -1,0 +1,10 @@
+version: "3.3"
+services:
+  update-screenshots:
+    build: .
+    volumes:
+      - "./config:/app/config:ro"
+      - "./tests/screenshots:/app/tests/screenshots:rw"
+    environment:
+      - E2E_SHOULD_UPDATE_SCREENSHOT_OWNER=true
+    command: yarn codeceptjs:updateScreenshots

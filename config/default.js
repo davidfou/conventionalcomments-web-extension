@@ -4,6 +4,8 @@ module.exports = {
   codeceptjs: {
     product: "gitlab",
     headless: false,
+    updateScreenshots: false,
+    shouldUpdateScreenshotOwner: false,
     gitlab: {
       username: undefined,
       password: undefined,
@@ -52,4 +54,6 @@ module.exports = {
       }),
     },
   },
+  userId: undefined,
+  groupId: undefined,
 };

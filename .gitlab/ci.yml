@@ -20,28 +20,37 @@ extension:
       - public/build
   only:
     - branches
+  except:
+    - schedules
 
-e2e-image: 
+e2e-image:
   image: docker:latest
   stage: build
+  variables:
+    MASTER_IMAGE_CACHE: $CI_REGISTRY_IMAGE:branch-master
+    BRANCH_IMAGE_CACHE: $CI_REGISTRY_IMAGE:branch-$CI_COMMIT_REF_NAME
+    NEW_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
   services:
     - docker:dind
+  cache: {}
   before_script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   script:
-    - docker pull $CI_REGISTRY_IMAGE:branch-master || true
-    - docker pull $CI_REGISTRY_IMAGE:branch-$CI_COMMIT_REF_NAME || true
+    - docker pull $MASTER_IMAGE_CACHE || true
+    - docker pull $BRANCH_IMAGE_CACHE || true
     - >
-      docker build --pull
-      --cache-from $CI_REGISTRY_IMAGE:branch-master
-      --cache-from $CI_REGISTRY_IMAGE:branch-$CI_COMMIT_REF_NAME
-      --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+      docker build
+      --cache-from $MASTER_IMAGE_CACHE
+      --cache-from $BRANCH_IMAGE_CACHE
+      --tag $NEW_IMAGE
       .
-    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
-    - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA $CI_REGISTRY_IMAGE:branch-$CI_COMMIT_REF_NAME
-    - docker push $CI_REGISTRY_IMAGE:branch-$CI_COMMIT_REF_NAME
+    - docker push $NEW_IMAGE
+    - docker tag $NEW_IMAGE $BRANCH_IMAGE_CACHE
+    - docker push $BRANCH_IMAGE_CACHE
   only:
     - branches
+  except:
+    - schedules
 
 lint:
   stage: test
@@ -49,6 +58,8 @@ lint:
     - yarn lint
   only:
     - branches
+  except:
+    - schedules
 
 jest:
   stage: test
@@ -56,34 +67,38 @@ jest:
     - yarn test
   only:
     - branches
+  except:
+    - schedules
+
+.e2e-base:
+  variables:
+    GIT_STRATEGY: none
+  image: "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
+  stage: test
+  cache: {}
+  before_script: []
+  script:
+    - echo $PWD
+    - cd /app
+    - yarn codeceptjs:ci
+  after_script:
+    - cp -r /app/output .
+  artifacts:
+    paths:
+      - output
+    when: always
+  only:
+    - branches
 
 e2e-gitlab:
+  extends: .e2e-base
   variables:
-    GIT_STRATEGY: none
     E2E_PRODUCT: "gitlab"
-  image: "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
-  stage: test
-  cache: {}
-  before_script: []
-  script:
-    - cd /app
-    - yarn codeceptjs
-  only:
-    - branches
 
 e2e-github:
+  extends: .e2e-base
   variables:
-    GIT_STRATEGY: none
     E2E_PRODUCT: "github"
-  image: "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
-  stage: test
-  cache: {}
-  before_script: []
-  script:
-    - cd /app
-    - yarn codeceptjs
-  only:
-    - branches
 
 publish:
   stage: build
@@ -96,6 +111,8 @@ publish:
       - "web-ext-artifacts/*.zip"
   only:
     - tags
+  except:
+    - schedules
 
 release:
   stage: release
@@ -108,3 +125,5 @@ release:
       --assets-link "{\"name\":\"conventional_comments-$CI_COMMIT_TAG.zip\",\"url\":\"https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/jobs/artifacts/$CI_COMMIT_TAG/raw/web-ext-artifacts/conventional_comments-${CI_COMMIT_TAG:1}.zip?job=publish\"}"
   only:
     - tags
+  except:
+    - schedules

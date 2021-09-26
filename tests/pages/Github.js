@@ -60,4 +60,7 @@ module.exports = {
       href: config.get("codeceptjs.github.mainPage"),
     });
   },
+  getNewCommentEditorSelector() {
+    return locate(".js-previewable-comment-form");
+  },
 };

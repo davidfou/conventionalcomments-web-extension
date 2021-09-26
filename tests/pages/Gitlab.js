@@ -84,4 +84,7 @@ module.exports = {
   getChangesSelector() {
     return locate("*").withAttr({ "data-qa-selector": "diffs_tab" }).find("a");
   },
+  getNewCommentEditorSelector() {
+    return locate(".edit-note");
+  },
 };

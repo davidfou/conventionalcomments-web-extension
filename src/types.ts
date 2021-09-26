@@ -13,3 +13,5 @@ export interface Store {
   isActive: Writable<boolean>;
   unsubscribeCallbacks: (() => void)[];
 }
+
+export type ProductType = "gitlab" | "github";

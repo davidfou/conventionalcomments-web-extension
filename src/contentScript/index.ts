@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 
 import commentEditorExtractors from "../commentEditorExtractors";
+import type { ProductType } from "../types";
 import { addStore, removeStore } from "./store";
 import Button from "./Button.svelte";
 import Editor from "./Editor.svelte";
@@ -13,7 +14,7 @@ const noteHolders: Map<
   }
 > = new Map();
 
-const detectProduct = (): keyof typeof commentEditorExtractors => {
+const detectProduct = (): ProductType => {
   switch (window.location.hostname) {
     case "gitlab.com": {
       return "gitlab";
@@ -35,12 +36,12 @@ commentEditorExtractor(
     addStore(id, isMainComment, textarea);
     const button = new Button({
       ...buttonParams,
-      props: { textarea, id },
+      props: { textarea, id, product },
     });
 
     const editor = new Editor({
       ...editorParams,
-      props: { textarea, id },
+      props: { textarea, id, product },
     });
 
     noteHolders.set(id, { button, editor });

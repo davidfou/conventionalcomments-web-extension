@@ -1,6 +1,10 @@
 const { setHeadlessWhen } = require("@codeceptjs/configure");
 const config = require("config");
 const merge = require("lodash.merge");
+const fs = require("fs").promises;
+const path = require("path");
+const chownr = require("chownr");
+const { promisify } = require("util");
 
 // turn on headless mode when running with HEADLESS=true environment variable
 // export HEADLESS=true && npx codeceptjs run
@@ -40,7 +44,7 @@ if (!availableProducts.includes(product)) {
 exports.config = merge(
   {
     tests: "./tests/*_test.js",
-    output: "./output",
+    output: `./output/screenshots`,
     helpers: {
       Playwright: {
         url: config.get(`codeceptjs.${product}.baseUrl`),
@@ -50,12 +54,27 @@ exports.config = merge(
         waitForNavigation: "load",
         keepCookies: true,
         waitForTimeout: 5000,
+        windowSize: "1440x900",
       },
       Test: {
         require: "./tests/helpers/test_helper.js",
       },
+      ResembleHelper: {
+        require: "codeceptjs-resemblehelper",
+        screenshotFolder: "./output/screenshots/",
+        baseFolder: `./tests/screenshots/${product}/`,
+        diffFolder: "./output/screenshots-diff/",
+        prepareBaseImage: config.get("codeceptjs.updateScreenshots"),
+      },
+      Mochawesome: {
+        uniqueScreenshotNames: "true",
+      },
     },
-    mocha: {},
+    mocha: {
+      reporterOptions: {
+        reportDir: "output/html",
+      },
+    },
     name: "conventionalcomments-web-ext",
     plugins: {
       retryFailedStep: {
@@ -71,6 +90,27 @@ exports.config = merge(
       tryTo: {
         enabled: true,
       },
+    },
+    async bootstrap() {
+      if (!config.get("codeceptjs.updateScreenshots")) {
+        return;
+      }
+      await fs.rmdir(path.join(__dirname, "tests/screenshots", product), {
+        recursive: true,
+      });
+    },
+    async teardown() {
+      if (
+        !config.get("codeceptjs.updateScreenshots") ||
+        !config.get("codeceptjs.shouldUpdateScreenshotOwner")
+      ) {
+        return;
+      }
+      await promisify(chownr)(
+        "./tests/screenshots",
+        config.get("userId"),
+        config.get("groupId")
+      );
     },
   },
   configs[product]

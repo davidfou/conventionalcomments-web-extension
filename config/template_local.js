@@ -14,4 +14,6 @@ module.exports = {
       twoFactorSecret: "<% GitHub two-factor secret when 2FA is activated %>",
     },
   },
+  userId: 1000, // output of the bash command `id -u`
+  groupId: 1000, // output of the bash command `id -g`
 };

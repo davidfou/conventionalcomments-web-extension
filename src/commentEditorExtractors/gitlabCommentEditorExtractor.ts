@@ -42,29 +42,33 @@ const gitlabCommentEditorExtractor: CommentEditorExtractor = (
         const navList = mainEl.querySelector(".nav-links > .md-header-toolbar");
         const targetEl = mainEl.querySelector(".div-dropzone-wrapper");
         const anchorEl = mainEl.querySelector(".div-dropzone");
-        if (navList === null || targetEl === null || anchorEl === null) {
+        const buttonAnchorEl = mainEl.querySelector(
+          ".nav-links > .md-header-toolbar > button:last-child"
+        );
+        if (
+          navList === null ||
+          targetEl === null ||
+          anchorEl === null ||
+          buttonAnchorEl === null
+        ) {
           return;
         }
-
-        const navItem = document.createElement("div");
-        navItem.classList.add("d-inline-block", "ml-md-2", "ml-0");
-
-        const lastItem = navList.childNodes[navList.childNodes.length - 1];
-        navList.insertBefore(navItem, lastItem);
-        navList.insertBefore(document.createTextNode(" "), lastItem);
 
         onTextareaExtracted({
           id,
           isMainComment: getIsMainComment(mainEl),
           textarea,
           buttonParams: {
-            target: navItem,
+            target: navList,
+            anchor: buttonAnchorEl,
           },
           editorParams: {
             target: targetEl,
             anchor: anchorEl,
           },
         });
+        navList.insertBefore(document.createTextNode(" "), buttonAnchorEl);
+
         extractedTextareas.push({ id, textarea });
       });
 
