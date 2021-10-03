@@ -1,10 +1,25 @@
 <script lang="typescript">
   import { getStore } from "./store";
+  import type { ProductType } from "../types";
 
   export let id: string;
   export let textarea: HTMLTextAreaElement;
+  export let product: ProductType;
 
   const { isActive } = getStore(id);
+
+  let classes = `cc-button-${product}`;
+  let iconClasses = `cc-button-icon-${product}`;
+  if (product === "github") {
+    classes +=
+      " flex-auto text-center toolbar-item tooltipped tooltipped-sw p-2 p-md-1 mx-1";
+    iconClasses += " octicon";
+  }
+  if (product === "gitlab") {
+    classes +=
+      " btn js-md btn-default btn-md gl-button btn-default-tertiary btn-icon";
+    iconClasses += " gl-button-icon gl-icon s16";
+  }
 
   function handleClick() {
     textarea.focus();
@@ -14,15 +29,14 @@
 
 <button
   on:click={handleClick}
-  title="Insert conventional comment"
   aria-label="Insert conventional comment"
   type="button"
   data-container="body"
-  class="toolbar-btn js-md"
+  class={classes}
   data-qa="toggle-button"
 >
   <svg
-    class="gl-icon s16"
+    class={iconClasses}
     class:cc-active={$isActive}
     width="16"
     height="16"
@@ -41,7 +55,15 @@
 </button>
 
 <style>
-  .cc-active {
-    fill: #1068bf;
+  .cc-button-icon-github {
+    fill: currentColor;
+  }
+
+  .cc-button-icon-github.cc-active {
+    fill: var(--color-accent-fg);
+  }
+
+  .cc-button-icon-gitlab.cc-active {
+    fill: var(--primary);
   }
 </style>

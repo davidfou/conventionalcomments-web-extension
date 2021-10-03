@@ -45,7 +45,7 @@
     }
   }
 
-  function onInput() {
+  function forceComment() {
     const newValue = detectModification($prependedText, textarea.value);
 
     if (newValue === null) {
@@ -62,14 +62,16 @@
       textarea.removeEventListener(eventName, updateTexareaSelection);
     });
     textarea.removeEventListener("keydown", onKeyDown);
-    textarea.removeEventListener("input", onInput);
+    textarea.removeEventListener("input", forceComment);
+    textarea.removeEventListener("focus", forceComment);
   });
 
   EVENTS.forEach((eventName) => {
     textarea.addEventListener(eventName, updateTexareaSelection);
   });
   textarea.addEventListener("keydown", onKeyDown);
-  textarea.addEventListener("input", onInput);
+  textarea.addEventListener("input", forceComment);
+  textarea.addEventListener("focus", forceComment);
 
   $: {
     const currentComment = extractComment(

@@ -1,55 +1,60 @@
 const Helper = require("@codeceptjs/helper");
 const config = require("config");
 const { Gitlab } = require("@gitbeaker/node");
+const { recorder, output } = require("codeceptjs");
 
 /* eslint-disable no-underscore-dangle */
 class GitlabHelper extends Helper {
-  async _init() {
-    this.api = new Gitlab({ token: config.get("codeceptjs.gitlab.token") });
-    const projectName = config.get("codeceptjs.gitlab.project");
-    this.projectPath = [
-      config.get("codeceptjs.gitlab.username"),
-      projectName,
-    ].join("/");
-
-    try {
-      await this.api.Projects.show(this.projectPath);
-      // eslint-disable-next-line no-console
-      console.info("Test environment already created");
+  async _beforeSuite() {
+    if (this.api !== undefined) {
       return;
-    } catch (error) {
-      if (error.description !== "404 Project Not Found") {
-        throw error;
-      }
     }
 
-    // eslint-disable-next-line no-console
-    console.info("Setting up environment");
-    await this.api.Projects.create({ name: projectName });
-    await this.api.RepositoryFiles.create(
-      this.projectPath,
-      "README.md",
-      "master",
-      "# Main title\n\nMy first line.\n",
-      "Initial commit"
-    );
+    recorder.add("Setup test environment", async () => {
+      this.api = new Gitlab({ token: config.get("codeceptjs.gitlab.token") });
+      const projectName = config.get("codeceptjs.gitlab.project");
+      this.projectPath = [
+        config.get("codeceptjs.gitlab.username"),
+        projectName,
+      ].join("/");
 
-    await this.api.RepositoryFiles.edit(
-      this.projectPath,
-      "README.md",
-      "new_branch",
-      "# New title\n\nMy first line updated.\n",
-      "Update doc",
-      {
-        start_branch: "master",
+      try {
+        await this.api.Projects.show(this.projectPath);
+        output.print("Test environment already created");
+        return;
+      } catch (error) {
+        if (error.description !== "404 Project Not Found") {
+          throw error;
+        }
       }
-    );
-    await this.api.MergeRequests.create(
-      this.projectPath,
-      "new_branch",
-      "master",
-      "Update doc"
-    );
+
+      output.print("Setting up environment");
+      await this.api.Projects.create({ name: projectName });
+      await this.api.RepositoryFiles.create(
+        this.projectPath,
+        "README.md",
+        "master",
+        "# Main title\n\nMy first line.\n",
+        "Initial commit"
+      );
+
+      await this.api.RepositoryFiles.edit(
+        this.projectPath,
+        "README.md",
+        "new_branch",
+        "# New title\n\nMy first line updated.\n",
+        "Update doc",
+        {
+          start_branch: "master",
+        }
+      );
+      await this.api.MergeRequests.create(
+        this.projectPath,
+        "new_branch",
+        "master",
+        "Update doc"
+      );
+    });
   }
 
   async removeAllThreads() {
@@ -61,7 +66,7 @@ class GitlabHelper extends Helper {
     );
   }
 
-  async createCreateThread(comments, oldLine, newLine) {
+  async createThread(comments, oldLine, newLine) {
     const [baseComment, ...noteComments] = comments;
     const mergeRequest = await this.api.MergeRequests.show(this.projectPath, 1);
 

@@ -1,27 +1,25 @@
-const config = require("config");
-
 Feature("Textarea BDD");
 
-BeforeSuite(async ({ I, login }) => {
-  await login("gitlab");
-  await I.removeAllThreads();
+BeforeSuite(({ I, MainPage }) => {
+  MainPage.login();
+  I.removeAllThreads();
 });
 
-Before(({ I, GitlabPage }) => {
-  I.amOnPage(config.get("codeceptjs.gitlab.mainPage"));
-  GitlabPage.waitPageIsReady();
+Before(({ I, MainPage }) => {
+  MainPage.goToMainPage();
+  MainPage.waitPageIsReady();
   I.clearLocalStorage();
-  GitlabPage.openNewThread();
+  MainPage.openNewThread();
 });
 
-Scenario("textarea has focus", ({ I, GitlabPage }) => {
-  I.seeElementIsFocused(GitlabPage.getTextareaSelector());
+Scenario("textarea has focus", ({ I, MainPage }) => {
+  I.seeElementIsFocused(MainPage.getTextareaSelector());
 });
 
 Scenario(
   "textarea is initialized with the expected value",
-  ({ I, GitlabPage }) => {
-    I.seeInField(GitlabPage.getTextareaSelector(), "**praise:** ");
+  ({ I, MainPage }) => {
+    I.seeInField(MainPage.getTextareaSelector(), "**praise:** ");
   }
 );
 

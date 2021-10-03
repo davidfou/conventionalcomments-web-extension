@@ -6,10 +6,11 @@
   import SelectItem from "./SelectItem.svelte";
   import OriginalTextareaWrapper from "./OriginalTextareaWrapper.svelte";
 
-  import type { SelectableItem } from "../types";
+  import type { SelectableItem, ProductType } from "../types";
 
   export let textarea: HTMLTextAreaElement;
   export let id: string;
+  export let product: ProductType;
 
   const { label, decorations, prependedText, isActive } = getStore(id);
   setContext(CONTEXT_KEY, { label, decorations, prependedText });
@@ -30,9 +31,9 @@
 </script>
 
 {#if $isActive}
-  <div {style}>
+  <div data-qa="editor-container" {style}>
     <OriginalTextareaWrapper {textarea} />
-    <div class="cc-select-wrapper" data-qa="label-selector">
+    <div class={`cc-select-wrapper-${product}`} data-qa="label-selector">
       <Select
         items={LABELS}
         Item={SelectItem}
@@ -42,7 +43,7 @@
         listPlacement="bottom"
       />
     </div>
-    <div class="cc-select-wrapper" data-qa="decoration-selector">
+    <div class={`cc-select-wrapper-${product}`} data-qa="decoration-selector">
       <Select
         items={DECORATIONS}
         Item={SelectItem}
@@ -56,7 +57,11 @@
 {/if}
 
 <style>
-  .cc-select-wrapper {
+  .cc-select-wrapper-gitlab {
     padding: 10px 0 0 0;
+  }
+
+  .cc-select-wrapper-github {
+    margin: 0 8px 8px;
   }
 </style>

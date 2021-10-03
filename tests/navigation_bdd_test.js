@@ -1,23 +1,21 @@
-const config = require("config");
-
 Feature("Navigation BDD");
 
-BeforeSuite(async ({ I, login }) => {
-  await login("gitlab");
-  await I.removeAllThreads();
+BeforeSuite(({ I, MainPage }) => {
+  MainPage.login();
+  I.removeAllThreads();
 });
 
-Before(({ I, GitlabPage }) => {
-  I.amOnPage(config.get("codeceptjs.gitlab.overviewPage"));
-  GitlabPage.waitPageIsReady();
+Before(({ I, MainPage }) => {
+  MainPage.goToOverviewPage();
+  MainPage.waitPageIsReady();
   I.clearLocalStorage();
 });
 
 Scenario(
   "Plugin is loaded when navigating to the diff page",
-  ({ I, GitlabPage }) => {
-    I.click(GitlabPage.getChangesSelector());
-    GitlabPage.openNewThread();
+  ({ I, MainPage }) => {
+    I.click(MainPage.getChangesSelector());
+    MainPage.openNewThread();
     I.seeElement("$toggle-button");
   }
 );

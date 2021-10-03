@@ -28,7 +28,6 @@ module.exports = {
     }
 
     I.amOnPage("https://gitlab.com/users/sign_in");
-    I.waitForNavigation();
     this.waitPageIsReady();
     I.fillField("#user_login", config.get("codeceptjs.gitlab.username"));
     I.fillField(
@@ -36,6 +35,12 @@ module.exports = {
       secret(config.get("codeceptjs.gitlab.password"))
     );
     I.click("Sign in");
+  },
+  goToMainPage() {
+    I.amOnPage(config.get("codeceptjs.gitlab.mainPage"));
+  },
+  goToOverviewPage() {
+    I.amOnPage(config.get("codeceptjs.gitlab.overviewPage"));
   },
   waitPageIsReady() {
     I.waitForElement("body.page-initialised");
@@ -61,11 +66,13 @@ module.exports = {
       "data-qa-selector": "reply_field",
     });
   },
-  getEditCommentSelector(threadId, noteId) {
-    return locate("#diffs")
-      .find(locate("*").withAttr(getThreadSelectorAttribute(threadId)))
-      .find(locate("*").withAttr(getNoteSelectorAttribute(noteId)))
-      .find(locate("*").withAttr(getEditButtonAttribute()));
+  editComment(threadId, noteId) {
+    I.click(
+      locate("#diffs")
+        .find(locate("*").withAttr(getThreadSelectorAttribute(threadId)))
+        .find(locate("*").withAttr(getNoteSelectorAttribute(noteId)))
+        .find(locate("*").withAttr(getEditButtonAttribute()))
+    );
   },
   getReplySelector(threadId) {
     return locate("#diffs")
@@ -76,5 +83,8 @@ module.exports = {
   },
   getChangesSelector() {
     return locate("*").withAttr({ "data-qa-selector": "diffs_tab" }).find("a");
+  },
+  getNewCommentEditorSelector() {
+    return locate(".edit-note");
   },
 };
