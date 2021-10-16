@@ -83,9 +83,13 @@ jest:
     - yarn codeceptjs:ci
   after_script:
     - cp -r /app/output .
+    - mkdir -p tests/screenshots
+    - cp -r /app/tests/screenshots ./tests
+    - echo "🔗 -> $CI_PROJECT_URL/-/jobs/$CI_JOB_ID/artifacts/file/output/html/mochawesome.html"
   artifacts:
     paths:
       - output
+      - tests/screenshots
     when: always
   only:
     - branches

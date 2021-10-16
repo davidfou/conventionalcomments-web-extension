@@ -60,7 +60,7 @@ exports.config = merge(
         require: "./tests/helpers/test_helper.js",
       },
       ResembleHelper: {
-        require: "codeceptjs-resemblehelper",
+        require: "./tests/helpers/resemble_helper.js",
         screenshotFolder: "./output/screenshots/",
         baseFolder: `./tests/screenshots/${product}/`,
         diffFolder: "./output/screenshots-diff/",
