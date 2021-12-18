@@ -1,4 +1,5 @@
 const config = require("config");
+const { firefox } = require("playwright");
 
 const { I } = inject();
 
@@ -16,25 +17,43 @@ const getEditButtonAttribute = () => ({
   "data-qa-selector": "note_edit_button",
 });
 
+const COOKIE_NAME = "_gitlab_session";
+
+const setSessionCookie = async (page) => {
+  const currentCookies = await page.context().cookies("https://gitlab.com");
+  const isUserLoggedIn = currentCookies.some(
+    ({ name }) => name === COOKIE_NAME
+  );
+  if (isUserLoggedIn) {
+    return;
+  }
+
+  const browser = await firefox.launch();
+  const newPage = await browser.newPage();
+
+  await newPage.goto("https://gitlab.com/users/sign_in");
+  await newPage.fill(
+    '[data-qa-selector="login_field"]',
+    config.get("codeceptjs.gitlab.username")
+  );
+  await newPage.fill(
+    '[data-qa-selector="password_field"]',
+    config.get("codeceptjs.gitlab.password")
+  );
+  await newPage.click('[data-qa-selector="sign_in_button"]');
+
+  const cookies = await newPage.context().cookies("https://gitlab.com");
+  await browser.close();
+  await page
+    .context()
+    .addCookies([cookies.find(({ name }) => name === COOKIE_NAME)]);
+};
+
 module.exports = {
   async login() {
-    const isUserLoggedIn = await tryTo(() => {
-      I.amOnPage("https://gitlab.com/users/sign_in");
-      return I.seeCurrentUrlEquals("https://gitlab.com/");
+    I.usePlaywrightTo("set cookie", async ({ page }) => {
+      await setSessionCookie(page);
     });
-
-    if (isUserLoggedIn) {
-      return;
-    }
-
-    I.amOnPage("https://gitlab.com/users/sign_in");
-    this.waitPageIsReady();
-    I.fillField("#user_login", config.get("codeceptjs.gitlab.username"));
-    I.fillField(
-      "#user_password",
-      secret(config.get("codeceptjs.gitlab.password"))
-    );
-    I.click("Sign in");
   },
   goToMainPage() {
     I.amOnPage(config.get("codeceptjs.gitlab.mainPage"));

@@ -1,11 +1,11 @@
 Feature("Set comment BDD");
 
-BeforeSuite(({ I, MainPage }) => {
-  MainPage.login();
+BeforeSuite(({ I }) => {
   I.removeAllThreads();
 });
 
-Before(({ I, MainPage }) => {
+Before(async ({ I, MainPage }) => {
+  await MainPage.login();
   MainPage.goToMainPage();
   MainPage.waitPageIsReady();
   I.clearLocalStorage();

@@ -1,14 +1,10 @@
-const { setHeadlessWhen } = require("@codeceptjs/configure");
 const config = require("config");
+const { event, container } = require("codeceptjs");
 const merge = require("lodash.merge");
-const fs = require("fs").promises;
+const fs = require("fs/promises");
+const fsSync = require("fs");
 const path = require("path");
-const chownr = require("chownr");
-const { promisify } = require("util");
-
-// turn on headless mode when running with HEADLESS=true environment variable
-// export HEADLESS=true && npx codeceptjs run
-setHeadlessWhen(process.env.HEADLESS);
+const os = require("os");
 
 const configs = {
   gitlab: {
@@ -40,6 +36,10 @@ if (!availableProducts.includes(product)) {
     `Expect product to be ${availableProducts.join("|")}, got \`${product}\``
   );
 }
+const pathToExtension = path.join(process.cwd(), "public");
+const userDataDir = fsSync.mkdtempSync(
+  path.join(os.tmpdir(), "playwright-tmp-")
+);
 
 exports.config = merge(
   {
@@ -48,13 +48,20 @@ exports.config = merge(
     helpers: {
       Playwright: {
         url: config.get(`codeceptjs.${product}.baseUrl`),
-        require: "./tests/helpers/custom_playwright_helper.js",
-        show: config.get("codeceptjs.headless"),
-        browser: "firefox",
+        show: true,
         waitForNavigation: "load",
         keepCookies: true,
+        keepBrowserState: false,
         waitForTimeout: 5000,
         windowSize: "1440x900",
+        browser: "chromium",
+        chromium: {
+          userDataDir,
+          args: [
+            `--disable-extensions-except=${pathToExtension}`,
+            `--load-extension=${pathToExtension}`,
+          ],
+        },
       },
       Test: {
         require: "./tests/helpers/test_helper.js",
@@ -92,26 +99,26 @@ exports.config = merge(
       },
     },
     async bootstrap() {
-      if (!config.get("codeceptjs.updateScreenshots")) {
-        return;
+      if (config.get("codeceptjs.updateScreenshots")) {
+        await fs.rm(path.join(__dirname, "tests/screenshots", product), {
+          recursive: true,
+          force: true,
+        });
       }
-      await fs.rmdir(path.join(__dirname, "tests/screenshots", product), {
-        recursive: true,
-      });
     },
-    async teardown() {
-      if (
-        !config.get("codeceptjs.updateScreenshots") ||
-        !config.get("codeceptjs.shouldUpdateScreenshotOwner")
-      ) {
-        return;
-      }
-      await promisify(chownr)(
-        "./tests/screenshots",
-        config.get("userId"),
-        config.get("groupId")
-      );
-    },
+    hooks: [
+      () => {
+        event.dispatcher.on(event.all.after, async () => {
+          container.helpers("Playwright").browser.on("close", async () => {
+            fs.rm(userDataDir, {
+              recursive: true,
+              force: true,
+              maxRetries: 5,
+            });
+          });
+        });
+      },
+    ],
   },
   configs[product]
 );

@@ -3,8 +3,9 @@ services:
   update-screenshots:
     build: .
     volumes:
-      - "./config:/app/config:ro"
-      - "./tests/screenshots:/app/tests/screenshots:rw"
+      - "./config:/root/config:ro"
+      - "./tests/screenshots:/root/tests/screenshots:rw"
     environment:
       - E2E_SHOULD_UPDATE_SCREENSHOT_OWNER=true
+    entrypoint: ["/bin/sh", "-c", "/usr/bin/xvfb-run -a $$@", ""]
     command: yarn codeceptjs:updateScreenshots

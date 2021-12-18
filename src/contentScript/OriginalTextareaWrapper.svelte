@@ -94,6 +94,8 @@
       newSelectionEnd,
       newSelectionDirection
     );
-    textarea.focus();
+    setTimeout(() => {
+      textarea.focus();
+    }, 0);
   }
 </script>

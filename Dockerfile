@@ -1,21 +1,36 @@
-FROM node:14.17.6-buster
-ARG DEBIAN_FRONTEND noninteractive
+FROM ubuntu:focal-20211006
+ARG NODE_VERSION=16.13.1
+ARG DEBIAN_FRONTEND=noninteractive
 ENV NODE_ENV ci
+ENV TZ Europe/Brussels
+ENV PATH $PATH:/usr/local/lib/nodejs/node-v${NODE_VERSION}-linux-x64/bin
 
-WORKDIR /app
+RUN apt-get update \
+ && apt-get install -y \
+      # Install node dependency
+      curl \
+      # Install node-canvas dependencies
+      build-essential \
+      libcairo2-dev \
+      libpango1.0-dev \
+      libjpeg-dev \
+      libgif-dev \
+      librsvg2-dev \
+      # Playwright dependency (avoids interactive mode)
+      tzdata \
+ && rm -rf /var/lib/apt/lists/* \
+ && mkdir -p /usr/local/lib/nodejs \
+ && curl -fsSL https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz | tar -xJ -C /usr/local/lib/nodejs \
+ && npm install -g yarn@1.22.17
 
-RUN apt-get update && apt-get install -y \
-  dbus \
-  libdbus-glib-1-2 \
-  packagekit-gtk3-module \
-  xvfb \
-  && rm -rf /var/lib/apt/lists/*
+WORKDIR /root
 
 COPY package.json package.json
 COPY yarn.lock yarn.lock
 COPY scripts scripts
 
-RUN yarn install --frozen-lockfile
+RUN yarn install --frozen-lockfile \
+ && yarn playwright install-deps chromium firefox
 
 COPY . .
 

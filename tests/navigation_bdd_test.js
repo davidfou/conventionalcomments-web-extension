@@ -1,11 +1,11 @@
 Feature("Navigation BDD");
 
-BeforeSuite(({ I, MainPage }) => {
-  MainPage.login();
+BeforeSuite(({ I }) => {
   I.removeAllThreads();
 });
 
-Before(({ I, MainPage }) => {
+Before(async ({ I, MainPage }) => {
+  await MainPage.login();
   MainPage.goToOverviewPage();
   MainPage.waitPageIsReady();
   I.clearLocalStorage();
