@@ -5,10 +5,6 @@
       "__name": "E2E_UPDATE_SCREENSHOTS",
       "__format": "json"
     },
-    "shouldUpdateScreenshotOwner": {
-      "__name": "E2E_SHOULD_UPDATE_SCREENSHOT_OWNER",
-      "__format": "json"
-    },
     "gitlab": {
       "username": "E2E_GITLAB_USERNAME",
       "password": "E2E_GITLAB_PASSWORD",

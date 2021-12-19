@@ -83,6 +83,28 @@ class Test extends Helper {
       localStorage.clear();
     });
   }
+
+  async clickAndWaitForResponse(selector, method, url) {
+    const { Playwright } = this.helpers;
+    const promise = Playwright.waitForResponse(
+      (response) =>
+        response.url() === url && response.request().method() === method
+    );
+    await Playwright.click(selector);
+    await promise;
+  }
+
+  async injectStyleBeforeScreenshot() {
+    const { Playwright } = this.helpers;
+    await Playwright.page.addStyleTag({
+      content: [
+        "* {",
+        "  caret-color: transparent !important;",
+        "  transition-property: none !important;",
+        "}",
+      ].join("\n"),
+    });
+  }
 }
 
 module.exports = Test;

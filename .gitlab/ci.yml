@@ -1,4 +1,4 @@
-image: node:14.17.6
+image: node:16.13.1
 stages:
   - build
   - test
@@ -9,6 +9,9 @@ default:
     paths:
       - .yarn
   before_script:
+    # install dependencies for canvas
+    - apt-get update
+    - apt-get install -y build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
     - yarn install --cache-folder .yarn
 
 extension:
@@ -89,6 +92,8 @@ jest:
     paths:
       - output
       - tests/screenshots
+    reports:
+      junit: output/result.xml
     when: always
   only:
     - branches

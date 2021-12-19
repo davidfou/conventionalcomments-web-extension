@@ -1,12 +1,10 @@
 <script lang="typescript">
   import { getStore } from "./store";
-  import type { ProductType } from "../types";
 
   export let id: string;
   export let textarea: HTMLTextAreaElement;
-  export let product: ProductType;
 
-  const { isActive } = getStore(id);
+  const { isActive, product } = getStore(id);
 
   let classes = `cc-button-${product}`;
   let iconClasses = `cc-button-icon-${product}`;

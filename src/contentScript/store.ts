@@ -2,7 +2,7 @@ import { writable, derived } from "svelte/store";
 import formatComment from "../helper/formatComment";
 import extractComment from "../helper/extractComment";
 import getSelectableItemByValue from "../helper/getSelectableItemByValue";
-import type { SelectableItem, Store } from "../types";
+import type { SelectableItem, Store, ProductType } from "../types";
 
 const LABELS: SelectableItem[] = [
   {
@@ -75,7 +75,8 @@ const stores: Map<string, Store> = new Map();
 const addStore = (
   id: string,
   isMainComment: boolean,
-  textarea: HTMLTextAreaElement
+  textarea: HTMLTextAreaElement,
+  product: ProductType
 ) => {
   const unsubscribeCallbacks: (() => void)[] = [];
   const currentComment = extractComment(
@@ -127,6 +128,7 @@ const addStore = (
     prependedText,
     isActive,
     unsubscribeCallbacks,
+    product,
   });
 };
 
