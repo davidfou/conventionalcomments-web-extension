@@ -3,8 +3,7 @@ Feature("Edit BDD");
 let thread1 = null;
 let thread2 = null;
 
-BeforeSuite(async ({ I, MainPage }) => {
-  MainPage.login();
+BeforeSuite(async ({ I }) => {
   I.removeAllThreads();
   thread1 = await I.createThread(
     ["**question:** any reason not to format comments", "No idea"],
@@ -21,7 +20,8 @@ BeforeSuite(async ({ I, MainPage }) => {
   );
 });
 
-Before(({ I, MainPage }) => {
+Before(async ({ I, MainPage }) => {
+  await MainPage.login();
   MainPage.goToMainPage();
   MainPage.waitPageIsReady();
   I.clearLocalStorage();

@@ -3,7 +3,6 @@ const { deferConfig } = require("config/defer");
 module.exports = {
   codeceptjs: {
     product: "gitlab",
-    headless: false,
     updateScreenshots: false,
     shouldUpdateScreenshotOwner: false,
     gitlab: {
@@ -54,6 +53,4 @@ module.exports = {
       }),
     },
   },
-  userId: undefined,
-  groupId: undefined,
 };

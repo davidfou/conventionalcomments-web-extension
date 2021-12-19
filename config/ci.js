@@ -1,7 +1,6 @@
 module.exports = {
   codeceptjs: {
     product: undefined,
-    headless: true,
     gitlab: {
       project: "web-ext-test-ci",
     },

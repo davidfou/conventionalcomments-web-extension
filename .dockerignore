@@ -8,3 +8,5 @@ yarn-debug.log*
 yarn-error.log*
 
 .DS_Store
+Dockerfile
+docker-compose.yml
