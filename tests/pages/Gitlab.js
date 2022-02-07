@@ -134,7 +134,6 @@ module.exports = {
         "POST",
         "https://gitlab.com/-/profile/preferences"
       );
-      I.wait(3);
     }
   },
 };

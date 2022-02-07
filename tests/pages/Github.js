@@ -1,7 +1,10 @@
 const config = require("config");
 const { authenticator } = require("otplib");
+const assert = require("assert");
 
 const { I } = inject();
+
+const MAX_RETRY = 3;
 
 module.exports = {
   async login() {
@@ -68,23 +71,33 @@ module.exports = {
     return I.grabAttributeFromAll(locate('input[name="user_theme"]'), "value");
   },
   async selectTheme(theme) {
-    I.amOnPage("https://github.com/settings/appearance");
-    const themeMode = await I.grabValueFrom("select#color_mode_type_select");
-    if (themeMode !== "single") {
-      I.selectOption("select#color_mode_type_select", "single");
-      I.waitForText("Theme preference successfully saved.");
+    let isSelected = false;
+    let retryCount = 0;
+    while (!isSelected && retryCount < MAX_RETRY) {
+      I.amOnPage("https://github.com/settings/appearance");
+      // eslint-disable-next-line no-await-in-loop
+      const themeMode = await I.grabValueFrom("select#color_mode_type_select");
+      if (themeMode !== "single") {
+        I.selectOption("select#color_mode_type_select", "single");
+        I.waitForText("Theme preference successfully saved.");
+      }
+
+      // eslint-disable-next-line no-await-in-loop
+      const currentValue = await I.grabValueFrom(
+        'input[name="user_theme"]:checked'
+      );
+      if (theme !== currentValue) {
+        I.clickAndWaitForResponse(
+          locate("label").withAttr({ for: `option-${theme}` }),
+          "POST",
+          "https://github.com/settings/appearance/color_mode"
+        );
+      } else {
+        isSelected = true;
+      }
+      retryCount += 1;
     }
 
-    const currentValue = await I.grabValueFrom(
-      'input[name="user_theme"]:checked'
-    );
-    if (theme !== currentValue) {
-      I.clickAndWaitForResponse(
-        locate("label").withAttr({ for: `option-${theme}` }),
-        "POST",
-        "https://github.com/settings/appearance/color_mode"
-      );
-      I.wait(3);
-    }
+    assert.ok(isSelected, "An error ocurred to select the theme");
   },
 };
