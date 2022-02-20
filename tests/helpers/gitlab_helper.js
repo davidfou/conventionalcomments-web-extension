@@ -54,6 +54,17 @@ class GitlabHelper extends Helper {
         "master",
         "Update doc"
       );
+
+      await this.api.RepositoryFiles.edit(
+        this.projectPath,
+        "README.md",
+        "new_branch2",
+        "# New title\n\nMy first line updated 2.\n",
+        "Update doc",
+        {
+          start_branch: "master",
+        }
+      );
     });
   }
 

@@ -35,6 +35,12 @@ module.exports = {
   goToOverviewPage() {
     I.amOnPage(config.get("codeceptjs.github.overviewPage"));
   },
+  goToNewPullRequestPage() {
+    I.amOnPage(config.get("codeceptjs.github.newPullRequestPage"));
+  },
+  goToNewIssuePage() {
+    I.amOnPage(config.get("codeceptjs.github.newIssuePage"));
+  },
   waitPageIsReady() {},
   openNewThread() {
     I.click(

@@ -7,6 +7,7 @@ import { terser } from "rollup-plugin-terser";
 import autoPreprocess from "svelte-preprocess";
 import typescript from "@rollup/plugin-typescript";
 import { spawn } from "child_process";
+import { firefox } from "playwright";
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -18,7 +19,7 @@ function serve() {
       if (!started) {
         started = true;
 
-        spawn("yarn", ["web-ext", "run"], {
+        spawn("yarn", ["web-ext", "run", "-f", firefox.executablePath()], {
           stdio: ["ignore", "inherit", "inherit"],
           shell: true,
         });

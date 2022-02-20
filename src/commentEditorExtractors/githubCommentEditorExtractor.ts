@@ -14,10 +14,14 @@ const githubCommentEditorExtractor: CommentEditorExtractor = (
     node
       .querySelectorAll(".js-previewable-comment-form textarea")
       .forEach((textarea) => {
+        if (!(textarea instanceof HTMLTextAreaElement)) {
+          return;
+        }
+        const form = textarea.closest("form");
         if (
-          !(textarea instanceof HTMLTextAreaElement) ||
-          textarea.id === "pull_request_review_body" ||
-          textarea.id === "new_comment_field"
+          form === null ||
+          (!form.classList.contains("js-comment-update") &&
+            !form.classList.contains("js-inline-comment-form"))
         ) {
           return;
         }

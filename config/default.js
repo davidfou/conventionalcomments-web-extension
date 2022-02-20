@@ -26,6 +26,22 @@ module.exports = {
           "-/merge_requests/1",
         ].join("/");
       }),
+      newPullRequestPage: deferConfig(function newPullRequestPage() {
+        return [
+          "",
+          this.codeceptjs.gitlab.username,
+          this.codeceptjs.gitlab.project,
+          "-/merge_requests/new?merge_request[source_branch]=new_branch2",
+        ].join("/");
+      }),
+      newIssuePage: deferConfig(function newIssuePage() {
+        return [
+          "",
+          this.codeceptjs.gitlab.username,
+          this.codeceptjs.gitlab.project,
+          "-/issues/new",
+        ].join("/");
+      }),
       themes: [
         "Indigo",
         "Light Indigo",
@@ -61,6 +77,22 @@ module.exports = {
           this.codeceptjs.github.username,
           this.codeceptjs.github.project,
           "pull/1",
+        ].join("/");
+      }),
+      newPullRequestPage: deferConfig(function newPullRequestPage() {
+        return [
+          "",
+          this.codeceptjs.github.username,
+          this.codeceptjs.github.project,
+          "compare/new_branch2?expand=1",
+        ].join("/");
+      }),
+      newIssuePage: deferConfig(function newIssuePage() {
+        return [
+          "",
+          this.codeceptjs.github.username,
+          this.codeceptjs.github.project,
+          "issues/new",
         ].join("/");
       }),
       themes: [
