@@ -39,11 +39,13 @@ const gitlabCommentEditorExtractor: CommentEditorExtractor = (
         }
         const id = generateId();
 
-        const navList = mainEl.querySelector(".nav-links > .md-header-toolbar");
+        const navList = mainEl.querySelector(
+          "[data-testid='md-header-toolbar']"
+        );
         const targetEl = mainEl.querySelector(".div-dropzone-wrapper");
         const anchorEl = mainEl.querySelector(".div-dropzone");
         const buttonAnchorEl = mainEl.querySelector(
-          ".nav-links > .md-header-toolbar > button:last-child"
+          "[data-testid='md-header-toolbar'] > button:last-child"
         );
         if (
           navList === null ||

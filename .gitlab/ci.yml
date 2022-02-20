@@ -87,7 +87,7 @@ jest:
     - cp -r /root/output .
     - mkdir -p tests/screenshots
     - cp -r /root/tests/screenshots ./tests
-    - echo "🔗 -> $CI_PROJECT_URL/-/jobs/$CI_JOB_ID/artifacts/file/output/html/mochawesome.html"
+    - echo "🔗 -> $CI_PROJECT_URL/-/jobs/$CI_JOB_ID/artifacts/file/output/mochawesome.html"
   artifacts:
     paths:
       - output

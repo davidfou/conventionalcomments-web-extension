@@ -88,7 +88,7 @@ exports.config = merge(
         mochawesome: {
           stdout: "./output/console-mochawesome.log",
           options: {
-            reportDir: "./output/html",
+            reportDir: "./output",
             reportTitle: `E2E tests for ${product}`,
           },
         },
