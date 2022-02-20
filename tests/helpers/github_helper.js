@@ -64,6 +64,24 @@ class GithubHelper extends Helper {
         base: "main",
         title: "Update doc",
       });
+
+      await this.api.rest.git.createRef({
+        owner: config.get("codeceptjs.github.username"),
+        repo: config.get("codeceptjs.github.project"),
+        ref: "refs/heads/new_branch2",
+        sha: data.commit.sha,
+      });
+      await this.api.rest.repos.createOrUpdateFileContents({
+        owner: config.get("codeceptjs.github.username"),
+        repo: config.get("codeceptjs.github.project"),
+        path: "README.md",
+        content: Buffer.from(
+          "# New title\n\nMy first line updated 2.\n"
+        ).toString("base64"),
+        branch: "new_branch2",
+        message: "Update doc",
+        sha: data.content.sha,
+      });
     });
   }
 

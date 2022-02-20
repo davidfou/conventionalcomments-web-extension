@@ -16,8 +16,7 @@ const githubCommentEditorExtractor: CommentEditorExtractor = (
       .forEach((textarea) => {
         if (
           !(textarea instanceof HTMLTextAreaElement) ||
-          textarea.id === "pull_request_review_body" ||
-          textarea.id === "new_comment_field"
+          !textarea.id.includes("new_inline_comment_diff")
         ) {
           return;
         }
