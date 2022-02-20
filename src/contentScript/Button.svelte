@@ -1,18 +1,16 @@
 <script lang="typescript">
   import { getStore } from "./store";
-  import type { ProductType } from "../types";
 
   export let id: string;
   export let textarea: HTMLTextAreaElement;
-  export let product: ProductType;
 
-  const { isActive } = getStore(id);
+  const { isActive, product } = getStore(id);
 
   let classes = `cc-button-${product}`;
   let iconClasses = `cc-button-icon-${product}`;
   if (product === "github") {
     classes +=
-      " flex-auto text-center toolbar-item tooltipped tooltipped-sw p-2 p-md-1 mx-1";
+      " flex-auto text-center toolbar-item btn-octicon p-2 p-md-1 mx-1";
     iconClasses += " octicon";
   }
   if (product === "gitlab") {
@@ -27,7 +25,7 @@
   }
 </script>
 
-<button
+<span
   on:click={handleClick}
   aria-label="Insert conventional comment"
   type="button"
@@ -52,7 +50,7 @@
     <circle cx="8" cy="5.5" r="1.5" />
     <circle cx="8" cy="9.5" r="1.5" />
   </svg>
-</button>
+</span>
 
 <style>
   .cc-button-icon-github {

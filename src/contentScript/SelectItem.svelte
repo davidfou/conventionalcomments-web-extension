@@ -1,7 +1,10 @@
 <script lang="typescript">
   import marked from "marked";
+  import dompurify from "dompurify";
+  import { getContext } from "svelte";
 
-  import type { SelectableItem } from "../types";
+  import type { SelectableItem, ProductType, Store } from "../types";
+  import { CONTEXT_KEY } from "./store";
 
   export let item: SelectableItem;
   export let isActive: boolean = false;
@@ -10,46 +13,71 @@
   function onClick(event: MouseEvent) {
     event.preventDefault();
   }
+  const { product } = getContext<Store>(CONTEXT_KEY);
+
+  const VALUE_CLASS: Record<ProductType, string> = {
+    github: "f5 text-bold",
+    gitlab: "",
+  };
+  const DESCRIPTION_CLASS: Record<ProductType, string> = {
+    github: "text-small color-text-secondary text-normal pb-1",
+    gitlab: "",
+  };
 </script>
 
 <button
   on:click={onClick}
+  class={`cc-select-item-${product}`}
   class:cc-ext-hover={isHover}
   class:cc-ext-active={isActive}
   data-qa={`option-${item.label}`}
 >
-  <span>{item.value}</span>
-  {@html marked(item.description)}
+  <div class={VALUE_CLASS[product]}>{item.value}</div>
+  <div class={DESCRIPTION_CLASS[product]}>
+    {@html dompurify.sanitize(marked.parseInline(item.description))}
+  </div>
 </button>
 
-<style>
+<style lang="scss">
   button,
   button:focus,
   button:active,
   button:hover {
     display: block;
-    color: inherit;
     margin: 0;
     padding: 6px 12px;
     text-decoration: none;
-    background-color: #ffffff;
     border: none;
     text-align: left;
     text-decoration: none;
     outline: none;
+    width: 100%;
+
+    &.cc-select-item-gitlab {
+      color: var(--gl-text-color);
+      background: transparent;
+
+      &.cc-ext-hover,
+      &.cc-ext-active {
+        background: #eee;
+      }
+    }
+
+    &.cc-select-item-github {
+      color: var(--color-fg-default);
+      background-color: var(--color-canvas-overlay);
+
+      &.cc-ext-hover,
+      &.cc-ext-active {
+        background-color: var(--color-neutral-subtle);
+      }
+    }
   }
 
-  button.cc-ext-active {
-    background-color: #eee;
-  }
-
-  button.cc-ext-hover {
-    background-color: #e5e5e5;
-  }
-
-  button :global(p) {
-    font-size: 0.875rem;
-    color: #757575;
-    margin: 10px 0 0 0;
+  :global(body.gl-dark) button.cc-select-item-gitlab {
+    &.cc-ext-hover,
+    &.cc-ext-active {
+      background: var(--gray-200);
+    }
   }
 </style>

@@ -33,15 +33,15 @@ const commentEditorExtractor = commentEditorExtractors[product];
 commentEditorExtractor(
   uuidv4,
   ({ id, textarea, isMainComment, buttonParams, editorParams }) => {
-    addStore(id, isMainComment, textarea);
+    addStore(id, isMainComment, textarea, product);
     const button = new Button({
       ...buttonParams,
-      props: { textarea, id, product },
+      props: { textarea, id },
     });
 
     const editor = new Editor({
       ...editorParams,
-      props: { textarea, id, product },
+      props: { textarea, id },
     });
 
     noteHolders.set(id, { button, editor });

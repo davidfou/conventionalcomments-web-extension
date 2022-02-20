@@ -36,6 +36,8 @@ Some screenshots might not have exactly the same size locally compared to the CI
 1. Run `docker-compose build update-screenshots`
 1. Run `docker-compose run update-screenshots`
 
+Another way is to take them directly from the last CI e2e-tests. To do so, run `node scripts/updateScreenshotFromCI.js`.
+
 ### Build the extension
 
 1. Run `yarn build`

@@ -12,6 +12,7 @@ module.exports = {
   plugins: ["svelte3", "@typescript-eslint", "prettier"],
   settings: {
     "svelte3/typescript": true,
+    "svelte3/ignore-styles": ({ lang }) => lang === "scss",
     "import/resolver": {
       node: {
         extensions: [".js", ".json", ".ts"],

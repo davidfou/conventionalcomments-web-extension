@@ -1,5 +1,6 @@
 const config = require("config");
 const { firefox } = require("playwright");
+const trim = require("lodash.trim");
 
 const { I } = inject();
 
@@ -105,5 +106,34 @@ module.exports = {
   },
   getNewCommentEditorSelector() {
     return locate(".edit-note");
+  },
+  async getThemes() {
+    I.amOnPage("https://gitlab.com/-/profile/preferences");
+    this.waitPageIsReady();
+    const themes = await I.grabTextFromAll(
+      locate("label").withChild('input[name="user[theme_id]"]')
+    );
+    return themes.map((theme) => trim(theme));
+  },
+  async selectTheme(theme) {
+    I.amOnPage("https://gitlab.com/-/profile/preferences");
+    this.waitPageIsReady();
+    const expectedValue = await I.grabValueFrom(
+      locate('input[name="user[theme_id]"]').inside(
+        locate("label").withText(theme)
+      )
+    );
+    const currentValue = await I.grabValueFrom(
+      locate('input[name="user[theme_id]"]:checked')
+    );
+    if (currentValue !== expectedValue) {
+      I.clickAndWaitForResponse(
+        locate('input[name="user[theme_id]"]').inside(
+          locate("label").withText(theme)
+        ),
+        "POST",
+        "https://gitlab.com/-/profile/preferences"
+      );
+    }
   },
 };

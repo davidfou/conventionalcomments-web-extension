@@ -44,7 +44,7 @@ const userDataDir = fsSync.mkdtempSync(
 exports.config = merge(
   {
     tests: "./tests/*_test.js",
-    output: `./output/screenshots`,
+    output: "./output/screenshots",
     helpers: {
       Playwright: {
         url: config.get(`codeceptjs.${product}.baseUrl`),
@@ -68,7 +68,6 @@ exports.config = merge(
       },
       ResembleHelper: {
         require: "./tests/helpers/resemble_helper.js",
-        screenshotFolder: "./output/screenshots/",
         baseFolder: `./tests/screenshots/${product}/`,
         diffFolder: "./output/screenshots-diff/",
         prepareBaseImage: config.get("codeceptjs.updateScreenshots"),
@@ -79,7 +78,27 @@ exports.config = merge(
     },
     mocha: {
       reporterOptions: {
-        reportDir: "output/html",
+        "codeceptjs-cli-reporter": {
+          stdout: "-",
+          options: {
+            verbose: false,
+            steps: true,
+          },
+        },
+        mochawesome: {
+          stdout: "./output/console-mochawesome.log",
+          options: {
+            reportDir: "./output",
+            reportTitle: `E2E tests for ${product}`,
+          },
+        },
+        "mocha-junit-reporter": {
+          stdout: "./output/console-junit.log",
+          options: {
+            mochaFile: "./output/result.xml",
+            attachments: true,
+          },
+        },
       },
     },
     name: "conventionalcomments-web-ext",

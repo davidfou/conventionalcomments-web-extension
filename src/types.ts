@@ -6,12 +6,13 @@ export interface SelectableItem {
   description: string;
 }
 
+export type ProductType = "gitlab" | "github";
+
 export interface Store {
   label: Writable<SelectableItem>;
   decorations: Writable<SelectableItem[]>;
   prependedText: Readable<string>;
   isActive: Writable<boolean>;
   unsubscribeCallbacks: (() => void)[];
+  product: ProductType;
 }
-
-export type ProductType = "gitlab" | "github";

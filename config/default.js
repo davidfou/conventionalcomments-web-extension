@@ -4,7 +4,6 @@ module.exports = {
   codeceptjs: {
     product: "gitlab",
     updateScreenshots: false,
-    shouldUpdateScreenshotOwner: false,
     gitlab: {
       username: undefined,
       password: undefined,
@@ -27,6 +26,19 @@ module.exports = {
           "-/merge_requests/1",
         ].join("/");
       }),
+      themes: [
+        "Indigo",
+        "Light Indigo",
+        "Blue",
+        "Light Blue",
+        "Green",
+        "Light Green",
+        "Red",
+        "Light Red",
+        "Dark",
+        "Light",
+        "Dark Mode (alpha)",
+      ],
     },
     github: {
       username: undefined,
@@ -51,6 +63,15 @@ module.exports = {
           "pull/1",
         ].join("/");
       }),
+      themes: [
+        "light",
+        "light_high_contrast",
+        "light_colorblind",
+        "dark",
+        "dark_high_contrast",
+        "dark_colorblind",
+        "dark_dimmed",
+      ],
     },
   },
 };
