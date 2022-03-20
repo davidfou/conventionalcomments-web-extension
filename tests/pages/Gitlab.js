@@ -57,10 +57,10 @@ module.exports = {
     });
   },
   goToMainPage() {
-    I.amOnPage(config.get("codeceptjs.gitlab.mainPage"));
+    I.retry(5).amOnPage(config.get("codeceptjs.gitlab.mainPage"));
   },
   goToOverviewPage() {
-    I.amOnPage(config.get("codeceptjs.gitlab.overviewPage"));
+    I.retry(5).amOnPage(config.get("codeceptjs.gitlab.overviewPage"));
   },
   waitPageIsReady() {
     I.waitForElement("body.page-initialised");
@@ -108,7 +108,7 @@ module.exports = {
     return locate(".edit-note");
   },
   async getThemes() {
-    I.amOnPage("https://gitlab.com/-/profile/preferences");
+    I.retry(5).amOnPage("https://gitlab.com/-/profile/preferences");
     this.waitPageIsReady();
     const themes = await I.grabTextFromAll(
       locate("label").withChild('input[name="user[theme_id]"]')
@@ -116,7 +116,7 @@ module.exports = {
     return themes.map((theme) => trim(theme));
   },
   async selectTheme(theme) {
-    I.amOnPage("https://gitlab.com/-/profile/preferences");
+    I.retry(5).amOnPage("https://gitlab.com/-/profile/preferences");
     this.waitPageIsReady();
     const expectedValue = await I.grabValueFrom(
       locate('input[name="user[theme_id]"]').inside(
