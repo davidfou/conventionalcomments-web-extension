@@ -1,5 +1,5 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Conventional: comments",
   "version": "1.1.0",
   "description": "Write conventional comments directly in your favorite repository manager.",
@@ -7,7 +7,7 @@
     "48": "icons/48.png",
     "96": "icons/96.png"
   },
-  "browser_action": {
+  "action": {
     "default_icon": {
       "19": "icons/19.png",
       "38": "icons/38.png"

@@ -6,8 +6,10 @@ import livereload from "rollup-plugin-livereload";
 import { terser } from "rollup-plugin-terser";
 import autoPreprocess from "svelte-preprocess";
 import typescript from "@rollup/plugin-typescript";
-import { spawn } from "child_process";
-import { firefox } from "playwright";
+import { chromium } from "playwright";
+import fs from "node:fs/promises";
+import path from "node:path";
+import os from "node:os";
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -15,15 +17,20 @@ function serve() {
   let started = false;
 
   return {
-    writeBundle() {
-      if (!started) {
-        started = true;
-
-        spawn("yarn", ["web-ext", "run", "-f", firefox.executablePath()], {
-          stdio: ["ignore", "inherit", "inherit"],
-          shell: true,
-        });
+    async writeBundle() {
+      if (started) {
+        return;
       }
+      started = true;
+      const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "user-data-dir-"));
+      const extensionPath = path.join(__dirname, "../public");
+      await chromium.launchPersistentContext(tmpDir, {
+        headless: false,
+        args: [
+          `--disable-extensions-except=${extensionPath}`,
+          `--load-extension=${extensionPath}`,
+        ],
+      });
     },
   };
 }
