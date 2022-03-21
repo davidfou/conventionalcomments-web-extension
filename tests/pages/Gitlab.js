@@ -62,6 +62,12 @@ module.exports = {
   goToOverviewPage() {
     I.retry(5).amOnPage(config.get("codeceptjs.gitlab.overviewPage"));
   },
+  goToNewPullRequestPage() {
+    I.amOnPage(config.get("codeceptjs.gitlab.newPullRequestPage"));
+  },
+  goToNewIssuePage() {
+    I.amOnPage(config.get("codeceptjs.gitlab.newIssuePage"));
+  },
   waitPageIsReady() {
     I.waitForElement("body.page-initialised");
   },
