@@ -56,12 +56,12 @@ module.exports = {
     return locate(".inline-comment-form-container.open textarea");
   },
   editComment(_, noteId) {
-    I.click(locate(`#details-r${noteId}`).find(".timeline-comment-action"));
-    I.click(locate(`#details-r${noteId}`).find(".js-comment-edit-button"));
+    I.click(locate(`#r${noteId}`).find(".timeline-comment-action").last());
+    I.click(locate(`#r${noteId}`).find(".js-comment-edit-button"));
   },
   getReplySelector(threadId) {
     return locate("button.review-thread-reply-button").inside(
-      locate(".js-resolvable-thread-contents").withDescendant(`#r${threadId}`)
+      locate(".comment-holder").withDescendant(`#r${threadId}`)
     );
   },
   getChangesSelector() {
