@@ -106,4 +106,9 @@ module.exports = {
       ],
     },
   },
+  figma: {
+    token: undefined,
+    version: "v1",
+    fileKey: "F5u9sP9QoNqEMpgJzQKzN1",
+  },
 };
