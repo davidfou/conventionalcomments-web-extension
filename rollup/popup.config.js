@@ -1,13 +1,15 @@
-import svelte from "rollup-plugin-svelte";
-import css from "rollup-plugin-css-only";
+import { fileURLToPath } from "node:url";
+import path from "node:path";
+import fs from "node:fs/promises";
+import os from "node:os";
+import typescript from "@rollup/plugin-typescript";
+import injectProcessEnv from "rollup-plugin-inject-process-env";
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import livereload from "rollup-plugin-livereload";
 import { terser } from "rollup-plugin-terser";
-import autoPreprocess from "svelte-preprocess";
-import typescript from "@rollup/plugin-typescript";
 import { spawn } from "child_process";
-import { firefox } from "playwright";
+import { firefox, chromium } from "playwright";
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -15,7 +17,7 @@ function serve() {
   let started = false;
 
   return {
-    writeBundle() {
+    async writeBundle() {
       if (!started) {
         started = true;
 
@@ -23,13 +25,28 @@ function serve() {
           stdio: ["ignore", "inherit", "inherit"],
           shell: true,
         });
+
+        const pathToExtension = path.join(
+          fileURLToPath(new URL(".", import.meta.url)),
+          "../public"
+        );
+        const userDataDir = await fs.mkdtemp(
+          path.join(os.tmpdir(), "conventionalcomments-web-ext-chrome-profile")
+        );
+        await chromium.launchPersistentContext(userDataDir, {
+          headless: false,
+          args: [
+            `--disable-extensions-except=${pathToExtension}`,
+            `--load-extension=${pathToExtension}`,
+          ],
+        });
       }
     },
   };
 }
 
 export default {
-  input: "src/popup/index.ts",
+  input: "src/popup/index.tsx",
   output: {
     sourcemap: true,
     format: "iife",
@@ -37,40 +54,34 @@ export default {
     file: "public/build/popup.js",
   },
   plugins: [
-    svelte({
+    typescript({
+      tsconfig: false,
+      include: ["src/**/*"],
+      exclude: [
+        "**/*.test.ts",
+        "node_modules/*",
+        "public/*",
+        "src/contentScript/**",
+        "src/background/**",
+      ],
       compilerOptions: {
-        // enable run-time checks when not in production
-        dev: !production,
+        strict: true,
+        lib: ["ES2020", "DOM"],
+        experimentalDecorators: true,
+        allowSyntheticDefaultImports: true,
+        module: "es2015",
+        jsx: "react",
       },
-      preprocess: autoPreprocess(),
     }),
-    css({ output: "popup.css" }),
-    typescript({ sourceMap: !production }),
-
-    // If you have external dependencies installed from
-    // npm, you'll most likely need these plugins. In
-    // some cases you'll need additional configuration -
-    // consult the documentation for details:
-    // https://github.com/rollup/plugins/tree/master/packages/commonjs
     resolve({
       browser: true,
-      dedupe: ["svelte"],
     }),
     commonjs(),
-
-    // In dev mode, call `npm run start` once
-    // the bundle has been generated
+    injectProcessEnv({
+      NODE_ENV: production ? "production" : "development",
+    }),
     !production && serve(),
-
-    // Watch the `public` directory and refresh the
-    // browser on changes when not in production
     !production && livereload("public"),
-
-    // If we're building for production (npm run build
-    // instead of npm run dev), minify
     production && terser(),
   ],
-  watch: {
-    clearScreen: false,
-  },
 };

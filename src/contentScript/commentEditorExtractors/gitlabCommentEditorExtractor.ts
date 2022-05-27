@@ -20,7 +20,7 @@ const gitlabCommentEditorExtractor: CommentEditorExtractor = (
     textarea: HTMLTextAreaElement;
   }[] = [];
 
-  new MutationObserver((mutations) => {
+  const mutationObserver = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       if (mutation.type !== "childList") {
         return;
@@ -68,6 +68,7 @@ const gitlabCommentEditorExtractor: CommentEditorExtractor = (
             target: targetEl,
             anchor: anchorEl,
           },
+          productType: "gitlab",
         });
         navList.insertBefore(document.createTextNode(" "), buttonAnchorEl);
 
@@ -88,7 +89,9 @@ const gitlabCommentEditorExtractor: CommentEditorExtractor = (
         onTextareaDisposed(id);
       });
     });
-  }).observe(document.body, { subtree: true, childList: true });
+  });
+  mutationObserver.observe(document.body, { subtree: true, childList: true });
+  return mutationObserver.disconnect.bind(mutationObserver);
 };
 
 export default gitlabCommentEditorExtractor;

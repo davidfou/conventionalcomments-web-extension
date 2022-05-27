@@ -1,7 +1,8 @@
 import { v4 as uuidv4 } from "uuid";
+import poly from "webextension-polyfill";
 
-import commentEditorExtractors from "../commentEditorExtractors";
-import type { ProductType } from "../types";
+import commentEditorExtractors from "./commentEditorExtractors";
+import type { ContentRequestMessage } from "../messageTypes";
 import { addStore, removeStore } from "./store";
 import Button from "./Button.svelte";
 import Editor from "./Editor.svelte";
@@ -13,47 +14,53 @@ const noteHolders: Map<
     editor: Editor;
   }
 > = new Map();
-
-const detectProduct = (): ProductType => {
-  switch (window.location.hostname) {
-    case "gitlab.com": {
-      return "gitlab";
-    }
-    case "github.com": {
-      return "github";
-    }
-    default:
-      throw new Error("Product not detected");
+const disposeNoteHolder = (id: string): void => {
+  if (!noteHolders.has(id)) {
+    return;
   }
+  const noteHolder = noteHolders.get(id);
+  noteHolder?.button.$destroy();
+  noteHolder?.editor.$destroy();
+  removeStore(id);
+  noteHolders.delete(id);
 };
 
-const product = detectProduct();
-const commentEditorExtractor = commentEditorExtractors[product];
+const disposeFunctions = commentEditorExtractors.map((commentEditorExtractor) =>
+  commentEditorExtractor(
+    uuidv4,
+    ({
+      id,
+      textarea,
+      isMainComment,
+      buttonParams,
+      editorParams,
+      productType,
+    }) => {
+      addStore(id, isMainComment, textarea, productType);
+      const button = new Button({
+        ...buttonParams,
+        props: { textarea, id },
+      });
 
-commentEditorExtractor(
-  uuidv4,
-  ({ id, textarea, isMainComment, buttonParams, editorParams }) => {
-    addStore(id, isMainComment, textarea, product);
-    const button = new Button({
-      ...buttonParams,
-      props: { textarea, id },
-    });
+      const editor = new Editor({
+        ...editorParams,
+        props: { textarea, id },
+      });
 
-    const editor = new Editor({
-      ...editorParams,
-      props: { textarea, id },
-    });
-
-    noteHolders.set(id, { button, editor });
-  },
-  (id) => {
-    if (!noteHolders.has(id)) {
-      return;
-    }
-    const noteHolder = noteHolders.get(id);
-    noteHolder?.button.$destroy();
-    noteHolder?.editor.$destroy();
-    removeStore(id);
-    noteHolders.delete(id);
-  }
+      noteHolders.set(id, { button, editor });
+    },
+    disposeNoteHolder
+  )
 );
+
+poly.runtime.onMessage.addListener((message: ContentRequestMessage): void => {
+  if (message.type !== "notify-unregister") {
+    return;
+  }
+  noteHolders.forEach((_, key) => {
+    disposeNoteHolder(key);
+  });
+  disposeFunctions.forEach((dispose) => {
+    dispose();
+  });
+});

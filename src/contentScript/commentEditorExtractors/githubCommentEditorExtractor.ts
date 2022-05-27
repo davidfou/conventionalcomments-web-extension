@@ -70,6 +70,7 @@ const githubCommentEditorExtractor: CommentEditorExtractor = (
             target: editorTargetEl,
             anchor: editorAnchorEl,
           },
+          productType: "github",
         });
 
         extractedTextareas.push({
@@ -80,7 +81,7 @@ const githubCommentEditorExtractor: CommentEditorExtractor = (
   };
 
   handleNewTextarea(document.body);
-  new MutationObserver((mutations) => {
+  const mutationObserver = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       if (mutation.type !== "childList") {
         return;
@@ -107,7 +108,9 @@ const githubCommentEditorExtractor: CommentEditorExtractor = (
         onTextareaDisposed(id);
       });
     });
-  }).observe(document.body, { subtree: true, childList: true });
+  });
+  mutationObserver.observe(document.body, { subtree: true, childList: true });
+  return mutationObserver.disconnect.bind(mutationObserver);
 };
 
 export default githubCommentEditorExtractor;

@@ -19,18 +19,16 @@
     "default_title": "Conventional: comments",
     "default_popup": "popup.html"
   },
-  "content_scripts": [
-    {
-      "matches": [
-        "https://gitlab.com/*",
-        "https://github.com/*"
-      ],
-      "js": [
-        "build/contentScript.js"
-      ],
-      "css": [
-        "build/contentScript.css"
-      ]
-    }
-  ]
+  "permissions": [
+    "activeTab",
+    "storage",
+    "https://github.com/*",
+    "https://gitlab.com/*"
+  ],
+  "optional_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "scripts": ["build/background.js"]
+  }
 }
