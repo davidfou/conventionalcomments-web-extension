@@ -99,12 +99,7 @@ WhenEmptyAndNewDomain.args = {
 };
 
 export const WhenLoading = Template.bind({});
-WhenEmptyAndNewDomain.args = {
-  urls: [
-    {
-      url: "https://custom.git.com/*",
-      status: "new",
-    },
-  ],
+WhenLoading.args = {
+  urls: [],
   isLoading: true,
 };

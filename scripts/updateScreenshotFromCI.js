@@ -1,3 +1,4 @@
+const config = require("config");
 const inquirer = require("inquirer");
 const autocomplete = require("inquirer-autocomplete-prompt");
 const { Gitlab } = require("@gitbeaker/node");
@@ -56,20 +57,28 @@ const PROJECT = "davidfou/conventionalcomments-web-extension";
   await Promise.all(
     ["gitlab", "github"].map(async (product) => {
       const folder = path.join(__dirname, "../tests/screenshots", product);
-      const files = await fs.promises.readdir(folder);
       await Promise.all(
-        files.map(async (file) => {
-          const content = await api.Jobs.downloadSingleArtifactFile(
-            PROJECT,
-            jobs[product].id,
-            `output/screenshots/${file}`,
-            { stream: true }
-          );
-          await pipeline(
-            content,
-            fs.createWriteStream(path.join(folder, file))
-          );
-        })
+        config
+          .get(`codeceptjs.${product}.themes`)
+          .flatMap((theme) =>
+            config.get("codeceptjs.screenshotNames").map((screenshotName) => ({
+              theme: theme.replaceAll(/\W+/g, "-"),
+              screenshotName,
+            }))
+          )
+          .map(async ({ theme, screenshotName }) => {
+            const filename = `${theme}-${screenshotName}.png`;
+            const content = await api.Jobs.downloadSingleArtifactFile(
+              PROJECT,
+              jobs[product].id,
+              `output/screenshots/${filename}`,
+              { stream: true }
+            );
+            await pipeline(
+              content,
+              fs.createWriteStream(path.join(folder, filename))
+            );
+          })
       );
     })
   );

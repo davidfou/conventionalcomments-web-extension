@@ -2,7 +2,7 @@ import * as React from "react";
 import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import Stack from "@mui/material/Stack";
+import Grid from "@mui/material/Grid";
 import Chip from "@mui/material/Chip";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 
@@ -23,31 +23,32 @@ function ConfigureDomains({
         <Typography color="text.secondary" sx={{ pb: 2 }}>
           Configure domains
         </Typography>
-        <Stack direction="row" spacing={1}>
+        <Grid container spacing={1}>
           {urls.map(({ url, status }) => (
-            <Chip
-              key={url}
-              label={url}
-              variant={
-                ["registered", "isRemoving"].includes(status)
-                  ? "filled"
-                  : "outlined"
-              }
-              disabled={["isRemoving", "isAdding"].includes(status)}
-              deleteIcon={
-                ["new", "isAdding"].includes(status) ? (
-                  <AddCircleIcon />
-                ) : undefined
-              }
-              onDelete={
-                ["registered", "isRemoving"].includes(status)
-                  ? () => onUnregisterDomain(url)
-                  : () => onRegisterDomain()
-              }
-              sx={{ borderStyle: "dashed" }}
-            />
+            <Grid key={url} item xs="auto">
+              <Chip
+                label={url}
+                variant={
+                  ["registered", "isRemoving"].includes(status)
+                    ? "filled"
+                    : "outlined"
+                }
+                disabled={["isRemoving", "isAdding"].includes(status)}
+                deleteIcon={
+                  ["new", "isAdding"].includes(status) ? (
+                    <AddCircleIcon />
+                  ) : undefined
+                }
+                onDelete={
+                  ["registered", "isRemoving"].includes(status)
+                    ? () => onUnregisterDomain(url)
+                    : () => onRegisterDomain()
+                }
+                sx={{ borderStyle: "dashed" }}
+              />
+            </Grid>
           ))}
-        </Stack>
+        </Grid>
       </CardContent>
     </Card>
   );
