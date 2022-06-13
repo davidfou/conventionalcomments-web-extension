@@ -8,7 +8,7 @@ import type { ConfigureDomainsProps, UrlStatus } from "../types";
 
 const INITIAL_STATE: Omit<
   ConfigureDomainsProps,
-  "onRegisterDomain" | "onUnregisterDomain"
+  "onRegisterDomain" | "onUnregisterDomain" | "onCloseReport"
 > = {
   isLoading: true,
   urls: [],
@@ -21,7 +21,8 @@ type Action =
   | { type: "register-failure"; error: string }
   | { type: "unregister"; url: string }
   | { type: "unregister-success"; url: string }
-  | { type: "unregister-failure"; url: string; error: string };
+  | { type: "unregister-failure"; url: string; error: string }
+  | { type: "close-report"; url: string };
 
 const reducer = (
   state: typeof INITIAL_STATE,
@@ -38,7 +39,7 @@ const reducer = (
             return url;
           }
           return {
-            ...url,
+            url: url.url,
             status: "isAdding",
           };
         }),
@@ -53,6 +54,11 @@ const reducer = (
           return {
             ...url,
             status: "registered",
+            report: {
+              status: "success",
+              action: "add",
+              isOpen: true,
+            },
           };
         }),
       };
@@ -65,7 +71,13 @@ const reducer = (
           }
           return {
             ...url,
-            error: action.error,
+            status: "new",
+            report: {
+              status: "error",
+              action: "add",
+              isOpen: true,
+              message: action.error,
+            },
           };
         }),
       };
@@ -77,7 +89,7 @@ const reducer = (
             return url;
           }
           return {
-            ...url,
+            url: url.url,
             status: "isRemoving",
           };
         }),
@@ -85,9 +97,20 @@ const reducer = (
     case "unregister-success":
       return {
         ...state,
-        urls: state.urls.filter(
-          (url) => url.status !== "isRemoving" || url.url !== action.url
-        ),
+        urls: state.urls.map((url) => {
+          if (url.status !== "isRemoving" || url.url !== action.url) {
+            return url;
+          }
+          return {
+            url: url.url,
+            status: "removed",
+            report: {
+              status: "success",
+              action: "remove",
+              isOpen: true,
+            },
+          };
+        }),
       };
     case "unregister-failure":
       return {
@@ -97,8 +120,30 @@ const reducer = (
             return url;
           }
           return {
+            url: url.url,
+            status: "registered",
+            report: {
+              status: "error",
+              action: "remove",
+              isOpen: true,
+              message: action.error,
+            },
+          };
+        }),
+      };
+    case "close-report":
+      return {
+        ...state,
+        urls: state.urls.map((url) => {
+          if (url.url !== action.url || url.report === undefined) {
+            return url;
+          }
+          return {
             ...url,
-            error: action.error,
+            report: {
+              ...url.report,
+              isOpen: false,
+            },
           };
         }),
       };
@@ -189,6 +234,9 @@ const useProps = (): ConfigureDomainsProps => {
             });
           }
         });
+    },
+    onCloseReport: (url) => {
+      dispatch({ type: "close-report", url });
     },
   };
 };

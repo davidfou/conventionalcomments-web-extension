@@ -12,6 +12,7 @@
     "experimentalDecorators": true,
     "esModuleInterop": true,
     "module": "es2015",
-    "jsx": "react"
+    "jsx": "react",
+    "target": "es6"
   }
 }

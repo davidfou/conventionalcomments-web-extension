@@ -6,6 +6,7 @@ import type {
   RegisterUrlMessage,
   UnregisterUrlMessage,
 } from "../messageTypes";
+import ApplicationError from "../ApplicationError";
 
 const getRegisteredUrls =
   async (): Promise<GetRegisteredUrlsResponseMessage> => {
@@ -16,9 +17,12 @@ const getRegisteredUrls =
   };
 
 const registerUrl = async (url: string): Promise<void> => {
-  await poly.permissions.request({
+  const result = await poly.permissions.request({
     origins: [url],
   });
+  if (!result) {
+    throw ApplicationError.userDeniedAuthorization();
+  }
   const message: RegisterUrlMessage = { type: "register-url", url };
   return poly.runtime.sendMessage(message);
 };

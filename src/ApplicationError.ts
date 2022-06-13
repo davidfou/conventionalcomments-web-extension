@@ -29,6 +29,10 @@ class ApplicationError extends Error {
   static notRegistered(): ApplicationError {
     return new ApplicationError("warn", "That url isn't registered");
   }
+
+  static userDeniedAuthorization(): ApplicationError {
+    return new ApplicationError("warn", "Extra permission got denied");
+  }
 }
 
 export default ApplicationError;

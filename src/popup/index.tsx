@@ -1,5 +1,5 @@
 import * as React from "react";
-import { createRoot } from "react-dom/client";
+import * as ReactDOM from "react-dom";
 import CssBaseline from "@mui/material/CssBaseline";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
@@ -13,11 +13,12 @@ if (container === null) {
 
 const theme = createTheme();
 
-createRoot(container).render(
+ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Layout />
     </ThemeProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
+  container
 );

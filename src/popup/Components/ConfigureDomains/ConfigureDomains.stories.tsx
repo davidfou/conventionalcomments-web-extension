@@ -46,6 +46,55 @@ WhenRemovingDomain.args = {
   isLoading: false,
 };
 
+export const WhenRemovingDomainSuccess = Template.bind({});
+WhenRemovingDomainSuccess.args = {
+  urls: [
+    {
+      url: "https://gitlab.com/*",
+      status: "registered",
+    },
+    {
+      url: "https://github.com/*",
+      status: "registered",
+    },
+    {
+      url: "https://custom.git.com/*",
+      status: "removed",
+      report: {
+        status: "success",
+        action: "remove",
+        isOpen: true,
+      },
+    },
+  ],
+  isLoading: false,
+};
+
+export const WhenRemovingDomainFailure = Template.bind({});
+WhenRemovingDomainFailure.args = {
+  urls: [
+    {
+      url: "https://gitlab.com/*",
+      status: "registered",
+    },
+    {
+      url: "https://github.com/*",
+      status: "registered",
+    },
+    {
+      url: "https://custom.git.com/*",
+      status: "registered",
+      report: {
+        status: "error",
+        action: "remove",
+        isOpen: true,
+        message: "Something went wrong!",
+      },
+    },
+  ],
+  isLoading: false,
+};
+
 export const WithNewDomain = Template.bind({});
 WithNewDomain.args = {
   urls: [
@@ -79,6 +128,55 @@ WhenAddingDomain.args = {
     {
       url: "https://custom.git.com/*",
       status: "isAdding",
+    },
+  ],
+  isLoading: false,
+};
+
+export const WhenAddingDomainSuccess = Template.bind({});
+WhenAddingDomainSuccess.args = {
+  urls: [
+    {
+      url: "https://gitlab.com/*",
+      status: "registered",
+    },
+    {
+      url: "https://github.com/*",
+      status: "registered",
+    },
+    {
+      url: "https://custom.git.com/*",
+      status: "registered",
+      report: {
+        status: "success",
+        action: "add",
+        isOpen: true,
+      },
+    },
+  ],
+  isLoading: false,
+};
+
+export const WhenAddingDomainFailure = Template.bind({});
+WhenAddingDomainFailure.args = {
+  urls: [
+    {
+      url: "https://gitlab.com/*",
+      status: "registered",
+    },
+    {
+      url: "https://github.com/*",
+      status: "registered",
+    },
+    {
+      url: "https://custom.git.com/*",
+      status: "new",
+      report: {
+        status: "error",
+        action: "add",
+        isOpen: true,
+        message: "Something went wrong",
+      },
     },
   ],
   isLoading: false,

@@ -71,6 +71,7 @@ export default {
         allowSyntheticDefaultImports: true,
         module: "es2015",
         jsx: "react",
+        target: "es6",
       },
     }),
     resolve({
