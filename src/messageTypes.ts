@@ -16,6 +16,19 @@ export interface UnregisterUrlMessage {
   url: string;
 }
 
+export interface GetAnnouncementsMessage {
+  type: "get-announcements";
+}
+
+export interface RemoveAnnouncementMessage {
+  type: "remove-announcement";
+  announcement: string;
+}
+
+export interface GetAnnouncementsResponseMessage {
+  announcements: string[];
+}
+
 export interface NotifyUnregisterMessage {
   type: "notify-unregister";
 }
@@ -23,6 +36,8 @@ export interface NotifyUnregisterMessage {
 export type BackgroundRequestMessage =
   | GetRegisteredUrlsMessage
   | RegisterUrlMessage
-  | UnregisterUrlMessage;
+  | UnregisterUrlMessage
+  | GetAnnouncementsMessage
+  | RemoveAnnouncementMessage;
 
 export type ContentRequestMessage = NotifyUnregisterMessage;

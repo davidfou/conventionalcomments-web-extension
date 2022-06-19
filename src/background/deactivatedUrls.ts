@@ -2,21 +2,21 @@ import poly from "webextension-polyfill";
 
 const KEY = "deactivatedUrls";
 
-const get = async (): Promise<string[]> => {
+const getDeactivatedUrls = async (): Promise<string[]> => {
   const { [KEY]: urls } = await poly.storage.local.get(KEY);
   return urls;
 };
 
-const add = async (url: string): Promise<void> => {
-  const currentUrls = await get();
+const addDeactivatedUrl = async (url: string): Promise<void> => {
+  const currentUrls = await getDeactivatedUrls();
   if (currentUrls.includes(url)) {
     return;
   }
   await poly.storage.local.set({ [KEY]: [...currentUrls, url] });
 };
 
-const remove = async (url: string): Promise<void> => {
-  const currentUrls = await get();
+const removeDeactivatedUrl = async (url: string): Promise<void> => {
+  const currentUrls = await getDeactivatedUrls();
   if (!currentUrls.includes(url)) {
     return;
   }
@@ -25,4 +25,4 @@ const remove = async (url: string): Promise<void> => {
   });
 };
 
-export default { get, add, remove };
+export { getDeactivatedUrls, addDeactivatedUrl, removeDeactivatedUrl };

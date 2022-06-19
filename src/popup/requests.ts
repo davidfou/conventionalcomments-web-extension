@@ -5,6 +5,9 @@ import type {
   GetRegisteredUrlsResponseMessage,
   RegisterUrlMessage,
   UnregisterUrlMessage,
+  GetAnnouncementsMessage,
+  GetAnnouncementsResponseMessage,
+  RemoveAnnouncementMessage,
 } from "../messageTypes";
 import ApplicationError from "../ApplicationError";
 
@@ -35,4 +38,25 @@ const unregisterUrl = async (url: string): Promise<void> => {
   return poly.runtime.sendMessage(message);
 };
 
-export { getRegisteredUrls, registerUrl, unregisterUrl };
+const getAnnouncements = async (): Promise<GetAnnouncementsResponseMessage> => {
+  const message: GetAnnouncementsMessage = {
+    type: "get-announcements",
+  };
+  return poly.runtime.sendMessage(message);
+};
+
+const removeAnnouncement = async (announcement: string): Promise<void> => {
+  const message: RemoveAnnouncementMessage = {
+    type: "remove-announcement",
+    announcement,
+  };
+  return poly.runtime.sendMessage(message);
+};
+
+export {
+  getRegisteredUrls,
+  registerUrl,
+  unregisterUrl,
+  getAnnouncements,
+  removeAnnouncement,
+};

@@ -5,7 +5,13 @@ import ApplicationError from "../ApplicationError";
 import initialize from "./initialize";
 import registerContentScript from "./registerContentScript";
 import getTabIds from "./getTabIds";
-import deactivatedUrls from "./deactivatedUrls";
+import { addDeactivatedUrl, removeDeactivatedUrl } from "./deactivatedUrls";
+import {
+  getActiveAnnouncements,
+  addAnnouncement,
+  removeAnnouncement,
+} from "./announcements";
+import refreshIcon from "./refreshIcon";
 
 import type {
   BackgroundRequestMessage,
@@ -13,12 +19,23 @@ import type {
   RegisterUrlMessage,
   UnregisterUrlMessage,
   NotifyUnregisterMessage,
+  GetAnnouncementsResponseMessage,
+  RemoveAnnouncementMessage,
 } from "../messageTypes";
 
 const registeredUrls: Map<string, { unregister: () => void }> = new Map();
 const newRegisteredUrls: Set<string> = new Set();
 
 const extensionInitialization = initialize(registeredUrls);
+
+poly.runtime.onInstalled.addListener(async ({ reason }) => {
+  await extensionInitialization;
+  if (reason !== "update") {
+    return;
+  }
+  await addAnnouncement("custom-domains");
+  await refreshIcon();
+});
 
 const getRegisteredUrls =
   async (): Promise<GetRegisteredUrlsResponseMessage> => ({
@@ -32,7 +49,7 @@ const registerUrl = async ({ url }: RegisterUrlMessage): Promise<void> => {
   newRegisteredUrls.add(url);
   try {
     const { unregister } = await registerContentScript(url);
-    await deactivatedUrls.remove(url);
+    await removeDeactivatedUrl(url);
     registeredUrls.set(url, { unregister });
   } finally {
     newRegisteredUrls.delete(url);
@@ -48,7 +65,7 @@ const unregisterUrl = async ({ url }: UnregisterUrlMessage): Promise<void> => {
   try {
     await poly.permissions.remove({ origins: [url] });
   } catch (error) {
-    await deactivatedUrls.add(url);
+    await addDeactivatedUrl(url);
   }
   registeredUrls.delete(url);
   const tabIds = await getTabIds(url);
@@ -58,10 +75,25 @@ const unregisterUrl = async ({ url }: UnregisterUrlMessage): Promise<void> => {
   });
 };
 
+const getAnnouncementsHandler =
+  async (): Promise<GetAnnouncementsResponseMessage> => {
+    const announcements = await getActiveAnnouncements();
+    return { announcements };
+  };
+
+const removeAnnouncementHandler = async ({
+  announcement,
+}: RemoveAnnouncementMessage): Promise<void> => {
+  await removeAnnouncement(announcement);
+  await refreshIcon();
+};
+
 poly.runtime.onMessage.addListener(
   async (
     message: BackgroundRequestMessage
-  ): Promise<GetRegisteredUrlsResponseMessage | void> => {
+  ): Promise<
+    GetRegisteredUrlsResponseMessage | GetAnnouncementsResponseMessage | void
+  > => {
     try {
       await extensionInitialization;
       switch (message.type) {
@@ -71,6 +103,10 @@ poly.runtime.onMessage.addListener(
           return registerUrl(message);
         case "unregister-url":
           return unregisterUrl(message);
+        case "get-announcements":
+          return getAnnouncementsHandler();
+        case "remove-announcement":
+          return removeAnnouncementHandler(message);
         default: {
           const exhaustiveCheck: never = message;
           return exhaustiveCheck;

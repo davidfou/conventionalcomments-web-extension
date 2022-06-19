@@ -6,12 +6,14 @@ import Grid from "@mui/material/Grid";
 import Chip from "@mui/material/Chip";
 import Collapse from "@mui/material/Collapse";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import FiberNewIcon from "@mui/icons-material/FiberNew";
 
 import type { ConfigureDomainsProps } from "./types";
 import AddSuccessfulReport from "./AddSuccessfulReport";
 import RemoveSuccessfulReport from "./RemoveSuccessfulReport";
 import AddFailureReport from "./AddFailureReport";
 import RemoveFailureReport from "./RemoveFailureReport";
+import Announcement from "../Announcement";
 
 function ConfigureDomains({
   urls,
@@ -27,6 +29,11 @@ function ConfigureDomains({
     <Card>
       <CardContent>
         <Typography color="text.secondary" sx={{ pb: 2 }}>
+          <Announcement announcement="custom-domains">
+            <Collapse in appear orientation="horizontal" sx={{ float: "left" }}>
+              <FiberNewIcon color="error" />
+            </Collapse>
+          </Announcement>
           Configure domains
         </Typography>
         <Grid container spacing={1}>

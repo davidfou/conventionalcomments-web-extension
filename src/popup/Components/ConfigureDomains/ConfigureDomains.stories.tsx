@@ -2,15 +2,25 @@ import * as React from "react";
 import type { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import ConfigureDomains from "./ConfigureDomains";
+import AnnouncementContext from "../../AnnouncementContext";
 
 export default {
   title: "Components/ConfigureDomains",
   component: ConfigureDomains,
 } as ComponentMeta<typeof ConfigureDomains>;
 
+const context = {
+  isLoading: false,
+  announcements: ["custom-domains"],
+  onRemoveAnnouncement: () => {},
+};
 const Template: ComponentStory<typeof ConfigureDomains> =
   function TemplateComponent(args) {
-    return <ConfigureDomains {...args} />;
+    return (
+      <AnnouncementContext.Provider value={context}>
+        <ConfigureDomains {...args} />
+      </AnnouncementContext.Provider>
+    );
   };
 
 export const WithTwoDomains = Template.bind({});
