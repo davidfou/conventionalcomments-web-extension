@@ -127,7 +127,7 @@ module.exports = {
     this.waitPageIsReady();
     const expectedValue = await I.grabValueFrom(
       locate('input[name="user[theme_id]"]').before(
-        locate(`//label[text()=${JSON.stringify(theme)}]`)
+        locate(`//label/span[text()=${JSON.stringify(theme)}]`)
       )
     );
     const currentValue = await I.grabValueFrom(
@@ -135,9 +135,7 @@ module.exports = {
     );
     if (currentValue !== expectedValue) {
       I.clickAndWaitForResponse(
-        locate(`//label[text()=${JSON.stringify(theme)}]`).after(
-          locate('input[name="user[theme_id]"]')
-        ),
+        locate(`//label/span[text()=${JSON.stringify(theme)}]`),
         "POST",
         "https://gitlab.com/-/profile/preferences"
       );

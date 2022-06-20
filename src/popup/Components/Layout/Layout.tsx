@@ -10,7 +10,13 @@ import type { LayoutProps } from "./types";
 
 function App({ children }: LayoutProps): JSX.Element {
   return (
-    <Box sx={{ width: 600, height: 600 }}>
+    <Box
+      sx={{
+        width: 600,
+        height: 600,
+        backgroundColor: (theme) => theme.palette.grey[100],
+      }}
+    >
       <AppBar position="static">
         <Container maxWidth={false}>
           <Toolbar disableGutters>
