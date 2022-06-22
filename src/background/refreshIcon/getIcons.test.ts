@@ -1,5 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { promisify } from "node:util";
+import sizeOf from "image-size";
 
 import manifest from "../../../public/manifest.json";
 import getIcons from "./getIcons";
@@ -40,4 +42,17 @@ describe.each`
 
 it("returns default icons when flavor is normal and hasAnnouncement false", () => {
   expect(getIcons("default", false)).toEqual(DEFAULT_ICONS);
+});
+
+it.each<[string, string]>([
+  ...Object.entries(manifest.icons),
+  ...Object.entries(manifest.browser_action.default_icon),
+])("has size %s for image %s", async (key, filename) => {
+  const expectedSize = parseInt(key, 10);
+  const size = await promisify(sizeOf)(
+    path.join(__dirname, "../../../public", filename)
+  );
+  expect(size).toEqual(
+    expect.objectContaining({ width: expectedSize, height: expectedSize })
+  );
 });

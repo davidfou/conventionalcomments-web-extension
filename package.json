@@ -73,6 +73,7 @@
     "eslint-plugin-storybook": "^0.5.12",
     "eslint-plugin-svelte3": "4.0.0",
     "get-google-fonts": "1.2.2",
+    "image-size": "1.0.1",
     "inquirer": "8.2.0",
     "inquirer-autocomplete-prompt": "1.4.0",
     "jest": "28.1.0",

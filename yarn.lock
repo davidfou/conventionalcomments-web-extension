@@ -10161,6 +10161,13 @@ image-size@1.0.0:
   dependencies:
     queue "6.0.2"
 
+image-size@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/image-size/-/image-size-1.0.1.tgz#86d6cfc2b1d19eab5d2b368d4b9194d9e48541c5"
+  integrity sha512-VAwkvNSNGClRw9mDHhc5Efax8PLlsOGcUTh0T/LIriC8vPA3U5PdqXWqkz406MoYHMKW8Uf9gWr05T/rYB44kQ==
+  dependencies:
+    queue "6.0.2"
+
 image-size@^0.8.3:
   version "0.8.3"
   resolved "https://registry.yarnpkg.com/image-size/-/image-size-0.8.3.tgz#f0b568857e034f29baffd37013587f2c0cad8b46"
