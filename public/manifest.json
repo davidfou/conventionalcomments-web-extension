@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Conventional: comments",
-  "version": "1.1.2",
+  "version": "2.0.0",
   "description": "Write conventional comments directly in your favorite repository manager.",
   "icons": {
     "16": "icons/icon_16.png",
@@ -29,6 +29,8 @@
     "<all_urls>"
   ],
   "background": {
-    "scripts": ["build/background.js"]
+    "scripts": [
+      "build/background.js"
+    ]
   }
 }
