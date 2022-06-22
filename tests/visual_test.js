@@ -25,13 +25,7 @@ themes.forEach((theme) => {
   availableThemes.add([theme]);
 });
 
-const screenshotNames = [
-  "editor-active",
-  "editor-inactive",
-  "label-selector",
-  "label-selector-mouse-hover",
-  "decorator-selector-mouse-hover-clear",
-];
+const screenshotNames = config.get("codeceptjs.screenshotNames");
 
 const allScreenshots = new DataTable(["theme", "screenshotName"]);
 themes.forEach((theme) => {

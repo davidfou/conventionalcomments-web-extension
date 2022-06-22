@@ -3,6 +3,13 @@ const { deferConfig } = require("config/defer");
 module.exports = {
   codeceptjs: {
     product: "gitlab",
+    screenshotNames: [
+      "editor-active",
+      "editor-inactive",
+      "label-selector",
+      "label-selector-mouse-hover",
+      "decorator-selector-mouse-hover-clear",
+    ],
     updateScreenshots: false,
     gitlab: {
       username: undefined,
@@ -51,8 +58,8 @@ module.exports = {
         "Light Green",
         "Red",
         "Light Red",
-        "Dark",
-        "Light",
+        "Gray",
+        "Light Gray",
         "Dark Mode (alpha)",
       ],
     },
@@ -99,11 +106,18 @@ module.exports = {
         "light",
         "light_high_contrast",
         "light_colorblind",
+        "light_tritanopia",
         "dark",
         "dark_high_contrast",
         "dark_colorblind",
+        "dark_tritanopia",
         "dark_dimmed",
       ],
     },
+  },
+  figma: {
+    token: undefined,
+    version: "v2",
+    fileKey: "F5u9sP9QoNqEMpgJzQKzN1",
   },
 };

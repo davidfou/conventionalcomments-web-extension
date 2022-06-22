@@ -3,7 +3,13 @@ module.exports = {
     browser: true,
     es2020: true,
   },
-  extends: ["airbnb-base", "prettier", "plugin:codeceptjs/recommended"],
+  extends: [
+    "airbnb",
+    "airbnb/hooks",
+    "prettier",
+    "plugin:codeceptjs/recommended",
+    "plugin:storybook/recommended",
+  ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaVersion: 11,
@@ -15,12 +21,17 @@ module.exports = {
     "svelte3/ignore-styles": ({ lang }) => lang === "scss",
     "import/resolver": {
       node: {
-        extensions: [".js", ".json", ".ts"],
+        extensions: [".js", ".json", ".ts", ".tsx"],
       },
     },
   },
   rules: {
-    "import/no-extraneous-dependencies": ["error", { devDependencies: true }],
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        devDependencies: true,
+      },
+    ],
     "prettier/prettier": "warn",
     "import/extensions": [
       "error",
@@ -28,11 +39,15 @@ module.exports = {
       {
         js: "never",
         ts: "never",
+        tsx: "never",
       },
     ],
-    "no-undef": "off", // check by tsc
+    "no-undef": "off",
+    // check by tsc
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": ["error"],
+    "react/jsx-filename-extension": [1, { extensions: [".tsx"] }],
+    "react/jsx-props-no-spreading": "off",
   },
   overrides: [
     {

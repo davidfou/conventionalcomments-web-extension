@@ -4,29 +4,31 @@
   "version": "1.1.2",
   "description": "Write conventional comments directly in your favorite repository manager.",
   "icons": {
-    "48": "icons/48.png",
-    "96": "icons/96.png"
+    "16": "icons/icon_16.png",
+    "48": "icons/icon_48.png",
+    "96": "icons/icon_96.png",
+    "128": "icons/icon_128.png"
   },
   "browser_action": {
     "default_icon": {
-      "19": "icons/19.png",
-      "38": "icons/38.png"
+      "16": "icons/browser_action_16.png",
+      "24": "icons/browser_action_24.png",
+      "32": "icons/browser_action_32.png",
+      "64": "icons/browser_action_64.png"
     },
     "default_title": "Conventional: comments",
     "default_popup": "popup.html"
   },
-  "content_scripts": [
-    {
-      "matches": [
-        "https://gitlab.com/*",
-        "https://github.com/*"
-      ],
-      "js": [
-        "build/contentScript.js"
-      ],
-      "css": [
-        "build/contentScript.css"
-      ]
-    }
-  ]
+  "permissions": [
+    "activeTab",
+    "storage",
+    "https://github.com/*",
+    "https://gitlab.com/*"
+  ],
+  "optional_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "scripts": ["build/background.js"]
+  }
 }

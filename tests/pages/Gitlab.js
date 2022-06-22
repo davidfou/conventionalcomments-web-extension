@@ -52,6 +52,7 @@ const setSessionCookie = async (page) => {
 
 module.exports = {
   async login() {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     I.usePlaywrightTo("set cookie", async ({ page }) => {
       await setSessionCookie(page);
     });
@@ -117,7 +118,7 @@ module.exports = {
     I.retry(5).amOnPage("https://gitlab.com/-/profile/preferences");
     this.waitPageIsReady();
     const themes = await I.grabTextFromAll(
-      locate("label").withChild('input[name="user[theme_id]"]')
+      locate("label").after('input[name="user[theme_id]"]')
     );
     return themes.map((theme) => trim(theme));
   },
@@ -125,8 +126,8 @@ module.exports = {
     I.retry(5).amOnPage("https://gitlab.com/-/profile/preferences");
     this.waitPageIsReady();
     const expectedValue = await I.grabValueFrom(
-      locate('input[name="user[theme_id]"]').inside(
-        locate("label").withText(theme)
+      locate('input[name="user[theme_id]"]').before(
+        locate(`//label/span[text()=${JSON.stringify(theme)}]`)
       )
     );
     const currentValue = await I.grabValueFrom(
@@ -134,9 +135,7 @@ module.exports = {
     );
     if (currentValue !== expectedValue) {
       I.clickAndWaitForResponse(
-        locate('input[name="user[theme_id]"]').inside(
-          locate("label").withText(theme)
-        ),
+        locate(`//label/span[text()=${JSON.stringify(theme)}]`),
         "POST",
         "https://gitlab.com/-/profile/preferences"
       );

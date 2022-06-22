@@ -25,7 +25,15 @@ export default {
       preprocess: autoPreprocess(),
     }),
     css({ output: "contentScript.css" }),
-    typescript({ sourceMap: !production }),
+    typescript({
+      exclude: [
+        "**/*.test.ts",
+        "node_modules/*",
+        "public/*",
+        "src/popup/**",
+        "src/background/**",
+      ],
+    }),
 
     // If you have external dependencies installed from
     // npm, you'll most likely need these plugins. In
