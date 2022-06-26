@@ -56,7 +56,7 @@
     "@types/webextension-polyfill": "0.9.0",
     "@typescript-eslint/eslint-plugin": "5.27.0",
     "@typescript-eslint/parser": "5.27.0",
-    "chrome-webstore-upload-cli": "1.2.1",
+    "chrome-webstore-upload-cli": "2.1.0",
     "codeceptjs": "3.3.3",
     "codeceptjs-resemblehelper": "1.9.5",
     "config": "3.3.6",
@@ -107,8 +107,8 @@
     "ts-jest": "28.0.3",
     "tslib": "2.4.0",
     "typescript": "4.7.3",
-    "web-ext": "6.3.0",
-    "web-ext-submit": "6.3.0"
+    "web-ext": "7.1.0",
+    "web-ext-submit": "7.1.0"
   },
   "dependencies": {
     "@emotion/react": "11.9.0",
