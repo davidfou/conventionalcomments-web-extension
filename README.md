@@ -2,6 +2,11 @@
 
 Browser extension which brings [conventionalcomments](https://conventionalcomments.org/) into GitLab.
 
+## Installation
+
+Firefox: https://addons.mozilla.org/de/firefox/addon/conventional-comments/  
+Chrome: https://chrome.google.com/webstore/detail/conventional-comments/pagggmojbbphjnpcjeeniigdkglamffk
+
 ## How to contribute
 
 ### Run the development build
