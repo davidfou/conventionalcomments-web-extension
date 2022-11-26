@@ -64,6 +64,12 @@ class GithubHelper extends Helper {
         base: "main",
         title: "Update doc",
       });
+      await this.api.rest.issues.createComment({
+        owner: config.get("codeceptjs.github.username"),
+        repo: config.get("codeceptjs.github.project"),
+        issue_number: 1,
+        body: "My comment",
+      });
 
       await this.api.rest.git.createRef({
         owner: config.get("codeceptjs.github.username"),
@@ -81,6 +87,19 @@ class GithubHelper extends Helper {
         branch: "new_branch2",
         message: "Update doc",
         sha: data.content.sha,
+      });
+
+      await this.api.rest.issues.create({
+        owner: config.get("codeceptjs.github.username"),
+        repo: config.get("codeceptjs.github.project"),
+        title: "My first issue",
+        body: "My first issue content",
+      });
+      await this.api.rest.issues.createComment({
+        owner: config.get("codeceptjs.github.username"),
+        repo: config.get("codeceptjs.github.project"),
+        issue_number: 2,
+        body: "My comment",
       });
     });
   }
@@ -138,6 +157,36 @@ class GithubHelper extends Helper {
     }, Promise.resolve());
 
     return { id: noteIds[0], noteIds };
+  }
+
+  async retrievePullRequestCommentIds() {
+    const { data: pullRequest } = await this.api.rest.pulls.get({
+      owner: config.get("codeceptjs.github.username"),
+      repo: config.get("codeceptjs.github.project"),
+      pull_number: 1,
+    });
+    const { data: comments } = await this.api.rest.issues.listComments({
+      owner: config.get("codeceptjs.github.username"),
+      repo: config.get("codeceptjs.github.project"),
+      issue_number: 1,
+    });
+
+    return [pullRequest.node_id, ...comments.map((comment) => comment.node_id)];
+  }
+
+  async retrieveIssueCommentIds() {
+    const { data: pullRequest } = await this.api.rest.issues.get({
+      owner: config.get("codeceptjs.github.username"),
+      repo: config.get("codeceptjs.github.project"),
+      issue_number: 2,
+    });
+    const { data: comments } = await this.api.rest.issues.listComments({
+      owner: config.get("codeceptjs.github.username"),
+      repo: config.get("codeceptjs.github.project"),
+      issue_number: 2,
+    });
+
+    return [pullRequest.node_id, ...comments.map((comment) => comment.node_id)];
   }
 }
 

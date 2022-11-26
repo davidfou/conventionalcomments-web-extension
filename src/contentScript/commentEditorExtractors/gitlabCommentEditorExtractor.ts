@@ -34,7 +34,8 @@ const gitlabCommentEditorExtractor: CommentEditorExtractor = (
           return;
         }
         const mainEl = textarea.closest("form");
-        if (mainEl === null) {
+        const fileContainer = textarea.closest(".file-holder");
+        if (mainEl === null || fileContainer === null) {
           return;
         }
         const id = generateId();

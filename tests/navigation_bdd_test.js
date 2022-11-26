@@ -1,7 +1,12 @@
 Feature("Navigation BDD");
 
-BeforeSuite(({ I }) => {
+let pullRequestCommentIds = null;
+let issueCommentIds = null;
+
+BeforeSuite(async ({ I }) => {
   I.removeAllThreads();
+  pullRequestCommentIds = await I.retrievePullRequestCommentIds();
+  issueCommentIds = await I.retrieveIssueCommentIds();
 });
 
 Before(async ({ MainPage }) => {
@@ -21,10 +26,60 @@ Scenario(
 );
 
 Scenario("Plugin is not loaded on the overview page", ({ I, MainPage }) => {
-  MainPage.goToNewPullRequestPage();
+  MainPage.goToOverviewPage();
   MainPage.waitPageIsReady();
   I.dontSeeElement("$toggle-button");
 });
+
+Scenario(
+  "Plugin is not loaded on the overview page (edit description)",
+  ({ I, MainPage }) => {
+    MainPage.goToOverviewPage();
+    MainPage.waitPageIsReady();
+    MainPage.editCommentFromMainPage(pullRequestCommentIds[0], {
+      isPullRequestDescription: true,
+    });
+    I.dontSeeElement("$toggle-button");
+  }
+);
+
+Scenario(
+  "Plugin is not loaded on the overview page (edit comment)",
+  ({ I, MainPage }) => {
+    MainPage.goToOverviewPage();
+    MainPage.waitPageIsReady();
+    MainPage.editCommentFromMainPage(pullRequestCommentIds[1]);
+    I.dontSeeElement("$toggle-button");
+  }
+);
+
+Scenario("Plugin is not loaded on the issue page", ({ I, MainPage }) => {
+  MainPage.goToIssuePage();
+  MainPage.waitPageIsReady();
+  I.dontSeeElement("$toggle-button");
+});
+
+Scenario(
+  "Plugin is not loaded on the issue page (edit description)",
+  ({ I, MainPage }) => {
+    MainPage.goToIssuePage();
+    MainPage.waitPageIsReady();
+    MainPage.editCommentFromMainPage(issueCommentIds[0], {
+      isIssueDescription: true,
+    });
+    I.dontSeeElement("$toggle-button");
+  }
+);
+
+Scenario(
+  "Plugin is not loaded on the issue page (edit comment)",
+  ({ I, MainPage }) => {
+    MainPage.goToIssuePage();
+    MainPage.waitPageIsReady();
+    MainPage.editCommentFromMainPage(issueCommentIds[1]);
+    I.dontSeeElement("$toggle-button");
+  }
+);
 
 Scenario(
   "Plugin is not loaded on a new pull request page",

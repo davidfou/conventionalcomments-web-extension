@@ -41,6 +41,9 @@ module.exports = {
   goToNewIssuePage() {
     I.amOnPage(config.get("codeceptjs.github.newIssuePage"));
   },
+  goToIssuePage() {
+    I.amOnPage(config.get("codeceptjs.github.issuePage"));
+  },
   waitPageIsReady() {},
   openNewThread() {
     I.click(
@@ -54,6 +57,19 @@ module.exports = {
   },
   getTextareaSelector() {
     return locate(".inline-comment-form-container.open textarea");
+  },
+  editCommentFromMainPage(nodeId) {
+    I.click(
+      locate("div")
+        .withAttr({ "data-gid": nodeId })
+        .find(".timeline-comment-action")
+        .last()
+    );
+    I.click(
+      locate("div")
+        .withAttr({ "data-gid": nodeId })
+        .find(".js-comment-edit-button")
+    );
   },
   editComment(_, noteId) {
     I.click(locate(`#r${noteId}`).find(".timeline-comment-action").last());

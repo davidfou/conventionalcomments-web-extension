@@ -54,6 +54,11 @@ class GitlabHelper extends Helper {
         "master",
         "Update doc"
       );
+      await this.api.MergeRequestNotes.create(
+        this.projectPath,
+        1,
+        "My comment"
+      );
 
       await this.api.RepositoryFiles.edit(
         this.projectPath,
@@ -65,15 +70,23 @@ class GitlabHelper extends Helper {
           start_branch: "master",
         }
       );
+
+      await this.api.Issues.create(this.projectPath, {
+        title: "My first issue",
+        description: "My first issue content",
+      });
+      await this.api.IssueNotes.create(this.projectPath, 1, "My comment");
     });
   }
 
   async removeAllThreads() {
     const notes = await this.api.MergeRequestNotes.all(this.projectPath, 1);
     await Promise.all(
-      notes.map(({ id }) =>
-        this.api.MergeRequestNotes.remove(this.projectPath, 1, id)
-      )
+      notes
+        .filter(({ type }) => type === "DiffNote")
+        .map(({ id }) =>
+          this.api.MergeRequestNotes.remove(this.projectPath, 1, id)
+        )
     );
   }
 
@@ -113,6 +126,19 @@ class GitlabHelper extends Helper {
     }, Promise.resolve(discussion.notes[0].id));
 
     return { id: discussion.id, noteIds };
+  }
+
+  async retrievePullRequestCommentIds() {
+    const notes = await this.api.MergeRequestNotes.all(this.projectPath, 1);
+    return [
+      null,
+      ...notes.filter(({ type }) => type === null).map(({ id }) => id),
+    ];
+  }
+
+  async retrieveIssueCommentIds() {
+    const notes = await this.api.IssueNotes.all(this.projectPath, 1);
+    return [null, ...notes.map(({ id }) => id)];
   }
 }
 

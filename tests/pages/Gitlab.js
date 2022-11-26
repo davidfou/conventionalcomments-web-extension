@@ -69,6 +69,9 @@ module.exports = {
   goToNewIssuePage() {
     I.amOnPage(config.get("codeceptjs.gitlab.newIssuePage"));
   },
+  goToIssuePage() {
+    I.amOnPage(config.get("codeceptjs.gitlab.issuePage"));
+  },
   waitPageIsReady() {
     I.waitForElement("body.page-initialised");
   },
@@ -92,6 +95,26 @@ module.exports = {
     return locate("*").withAttr({
       "data-qa-selector": "reply_field",
     });
+  },
+  editCommentFromMainPage(
+    noteId,
+    { isPullRequestDescription = false, isIssueDescription = false } = {}
+  ) {
+    if (isPullRequestDescription) {
+      I.amOnPage(config.get("codeceptjs.gitlab.editPullRequestPage"));
+    } else if (isIssueDescription) {
+      I.click(
+        locate("button").withAttr({
+          "aria-label": "Edit title and description",
+        })
+      );
+    } else {
+      I.click(
+        locate("*")
+          .withAttr(getNoteSelectorAttribute(noteId))
+          .find(locate("*").withAttr(getEditButtonAttribute()))
+      );
+    }
   },
   editComment(threadId, noteId) {
     I.click(

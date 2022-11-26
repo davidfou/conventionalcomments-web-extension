@@ -33,6 +33,14 @@ module.exports = {
           "-/merge_requests/1",
         ].join("/");
       }),
+      editPullRequestPage: deferConfig(function mainPage() {
+        return [
+          "",
+          this.codeceptjs.gitlab.username,
+          this.codeceptjs.gitlab.project,
+          "-/merge_requests/1",
+        ].join("/");
+      }),
       newPullRequestPage: deferConfig(function newPullRequestPage() {
         return [
           "",
@@ -47,6 +55,14 @@ module.exports = {
           this.codeceptjs.gitlab.username,
           this.codeceptjs.gitlab.project,
           "-/issues/new",
+        ].join("/");
+      }),
+      issuePage: deferConfig(function mainPage() {
+        return [
+          "",
+          this.codeceptjs.gitlab.username,
+          this.codeceptjs.gitlab.project,
+          "-/issues/1",
         ].join("/");
       }),
       themes: [
@@ -100,6 +116,14 @@ module.exports = {
           this.codeceptjs.github.username,
           this.codeceptjs.github.project,
           "issues/new",
+        ].join("/");
+      }),
+      issuePage: deferConfig(function newIssuePage() {
+        return [
+          "",
+          this.codeceptjs.github.username,
+          this.codeceptjs.github.project,
+          "issues/2",
         ].join("/");
       }),
       themes: [
