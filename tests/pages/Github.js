@@ -21,9 +21,9 @@ module.exports = {
     I.fillField("#login_field", config.get("codeceptjs.github.username"));
     I.fillField("#password", secret(config.get("codeceptjs.github.password")));
     I.pressKey("Enter");
-    I.waitForElement("#otp");
+    I.waitForElement("#totp");
     I.fillField(
-      "#otp",
+      "#totp",
       secret(
         authenticator.generate(config.get("codeceptjs.github.twoFactorSecret"))
       )
