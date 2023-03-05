@@ -1,9 +1,11 @@
-import { test as setup, authFile } from "./fixtures";
-import MainPage from "./MainPage";
+import { test as setup } from "./fixtures";
+import globalSetup from "./global-setup";
 
-setup("authenticate", async ({ page }) => {
-  const mainPage = new MainPage(page);
+setup("authenticate", async ({ page, mainPage, product }) => {
+  await globalSetup(product)();
   await mainPage.login();
 
-  await page.context().storageState({ path: authFile });
+  await page
+    .context()
+    .storageState({ path: `playwright/.auth/user-${product}.json` });
 });

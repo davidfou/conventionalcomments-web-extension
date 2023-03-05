@@ -2,7 +2,6 @@ const { deferConfig } = require("config/defer");
 
 module.exports = {
   codeceptjs: {
-    product: "github",
     screenshotNames: [
       "editor-active",
       "editor-inactive",

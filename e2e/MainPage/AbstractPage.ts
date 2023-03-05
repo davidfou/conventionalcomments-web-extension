@@ -1,12 +1,17 @@
-import type { Page } from "@playwright/test";
+import type { Page, Locator } from "@playwright/test";
 import config from "config";
 
 import { expect } from "../fixtures";
 
 abstract class AbstractPage {
+  private product: string;
+
   readonly page: Page;
 
-  constructor(page: Page) {
+  readonly textareaLocator: Locator;
+
+  constructor(product: string, page: Page) {
+    this.product = product;
     this.page = page;
   }
 
@@ -26,11 +31,15 @@ abstract class AbstractPage {
   abstract openNewThread(): Promise<void>;
 
   async goToMainPage() {
-    await this.page.goto(config.get<string>("codeceptjs.current.mainPage"));
+    await this.page.goto(
+      config.get<string>(`codeceptjs.${this.product}.mainPage`)
+    );
   }
 
   async goToOverviewPage() {
-    await this.page.goto(config.get<string>("codeceptjs.current.overviewPage"));
+    await this.page.goto(
+      config.get<string>(`codeceptjs.${this.product}.overviewPage`)
+    );
   }
 
   async setSelectionRange(start: number, end: number) {

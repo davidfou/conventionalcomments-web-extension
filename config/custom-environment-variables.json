@@ -1,6 +1,5 @@
 {
   "codeceptjs": {
-    "product": "E2E_PRODUCT",
     "updateScreenshots": {
       "__name": "E2E_UPDATE_SCREENSHOTS",
       "__format": "json"

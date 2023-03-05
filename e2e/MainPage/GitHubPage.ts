@@ -1,6 +1,6 @@
 import config from "config";
 import { Octokit } from "octokit";
-import type { Page, Locator } from "@playwright/test";
+import type { Page } from "@playwright/test";
 
 import AbstractPage from "./AbstractPage";
 
@@ -9,10 +9,8 @@ const { authenticator } = require("otplib");
 class GitHubPage extends AbstractPage {
   private apiClient: Octokit["rest"];
 
-  textareaLocator: Locator;
-
   constructor(page: Page) {
-    super(page);
+    super("github", page);
     this.apiClient = new Octokit({
       auth: config.get<string>("codeceptjs.github.token"),
     }).rest;

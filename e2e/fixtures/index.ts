@@ -1,23 +1,40 @@
 import { test as base, chromium, type BrowserContext } from "@playwright/test";
 import path from "path";
+import fs from "fs/promises";
+import config from "config";
 
-const authFile = "playwright/.auth/user.json";
+import getMainPage, { type AbstractPage } from "../MainPage";
 
-export const test = base.extend<{
+export type MyOptions = {
+  product: "github" | "gitlab";
+  isSetup: boolean;
+};
+
+type MyFixtures = {
   context: BrowserContext;
   extensionId: string;
-}>({
-  context: async ({}, use, testInfo) => {
+  mainPage: AbstractPage;
+};
+export const test = base.extend<MyOptions & MyFixtures>({
+  product: ["github", { option: true }],
+  isSetup: [false, { option: true }],
+  context: async ({ isSetup, product }, use) => {
     const pathToExtension = path.join(__dirname, "../../public");
     const context = await chromium.launchPersistentContext("", {
+      baseURL: config.get<string>(`codeceptjs.${product}.baseUrl`),
       headless: false,
       args: [
         `--disable-extensions-except=${pathToExtension}`,
         `--load-extension=${pathToExtension}`,
       ],
     });
-    if (testInfo.project.name !== "setup") {
-      const { cookies } = require("../../playwright/.auth/user.json");
+    if (!isSetup) {
+      const { cookies } = JSON.parse(
+        await fs.readFile(
+          path.join(__dirname, `../../playwright/.auth/user-${product}.json`),
+          "utf8"
+        )
+      );
       context.addCookies(cookies);
     }
     await use(context);
@@ -37,6 +54,10 @@ export const test = base.extend<{
     const extensionId = background.url().split("/")[2];
     await use(extensionId);
   },
+  mainPage: async ({ page, product }, use) => {
+    const mainPage = getMainPage(page, product);
+    await use(mainPage);
+  },
 });
 const { expect } = test;
-export { expect, authFile };
+export { expect };

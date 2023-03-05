@@ -1,3 +1,12 @@
 import githubGlobalSetup from "./github";
 
-export default githubGlobalSetup;
+const getGlobalSetup = (product: string) => {
+  switch (product) {
+    case "github":
+      return githubGlobalSetup;
+    default:
+      throw new Error(`Global setup not implemented for ${product}`);
+  }
+};
+
+export default getGlobalSetup;

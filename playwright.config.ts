@@ -1,5 +1,6 @@
-import { defineConfig, devices } from "@playwright/test";
+import { defineConfig } from "@playwright/test";
 import config from "config";
+import type { MyOptions } from "./e2e/fixtures";
 
 /**
  * Read environment variables from file.
@@ -10,7 +11,7 @@ import config from "config";
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
-export default defineConfig({
+export default defineConfig<MyOptions>({
   testDir: "./e2e",
   /* Maximum time one test can run for. */
   timeout: 30 * 1000,
@@ -35,8 +36,6 @@ export default defineConfig({
   use: {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
     actionTimeout: 0,
-    /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: config.get<string>("codeceptjs.current.baseUrl"),
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
@@ -45,10 +44,17 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-    { name: "setup", testMatch: /.*\.setup\.ts/ },
-    { name: "chromium", dependencies: ["setup"] },
+    {
+      name: "setup-github",
+      testMatch: /.*\.setup\.ts/,
+      use: { isSetup: true, product: "github" },
+    },
+    {
+      name: "github",
+      dependencies: ["setup-github"],
+      use: { product: "github" },
+    },
   ],
-  globalSetup: "./e2e/global-setup",
 
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */
   // outputDir: 'test-results/',
