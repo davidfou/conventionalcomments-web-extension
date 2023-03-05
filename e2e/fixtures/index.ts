@@ -1,11 +1,13 @@
 import { test as base, chromium, type BrowserContext } from "@playwright/test";
 import path from "path";
 
+const authFile = "playwright/.auth/user.json";
+
 export const test = base.extend<{
   context: BrowserContext;
   extensionId: string;
 }>({
-  context: async ({}, use) => {
+  context: async ({}, use, testInfo) => {
     const pathToExtension = path.join(__dirname, "../../public");
     const context = await chromium.launchPersistentContext("", {
       headless: false,
@@ -14,6 +16,10 @@ export const test = base.extend<{
         `--load-extension=${pathToExtension}`,
       ],
     });
+    if (testInfo.project.name !== "setup") {
+      const { cookies } = require("../../playwright/.auth/user.json");
+      context.addCookies(cookies);
+    }
     await use(context);
     await context.close();
   },
@@ -33,4 +39,4 @@ export const test = base.extend<{
   },
 });
 const { expect } = test;
-export { expect };
+export { expect, authFile };

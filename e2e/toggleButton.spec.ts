@@ -2,13 +2,10 @@ import { test, expect } from "./fixtures";
 import MainPage from "./MainPage";
 
 let mainPage: MainPage;
-test.beforeAll(async ({ page }) => {
+
+test.beforeEach(async ({ page }) => {
   mainPage = new MainPage(page);
   await mainPage.removeAllThreads();
-  await mainPage.login();
-});
-
-test.beforeEach(async () => {
   await mainPage.goToMainPage();
   await mainPage.clearLocalStorage();
   await mainPage.openNewThread();
