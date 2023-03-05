@@ -1,5 +1,5 @@
 FROM ubuntu:focal-20211006
-ARG NODE_VERSION=16.13.1
+ARG NODE_VERSION=20.13.1
 ARG DEBIAN_FRONTEND=noninteractive
 ENV NODE_ENV ci
 ENV TZ Europe/Brussels
@@ -30,7 +30,7 @@ COPY yarn.lock yarn.lock
 COPY scripts scripts
 
 RUN yarn install --frozen-lockfile \
- && yarn playwright install-deps chromium firefox
+ && yarn playwright install --with-deps chromium
 
 COPY . .
 

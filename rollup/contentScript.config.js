@@ -32,6 +32,7 @@ export default {
         "public/*",
         "src/popup/**",
         "src/background/**",
+        "e2e/**",
       ],
     }),
 
