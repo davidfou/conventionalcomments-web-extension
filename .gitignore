@@ -9,3 +9,7 @@ yarn-debug.log*
 yarn-error.log*
 
 .DS_Store
+/test-results/
+/playwright-report/
+/playwright/.cache/
+/playwright/.auth/

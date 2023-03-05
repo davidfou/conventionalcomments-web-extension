@@ -78,5 +78,12 @@ module.exports = {
         "import/no-mutable-exports": "off",
       },
     },
+    {
+      files: ["e2e/**/*"],
+      rules: {
+        "no-restricted-syntax": "off",
+        "no-await-in-loop": "off",
+      },
+    },
   ],
 };

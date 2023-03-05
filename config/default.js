@@ -2,7 +2,7 @@ const { deferConfig } = require("config/defer");
 
 module.exports = {
   codeceptjs: {
-    product: "gitlab",
+    product: "github",
     screenshotNames: [
       "editor-active",
       "editor-inactive",
@@ -11,6 +11,9 @@ module.exports = {
       "decorator-selector-mouse-hover-clear",
     ],
     updateScreenshots: false,
+    current: deferConfig(function current() {
+      return this.codeceptjs[this.codeceptjs.product];
+    }),
     gitlab: {
       username: undefined,
       password: undefined,
