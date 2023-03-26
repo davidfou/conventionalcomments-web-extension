@@ -10,9 +10,10 @@ abstract class AbstractPage {
 
   readonly textareaLocator: Locator;
 
-  constructor(product: string, page: Page) {
+  constructor(product: string, page: Page, textareaLocator: Locator) {
     this.product = product;
     this.page = page;
+    this.textareaLocator = textareaLocator;
   }
 
   abstract removeAllThreads(): Promise<void>;
@@ -29,6 +30,14 @@ abstract class AbstractPage {
   abstract login(): Promise<void>;
 
   abstract openNewThread(): Promise<void>;
+
+  abstract editComment(threadId: number, noteId: number): Promise<void>;
+
+  abstract getReplyInputLocator(threadId: number): Locator;
+
+  abstract getMessageContainer(messageId: number): Locator;
+
+  abstract getThreadContainer(threadId: number): Locator;
 
   async goToMainPage() {
     await this.page.goto(

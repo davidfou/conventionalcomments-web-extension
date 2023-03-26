@@ -10,13 +10,14 @@ class GitHubPage extends AbstractPage {
   private apiClient: Octokit["rest"];
 
   constructor(page: Page) {
-    super("github", page);
+    super(
+      "github",
+      page,
+      page.locator(".inline-comment-form-container.open textarea")
+    );
     this.apiClient = new Octokit({
       auth: config.get<string>("codeceptjs.github.token"),
     }).rest;
-    this.textareaLocator = page.locator(
-      ".inline-comment-form-container.open textarea"
-    );
   }
 
   async removeAllThreads() {
@@ -124,6 +125,28 @@ class GitHubPage extends AbstractPage {
 
   async openNewThread() {
     await this.page.click("#files button[data-side='left'][data-line='1']");
+  }
+
+  async editComment(threadId: number, noteId: number) {
+    await this.page
+      .locator(`#r${noteId}`)
+      .getByRole("button", { name: "Show options" })
+      .click();
+    await this.page.getByRole("menuitem", { name: "Edit comment" }).click();
+  }
+
+  getReplyInputLocator(threadId: number) {
+    return this.page.locator(
+      `.comment-holder:has(#r${threadId}) button.review-thread-reply-button`
+    );
+  }
+
+  getMessageContainer(messageId: number) {
+    return this.page.locator(`#r${messageId}`);
+  }
+
+  getThreadContainer(threadId: number) {
+    return this.page.locator(`.comment-holder:has(#r${threadId})`);
   }
 }
 
