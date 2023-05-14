@@ -35,14 +35,6 @@ module.exports = {
           "-/merge_requests/1",
         ].join("/");
       }),
-      editPullRequestPage: deferConfig(function mainPage() {
-        return [
-          "",
-          this.codeceptjs.gitlab.username,
-          this.codeceptjs.gitlab.project,
-          "-/merge_requests/1",
-        ].join("/");
-      }),
       newPullRequestPage: deferConfig(function newPullRequestPage() {
         return [
           "",

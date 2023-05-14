@@ -1,6 +1,5 @@
 import { test, expect } from "./fixtures";
 
-// TODO: change the thread creation strategy to allow multiple workers
 let thread1: { id: number; noteIds: number[] };
 let thread2: { id: number; noteIds: number[] };
 

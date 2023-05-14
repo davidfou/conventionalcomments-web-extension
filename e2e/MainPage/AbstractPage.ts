@@ -10,10 +10,17 @@ abstract class AbstractPage {
 
   readonly textareaLocator: Locator;
 
+  readonly changesSelector: Locator;
+
   constructor(product: string, page: Page, textareaLocator: Locator) {
     this.product = product;
     this.page = page;
     this.textareaLocator = textareaLocator;
+    this.changesSelector = page
+      .locator(
+        `a[href="${config.get<string>(`codeceptjs.${this.product}.mainPage`)}"]`
+      )
+      .first();
   }
 
   abstract removeAllThreads(): Promise<void>;
@@ -33,22 +40,49 @@ abstract class AbstractPage {
 
   abstract editComment(threadId: number, noteId: number): Promise<void>;
 
+  abstract editCommentFromMainPage(threadId: string): Promise<void>;
+
   abstract getReplyInputLocator(threadId: number): Locator;
 
   abstract getMessageContainer(messageId: number): Locator;
 
   abstract getThreadContainer(threadId: number): Locator;
 
+  abstract waitPageIsReady(): Promise<void>;
+
   async goToMainPage() {
     await this.page.goto(
       config.get<string>(`codeceptjs.${this.product}.mainPage`)
     );
+    await this.waitPageIsReady();
   }
 
   async goToOverviewPage() {
     await this.page.goto(
       config.get<string>(`codeceptjs.${this.product}.overviewPage`)
     );
+    await this.waitPageIsReady();
+  }
+
+  async goToIssuePage() {
+    await this.page.goto(
+      config.get<string>(`codeceptjs.${this.product}.issuePage`)
+    );
+    await this.waitPageIsReady();
+  }
+
+  async goToNewIssuePage() {
+    await this.page.goto(
+      config.get<string>(`codeceptjs.${this.product}.newIssuePage`)
+    );
+    await this.waitPageIsReady();
+  }
+
+  async goToNewPullRequestPage() {
+    await this.page.goto(
+      config.get<string>(`codeceptjs.${this.product}.newPullRequestPage`)
+    );
+    await this.waitPageIsReady();
   }
 
   async setSelectionRange(start: number, end: number) {

@@ -20,6 +20,10 @@ class GitHubPage extends AbstractPage {
     }).rest;
   }
 
+  async waitPageIsReady() {
+    await this.page.locator("html[data-turbo-loaded]").waitFor();
+  }
+
   async removeAllThreads() {
     const { data: comments } = await this.apiClient.pulls.listReviewComments({
       owner: config.get<string>("codeceptjs.github.username"),
@@ -133,6 +137,19 @@ class GitHubPage extends AbstractPage {
       .getByRole("button", { name: "Show options" })
       .click();
     await this.page.getByRole("menuitem", { name: "Edit comment" }).click();
+  }
+
+  async editCommentFromMainPage(threadId: string) {
+    await this.page
+      .locator(`div[data-gid="${threadId}"]`)
+      .locator(".timeline-comment-action")
+      .last()
+      .click();
+    await this.page
+      .locator(`div[data-gid="${threadId}"]`)
+      .locator(".js-comment-edit-button")
+      .last()
+      .click();
   }
 
   getReplyInputLocator(threadId: number) {

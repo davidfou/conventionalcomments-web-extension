@@ -100,7 +100,9 @@ module.exports = {
     noteId,
     { isPullRequestDescription = false, isIssueDescription = false } = {}
   ) {
+    // TODO: review this mess
     if (isPullRequestDescription) {
+      // Not good, ensure the user clicks on edit
       I.amOnPage(config.get("codeceptjs.gitlab.editPullRequestPage"));
     } else if (isIssueDescription) {
       I.click(
