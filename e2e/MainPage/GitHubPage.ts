@@ -1,10 +1,12 @@
 import config from "config";
 import { Octokit } from "octokit";
+import { authenticator } from "otplib";
 import type { Page } from "@playwright/test";
 
 import AbstractPage from "./AbstractPage";
+import { expect } from "../fixtures";
 
-const { authenticator } = require("otplib");
+const MAX_RETRY = 4;
 
 class GitHubPage extends AbstractPage {
   private apiClient: Octokit["rest"];
@@ -13,7 +15,10 @@ class GitHubPage extends AbstractPage {
     super(
       "github",
       page,
-      page.locator(".inline-comment-form-container.open textarea")
+      page.locator(".inline-comment-form-container.open textarea"),
+      page
+        .locator(".js-previewable-comment-form")
+        .filter({ has: page.getByTestId("toggle-button") })
     );
     this.apiClient = new Octokit({
       auth: config.get<string>("codeceptjs.github.token"),
@@ -164,6 +169,39 @@ class GitHubPage extends AbstractPage {
 
   getThreadContainer(threadId: number) {
     return this.page.locator(`.comment-holder:has(#r${threadId})`);
+  }
+
+  async getAvailableThemes() {
+    await this.page.goto("https://github.com/settings/appearance");
+    const locators = await this.page.locator('input[name="user_theme"]').all();
+    return Promise.all(locators.map((locator) => locator.inputValue()));
+  }
+
+  async selectTheme(theme: string) {
+    let isSelected = false;
+    let attempt = 0;
+    while (!isSelected && attempt < MAX_RETRY) {
+      attempt += 1;
+      await this.page.goto("https://github.com/settings/appearance");
+      await this.page
+        .locator("select#color_mode_type_select")
+        .selectOption("single");
+      isSelected = await this.page.locator(`input#option-${theme}`).isChecked();
+      if (isSelected) {
+        break;
+      }
+      const waitForRequest = this.page.waitForRequest(
+        (request) =>
+          request.url() ===
+            "https://github.com/settings/appearance/color_mode" &&
+          request.method() === "POST"
+      );
+      await this.page.locator(`input#option-${theme}`).check();
+      await waitForRequest;
+      await this.page.waitForTimeout(1000);
+    }
+
+    expect(isSelected).toBe(true);
   }
 }
 

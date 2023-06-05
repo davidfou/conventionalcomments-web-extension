@@ -15,7 +15,7 @@ type MyFixtures = {
   extensionId: string;
   mainPage: AbstractPage;
 };
-export const test = base.extend<MyOptions & MyFixtures>({
+const test = base.extend<MyOptions & MyFixtures>({
   product: ["github", { option: true }],
   isSetup: [false, { option: true }],
   context: async ({ isSetup, product }, use) => {
@@ -60,4 +60,4 @@ export const test = base.extend<MyOptions & MyFixtures>({
   },
 });
 const { expect } = test;
-export { expect };
+export { test, expect };

@@ -24,17 +24,17 @@ test("cursor keeps the same position", async ({ page, mainPage }) => {
   await page.getByTestId("toggle-button").click();
 
   await expect(mainPage.textareaLocator).toBeFocused();
-  expect(await mainPage.getSelectedText()).toEqual({ start: 18, end: 18 });
+  await expect(mainPage).toHaveSelectedText(18, 18);
 });
 
 test("allows user to select all the text", async ({ page, mainPage }) => {
   await page.keyboard.type("my comment");
   await page.keyboard.press("Control+A");
-  expect(await mainPage.getSelectedText()).toEqual({ start: 12, end: 22 });
+  await expect(mainPage).toHaveSelectedText(12, 22);
 
   await page.getByTestId("toggle-button").click();
   await page.keyboard.press("Control+A");
-  expect(await mainPage.getSelectedText()).toEqual({ start: 0, end: 22 });
+  await expect(mainPage).toHaveSelectedText(0, 22);
 });
 
 test("prepends default label with empty string (reactivation)", async ({

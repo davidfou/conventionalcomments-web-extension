@@ -4,7 +4,7 @@ import config from "config";
 import { expect } from "../fixtures";
 
 abstract class AbstractPage {
-  private product: string;
+  public product: string;
 
   readonly page: Page;
 
@@ -12,7 +12,14 @@ abstract class AbstractPage {
 
   readonly changesSelector: Locator;
 
-  constructor(product: string, page: Page, textareaLocator: Locator) {
+  readonly newCommentEditorSelector: Locator;
+
+  constructor(
+    product: string,
+    page: Page,
+    textareaLocator: Locator,
+    newCommentEditorSelector: Locator
+  ) {
     this.product = product;
     this.page = page;
     this.textareaLocator = textareaLocator;
@@ -21,6 +28,7 @@ abstract class AbstractPage {
         `a[href="${config.get<string>(`codeceptjs.${this.product}.mainPage`)}"]`
       )
       .first();
+    this.newCommentEditorSelector = newCommentEditorSelector;
   }
 
   abstract removeAllThreads(): Promise<void>;
@@ -49,6 +57,10 @@ abstract class AbstractPage {
   abstract getThreadContainer(threadId: number): Locator;
 
   abstract waitPageIsReady(): Promise<void>;
+
+  abstract getAvailableThemes(): Promise<string[]>;
+
+  abstract selectTheme(theme: string): Promise<void>;
 
   async goToMainPage() {
     await this.page.goto(
@@ -106,32 +118,20 @@ abstract class AbstractPage {
     expect(isCorrect).toBeNull();
   }
 
-  async getSelectedText() {
-    const position = await this.page.evaluate(
-      (): string | { start: number; end: number } => {
-        const element = document.activeElement;
-        if (element === null) {
-          return "No active element";
-        }
-        if (element.tagName !== "TEXTAREA") {
-          return `Active element tag name to be TEXTAREA, got ${element.tagName}`;
-        }
-        const elementTextarea = <HTMLTextAreaElement>element;
-        return {
-          start: elementTextarea.selectionStart,
-          end: elementTextarea.selectionEnd,
-        };
-      }
-    );
-    if (typeof position === "string") {
-      throw new Error(position);
-    }
-    return position;
-  }
-
   async clearLocalStorage() {
     await this.page.evaluate(() => {
       localStorage.clear();
+    });
+  }
+
+  async injectStyleBeforeScreenshot() {
+    await this.page.addStyleTag({
+      content: [
+        "* {",
+        "  caret-color: transparent !important;",
+        "  transition-property: none !important;",
+        "}",
+      ].join("\n"),
     });
   }
 }
