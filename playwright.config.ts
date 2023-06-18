@@ -1,5 +1,5 @@
 import { expect, defineConfig, Locator } from "@playwright/test";
-import type { MyOptions } from "./e2e/fixtures";
+import type { MyOptions } from "./tests/fixtures";
 
 /**
  * Read environment variables from file.
@@ -50,7 +50,7 @@ expect.extend({
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig<MyOptions>({
-  testDir: "./e2e",
+  testDir: "./tests",
   /* Maximum time one test can run for. */
   timeout: 30 * 1000,
   expect: {

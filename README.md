@@ -34,15 +34,6 @@ Chrome: https://chrome.google.com/webstore/detail/conventional-comments/pagggmoj
 1. Run `yarn test` to run unit tests
 1. Run `yarn codeceptjs` to run end-to-end tests
 
-#### Generate the screenshots
-
-Some screenshots might not have exactly the same size locally compared to the CI. The following commands will ensure the screenshots are taken the same way than on the CI.
-
-1. Run `docker-compose build update-screenshots`
-1. Run `docker-compose run update-screenshots`
-
-Another way is to take them directly from the last CI e2e-tests. To do so, run `node scripts/updateScreenshotFromCI.js`.
-
 ### Build the extension
 
 1. Run `yarn build`
