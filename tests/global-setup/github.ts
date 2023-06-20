@@ -1,26 +1,22 @@
 import config from "config";
 import { Octokit } from "octokit";
+import { RequestError } from "@octokit/request-error";
 
 const globalSetup = async () => {
   const client = new Octokit({
     auth: config.get<string>("codeceptjs.github.token"),
   });
 
-  const isRepoSetup = await client.rest.repos
-    .get({
+  try {
+    await client.rest.repos.get({
       owner: config.get<string>("codeceptjs.github.username"),
       repo: config.get<string>("codeceptjs.github.project"),
-    })
-    .then(() => true)
-    .catch((error) => {
-      if (error.status === 404) {
-        return false;
-      }
-      throw error;
     });
-
-  if (isRepoSetup) {
     return;
+  } catch (error: unknown) {
+    if (!(error instanceof RequestError) || error.status !== 404) {
+      throw error;
+    }
   }
 
   await client.rest.repos.createForAuthenticatedUser({

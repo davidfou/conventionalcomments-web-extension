@@ -115,8 +115,7 @@ class GitHubPage extends AbstractPage {
   }
 
   async login() {
-    const loginUrl = "https://github.com/login";
-    await this.page.goto(loginUrl);
+    await this.page.goto("https://github.com/login");
     if (this.page.url() === "https://github.com/") {
       return;
     }
@@ -144,14 +143,14 @@ class GitHubPage extends AbstractPage {
     await this.page.getByRole("menuitem", { name: "Edit comment" }).click();
   }
 
-  async editCommentFromMainPage(threadId: string) {
+  async editCommentFromMainPage(noteId: number) {
     await this.page
-      .locator(`div[data-gid="${threadId}"]`)
+      .locator(`div[data-gid="${noteId}"]`)
       .locator(".timeline-comment-action")
       .last()
       .click();
     await this.page
-      .locator(`div[data-gid="${threadId}"]`)
+      .locator(`div[data-gid="${noteId}"]`)
       .locator(".js-comment-edit-button")
       .last()
       .click();

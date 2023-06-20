@@ -48,7 +48,10 @@ abstract class AbstractPage {
 
   abstract editComment(threadId: number, noteId: number): Promise<void>;
 
-  abstract editCommentFromMainPage(threadId: string): Promise<void>;
+  abstract editCommentFromMainPage(
+    noteId: number,
+    pageType?: "pullRequestDescription" | "issueDescription"
+  ): Promise<void>;
 
   abstract getReplyInputLocator(threadId: number): Locator;
 
