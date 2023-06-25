@@ -15,7 +15,7 @@
   }
   if (product === "gitlab") {
     classes +=
-      " btn js-md btn-default btn-md gl-button btn-default-tertiary btn-icon";
+      " btn gl-mr-2 btn-default btn-sm gl-button btn-default-tertiary btn-icon";
     iconClasses += " gl-button-icon gl-icon s16";
   }
 
