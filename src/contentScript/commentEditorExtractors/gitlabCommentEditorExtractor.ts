@@ -46,7 +46,7 @@ const gitlabCommentEditorExtractor: CommentEditorExtractor = (
         const targetEl = mainEl.querySelector(".div-dropzone-wrapper");
         const anchorEl = mainEl.querySelector(".div-dropzone");
         const buttonAnchorEl = mainEl.querySelector(
-          "[data-testid='md-header-toolbar'] > button:last-child"
+          "[data-testid='md-header-toolbar'] > span:last-of-type"
         );
         if (
           navList === null ||
@@ -71,7 +71,6 @@ const gitlabCommentEditorExtractor: CommentEditorExtractor = (
           },
           productType: "gitlab",
         });
-        navList.insertBefore(document.createTextNode(" "), buttonAnchorEl);
 
         extractedTextareas.push({ id, textarea });
       });
