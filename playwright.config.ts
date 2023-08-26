@@ -1,4 +1,9 @@
-import { expect, defineConfig, Locator } from "@playwright/test";
+import {
+  expect,
+  defineConfig,
+  Locator,
+  PlaywrightTestConfig,
+} from "@playwright/test";
 import type { MyOptions } from "./tests/fixtures";
 
 /**
@@ -79,18 +84,20 @@ export default defineConfig<MyOptions>({
   },
 
   /* Configure projects for major browsers */
-  projects: [
-    {
-      name: "setup-github",
-      testMatch: /.*\.setup\.ts/,
-      use: { isSetup: true, product: "github" },
-    },
-    {
-      name: "github",
-      dependencies: ["setup-github"],
-      use: { product: "github" },
-    },
-  ],
+  projects: (["github", "gitlab"] as const).flatMap(
+    (product): PlaywrightTestConfig<MyOptions>["projects"] => [
+      {
+        name: `setup-${product}`,
+        testMatch: /.*\.setup\.ts/,
+        use: { isSetup: true, product },
+      },
+      {
+        name: product,
+        dependencies: [`setup-${product}`],
+        use: { product },
+      },
+    ]
+  ),
 
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */
   // outputDir: 'test-results/',
