@@ -117,7 +117,7 @@ class GitHubPage extends AbstractPage {
   async login() {
     await this.page.goto("https://github.com/login");
     if (this.page.url() === "https://github.com/") {
-      return;
+      return null;
     }
     await this.page.fill(
       "#login_field",
@@ -129,6 +129,8 @@ class GitHubPage extends AbstractPage {
       "#app_totp",
       authenticator.generate(config.get("codeceptjs.github.twoFactorSecret"))
     );
+
+    return this.page.context();
   }
 
   async openNewThread() {

@@ -1,4 +1,4 @@
-import type { Page, Locator } from "@playwright/test";
+import type { Page, Locator, BrowserContext } from "@playwright/test";
 import config from "config";
 
 import { expect } from "../fixtures";
@@ -42,7 +42,7 @@ abstract class AbstractPage {
 
   abstract retrieveIssueCommentIds(): Promise<string[]>;
 
-  abstract login(): Promise<void>;
+  abstract login(): Promise<BrowserContext | null>;
 
   abstract openNewThread(): Promise<void>;
 

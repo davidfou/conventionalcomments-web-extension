@@ -1,6 +1,6 @@
 import config from "config";
 import { Gitlab } from "@gitbeaker/node";
-import type { Locator, Page } from "@playwright/test";
+import { firefox, Locator, Page } from "@playwright/test";
 
 import AbstractPage from "./AbstractPage";
 
@@ -101,11 +101,17 @@ class GitLabPage extends AbstractPage {
 
   async login() {
     await this.page.goto("https://gitlab.com");
-    console.log(this.page.url());
-    throw new Error("TODO");
     if (this.page.url() === "https://about.gitlab.com") {
-      return;
+      return null;
     }
+
+    // const browser = await firefox.launch();
+    // const newPage = await browser.newPage();
+
+    await this.page.goto("https://gitlab.com/users/sign_in");
+    await this.page.pause();
+
+    return this.page.context();
   }
 
   async openNewThread() {
