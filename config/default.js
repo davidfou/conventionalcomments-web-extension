@@ -7,6 +7,7 @@ module.exports = {
       password: undefined,
       project: undefined,
       token: undefined,
+      twoFactorSecret: undefined,
       baseUrl: "https://gitlab.com",
       mainPage: deferConfig(function mainPage() {
         return [
@@ -126,5 +127,9 @@ module.exports = {
     token: undefined,
     version: "v3",
     fileKey: "F5u9sP9QoNqEMpgJzQKzN1",
+  },
+  playwright: {
+    reporter: "html",
+    googleBin: "google-chrome",
   },
 };

@@ -23,19 +23,19 @@ type MyFixtures = {
 const test = base.extend<MyOptions & MyFixtures>({
   product: ["github", { option: true }],
   isSetup: [false, { option: true }],
-  context: async ({ isSetup, product }, use) => {
+  context: async ({ product }, use) => {
     const pathToExtension = path.join(__dirname, "../../public");
-    const context = isSetup
-      ? // Use Firefox for the authentication (only way for Gitlab)
-        await firefox.launchPersistentContext("")
-      : await chromium.launchPersistentContext("", {
-          baseURL: config.get<string>(`codeceptjs.${product}.baseUrl`),
-          headless: false,
-          args: [
-            `--disable-extensions-except=${pathToExtension}`,
-            `--load-extension=${pathToExtension}`,
-          ],
-        });
+    const context = await chromium.launchPersistentContext("", {
+      baseURL: config.get<string>(`codeceptjs.${product}.baseUrl`),
+      headless: false,
+      recordVideo: {
+        dir: path.join(__dirname, "../../playwright-videos"),
+      },
+      args: [
+        `--disable-extensions-except=${pathToExtension}`,
+        `--load-extension=${pathToExtension}`,
+      ],
+    });
     const content = await fs
       .readFile(
         path.join(__dirname, `../../playwright/.auth/user-${product}.json`),

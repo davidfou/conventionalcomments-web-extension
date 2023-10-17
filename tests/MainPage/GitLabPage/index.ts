@@ -1,8 +1,10 @@
 import config from "config";
 import { Gitlab } from "@gitbeaker/node";
-import { firefox, Locator, Page } from "@playwright/test";
+import { authenticator } from "otplib";
+import type { Locator, Page } from "@playwright/test";
 
-import AbstractPage from "./AbstractPage";
+import AbstractPage from "../AbstractPage";
+import getCookies from "./getCookies";
 
 class GitLabPage extends AbstractPage {
   private apiClient: Gitlab;
@@ -100,16 +102,23 @@ class GitLabPage extends AbstractPage {
   }
 
   async login() {
+    console.log('go to "https://gitlab.com"');
     await this.page.goto("https://gitlab.com");
-    if (this.page.url() === "https://about.gitlab.com") {
+    if (this.page.url() !== "https://about.gitlab.com/") {
+      console.log("already logged in");
       return null;
     }
 
-    // const browser = await firefox.launch();
-    // const newPage = await browser.newPage();
-
-    await this.page.goto("https://gitlab.com/users/sign_in");
-    await this.page.pause();
+    console.log("get cookies");
+    const cookies = await getCookies();
+    console.log("set cookies");
+    await this.page.context().addCookies(cookies);
+    console.log("go to sign in page");
+    await this.page.goto("https://gitlab.com/");
+    console.log(this.page.url());
+    if (this.page.url() === "https://about.gitlab.com/") {
+      throw new Error("User should be logged in");
+    }
 
     return this.page.context();
   }
@@ -138,7 +147,7 @@ class GitLabPage extends AbstractPage {
     threadId: number | null,
     noteId: number
   ): Locator {
-    this.getNoteContainerSelector(threadId, noteId).locator(
+    return this.getNoteContainerSelector(threadId, noteId).locator(
       "*[data-qa-selector=note_edit_button]"
     );
   }
@@ -227,7 +236,7 @@ class GitLabPage extends AbstractPage {
         request.method() === "POST"
     );
 
-    await await this.page
+    await this.page
       .locator("div")
       .filter({
         has: this.page.locator(`//label/span[text()=${JSON.stringify(theme)}]`),

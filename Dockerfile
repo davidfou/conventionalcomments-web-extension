@@ -30,7 +30,7 @@ COPY yarn.lock yarn.lock
 COPY scripts scripts
 
 RUN yarn install --frozen-lockfile \
- && yarn playwright install --with-deps chromium firefox
+ && yarn playwright install --with-deps chromium
 
 COPY . .
 
