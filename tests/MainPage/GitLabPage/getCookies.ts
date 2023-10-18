@@ -7,7 +7,7 @@ import CDP from "chrome-remote-interface";
 import waitOn from "wait-on";
 import { authenticator } from "otplib";
 
-async function click(client, nodeId) {
+async function click(client: CDP.Client, nodeId: number) {
   const box = await client.DOM.getBoxModel({ nodeId });
   const coordinates = {
     x: box.model.content[0],
@@ -27,7 +27,7 @@ async function click(client, nodeId) {
   });
 }
 
-async function passHumanCheck(parentClient) {
+async function passHumanCheck(parentClient: CDP.Client) {
   const { targetInfos } = await parentClient.Target.getTargets().catch(() => ({
     targetInfos: [],
   }));
@@ -66,7 +66,7 @@ async function passHumanCheck(parentClient) {
   }
 }
 
-async function acceptCookies(client) {
+async function acceptCookies(client: CDP.Client) {
   const { root } = await client.DOM.getDocument();
   let selector = await client.DOM.querySelector({
     nodeId: root.nodeId,
@@ -84,7 +84,7 @@ async function acceptCookies(client) {
   return true;
 }
 
-async function doSignin(client) {
+async function doSignin(client: CDP.Client) {
   const { root } = await client.DOM.getDocument();
   const selectors = await Promise.all([
     client.DOM.querySelector({
@@ -127,7 +127,7 @@ async function doSignin(client) {
   return true;
 }
 
-async function doTwoFactorAuthentication(client) {
+async function doTwoFactorAuthentication(client: CDP.Client) {
   const { root } = await client.DOM.getDocument();
   const selectors = await Promise.all([
     client.DOM.querySelector({
@@ -154,103 +154,89 @@ async function doTwoFactorAuthentication(client) {
   return true;
 }
 
-async function isOnExpectedPage(client) {
+async function isOnExpectedPage(client: CDP.Client) {
   const { targetInfos } = await client.Target.getTargets();
-  console.log(targetInfos);
   return targetInfos.some(
     (target) => target.type === "page" && target.url === "https://gitlab.com/"
   );
 }
 
+function takeScreenshots(client: CDP.Client): () => void {
+  if (!config.get<boolean>("playwright.debugGitLabGetCookies")) {
+    return () => {};
+  }
+  let count = 0;
+  const interval = setInterval(async () => {
+    count += 1;
+    try {
+      const screenshotName = `screenshot-${count}.png`;
+      const { data } = await client.Page.captureScreenshot();
+      await fs
+        .writeFile(
+          path.join(__dirname, `../../../playwright-videos/${screenshotName}`),
+          Buffer.from(data, "base64")
+        )
+        .catch(() => {});
+    } catch (error) {
+      // noop
+    }
+  }, 1000);
+  return () => {
+    clearInterval(interval);
+  };
+}
+
 async function getCookies() {
   let client;
   let process;
+  let teardown = () => {};
 
   try {
-    console.log("- start chrome");
     process = spawn(config.get("playwright.googleBin"), [
       "--remote-debugging-port=9222",
     ]);
-    console.log("- wait for port 9222");
     await waitOn({ resources: ["tcp:9222"] });
-    console.log("- create client");
     client = await CDP();
     const { Network, Page } = client;
-    console.log("- setup");
     await Page.enable();
     await Network.clearBrowserCache();
     await Network.clearBrowserCookies();
-    console.log("- navigate");
     await Page.navigate({
       url: "https://gitlab.com/users/sign_in",
     });
+    teardown = takeScreenshots(client);
     await Page.loadEventFired();
-    let count = 0;
-    const interval = setInterval(async () => {
-      count += 1;
-      try {
-        console.log(`- take screenshot ${count}`);
-        const screenshotName = `screenshot-${count}.png`;
-        const { data } = await Page.captureScreenshot().catch(() => {
-          console.log("failed to take screenshot");
-        });
-        await fs
-          .writeFile(
-            path.join(
-              __dirname,
-              `../../../playwright-videos/${screenshotName}`
-            ),
-            Buffer.from(data, "base64")
-          )
-          .catch(() => {
-            console.log("failed to write screenshot");
-          });
-        console.log(`- took screenshot ${count}`);
-      } catch (error) {}
-    }, 1000);
-    console.log("- wait....");
 
     let isDone = false;
     let passedHumanCheck = false;
     let didAcceptCookies = false;
     let didSignin = false;
     let didTwoFactorAuthentication = false;
-    let secondCount = 0;
+    /* eslint-disable no-await-in-loop */
     while (!isDone) {
-      secondCount += 1;
-      console.log(`- try ${secondCount}`);
       if (!passedHumanCheck) {
-        console.log("- pass human check...");
         passedHumanCheck = await passHumanCheck(client).catch(() => false);
-        console.log(`${passedHumanCheck}`);
       }
       if (!didAcceptCookies) {
-        console.log("- accept cookies...");
         didAcceptCookies = await acceptCookies(client).catch(() => false);
-        console.log(`${didAcceptCookies}`);
       }
       if (!didSignin) {
-        console.log("- sign in...");
         didSignin = await doSignin(client).catch(() => false);
-        console.log(`${didSignin}`);
       }
       if (!didTwoFactorAuthentication) {
-        console.log("- two factor authentication...");
         didTwoFactorAuthentication = await doTwoFactorAuthentication(
           client
         ).catch(() => false);
-        console.log(`${didTwoFactorAuthentication}`);
       }
       isDone = await isOnExpectedPage(client);
       await timers.setTimeout(1000);
     }
 
-    clearInterval(interval);
     const { cookies } = await Network.getCookies();
-    console.log(cookies);
 
     return cookies;
   } finally {
+    teardown();
     process?.kill();
     await client?.close();
   }

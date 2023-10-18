@@ -131,5 +131,6 @@ module.exports = {
   playwright: {
     reporter: "html",
     googleBin: "google-chrome",
+    debugGitLabGetCookies: false,
   },
 };
