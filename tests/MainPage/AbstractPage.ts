@@ -66,6 +66,7 @@ abstract class AbstractPage {
   abstract selectTheme(theme: string): Promise<void>;
 
   async goToMainPage() {
+    console.log(config.get<string>(`codeceptjs.${this.product}.mainPage`));
     await this.page.goto(
       config.get<string>(`codeceptjs.${this.product}.mainPage`)
     );

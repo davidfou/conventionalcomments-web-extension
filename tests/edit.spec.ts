@@ -3,7 +3,7 @@ import { test, expect } from "./fixtures";
 let thread1: { id: number; noteIds: number[] };
 let thread2: { id: number; noteIds: number[] };
 
-test.beforeAll(async ({ mainPage }) => {
+test.beforeAll(async ({ mainPage, page }) => {
   await mainPage.removeAllThreads();
   thread1 = await mainPage.createThread(
     ["**question:** any reason not to format comments", "No idea"],
@@ -18,7 +18,7 @@ test.beforeAll(async ({ mainPage }) => {
   );
 });
 
-test.beforeEach(async ({ mainPage }) => {
+test.beforeEach(async ({ mainPage, page }) => {
   await mainPage.goToMainPage();
   await mainPage.clearLocalStorage();
 });

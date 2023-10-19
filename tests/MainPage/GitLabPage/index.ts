@@ -23,7 +23,7 @@ class GitLabPage extends AbstractPage {
     });
     this.projectPath = [
       config.get<string>("codeceptjs.gitlab.username"),
-      this.projectName,
+      config.get<string>("codeceptjs.gitlab.project"),
     ].join("/");
   }
 
@@ -102,20 +102,14 @@ class GitLabPage extends AbstractPage {
   }
 
   async login() {
-    console.log('go to "https://gitlab.com"');
     await this.page.goto("https://gitlab.com");
     if (this.page.url() !== "https://about.gitlab.com/") {
-      console.log("already logged in");
       return null;
     }
 
-    console.log("get cookies");
     const cookies = await getCookies();
-    console.log("set cookies");
     await this.page.context().addCookies(cookies);
-    console.log("go to sign in page");
     await this.page.goto("https://gitlab.com/");
-    console.log(this.page.url());
     if (this.page.url() === "https://about.gitlab.com/") {
       throw new Error("User should be logged in");
     }
@@ -139,7 +133,9 @@ class GitLabPage extends AbstractPage {
     return (
       threadId === null ? this.page : this.getThreadContainer(threadId)
     ).locator(
-      `*[data-qa-selector=noteable_note_container][data-note-id=${noteId}]`
+      `*[data-testid='noteable-note-container'][data-note-id=${JSON.stringify(
+        noteId.toString()
+      )}]`
     );
   }
 
@@ -148,7 +144,7 @@ class GitLabPage extends AbstractPage {
     noteId: number
   ): Locator {
     return this.getNoteContainerSelector(threadId, noteId).locator(
-      "*[data-qa-selector=note_edit_button]"
+      "*[data-testid='note-edit-button']"
     );
   }
 
@@ -187,11 +183,11 @@ class GitLabPage extends AbstractPage {
   }
 
   getThreadContainer(threadId: number): Locator {
-    return this.page
-      .locator("diffs")
-      .locator(
-        `*[data-qa-selector=discussion_content][data-discussion-id=${threadId}]`
-      );
+    return this.page.locator(
+      `*[data-testid='discussion-content'][data-discussion-id=${JSON.stringify(
+        threadId
+      )}]`
+    );
   }
 
   async getAvailableThemes() {
