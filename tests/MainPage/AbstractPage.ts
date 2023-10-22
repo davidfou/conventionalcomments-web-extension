@@ -27,6 +27,7 @@ abstract class AbstractPage {
       .locator(
         `a[href="${config.get<string>(`codeceptjs.${this.product}.mainPage`)}"]`
       )
+      .locator("visible=true")
       .first();
     this.newCommentEditorSelector = newCommentEditorSelector;
   }

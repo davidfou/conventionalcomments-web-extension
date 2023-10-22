@@ -15,7 +15,7 @@ class GitLabPage extends AbstractPage {
     super(
       "gitlab",
       page,
-      page.locator("*[data-qa-selector=reply_field]"),
+      page.locator("*[data-testid='reply-field']"),
       page.locator(".edit-note")
     );
     this.apiClient = new Gitlab({
@@ -121,8 +121,9 @@ class GitLabPage extends AbstractPage {
     await this.page
       .locator("#diffs")
       .locator(
-        "*[data-testid=left-side][data-interop-type=old][data-interop-line=1][data-interop-old-line=1]"
+        "*[data-testid=left-side][data-interop-type=old][data-interop-line='1'][data-interop-old-line='1']"
       )
+      .locator("*[data-testid='left-comment-button']")
       .click();
   }
 
@@ -174,7 +175,7 @@ class GitLabPage extends AbstractPage {
 
   getReplyInputLocator(threadId: number) {
     return this.getThreadContainer(threadId).locator(
-      "*[data-qa-selector=discussion_reply_tab]"
+      "*[data-testid='discussion-reply-tab']"
     );
   }
 
