@@ -200,7 +200,7 @@ class GitLabPage extends AbstractPage<string, number> {
     await this.page.goto("https://gitlab.com/-/profile/preferences");
     await this.waitPageIsReady();
     const locators = await this.page
-      .locator("div")
+      .locator("div.gl-form-radio")
       .filter({ has: this.page.locator("input[name='user[theme_id]']") })
       .locator("label")
       .all();
@@ -210,7 +210,7 @@ class GitLabPage extends AbstractPage<string, number> {
           if (text === null) {
             throw new Error("Expect text to be defined");
           }
-          return text;
+          return text.trim();
         })
       )
     );
@@ -221,7 +221,7 @@ class GitLabPage extends AbstractPage<string, number> {
     await this.waitPageIsReady();
 
     const currentValue = await this.page
-      .locator("div")
+      .locator("div.gl-form-radio")
       .filter({
         has: this.page.locator("input[name='user[theme_id]']:checked"),
       })
@@ -232,20 +232,15 @@ class GitLabPage extends AbstractPage<string, number> {
       return;
     }
 
-    const waitForRequest = this.page.waitForRequest(
-      (request) =>
-        request.url() === "https://gitlab.com/-/profile/preferences" &&
-        request.method() === "POST"
-    );
-
     await this.page
-      .locator("div")
+      .locator("div.gl-form-radio")
       .filter({
         has: this.page.locator(`//label/span[text()=${JSON.stringify(theme)}]`),
       })
-      .locator("input")
-      .check();
-    await waitForRequest;
+      .locator("label")
+      .click();
+    await this.page.waitForLoadState();
+    await this.waitPageIsReady();
   }
 }
 
