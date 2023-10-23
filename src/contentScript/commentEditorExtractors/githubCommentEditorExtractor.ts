@@ -21,7 +21,8 @@ const githubCommentEditorExtractor: CommentEditorExtractor = (
         if (
           form === null ||
           (!form.classList.contains("js-comment-update") &&
-            !form.classList.contains("js-inline-comment-form"))
+            !form.classList.contains("js-inline-comment-form")) ||
+          form.id !== ""
         ) {
           return;
         }

@@ -68,7 +68,7 @@
 
 <style lang="scss">
   .cc-select-wrapper-gitlab {
-    padding: 10px 0 0 0;
+    padding: 10px 0.25rem 0 0.25rem;
     text-align: left;
     color: #303030;
     --inputColor: #303030;
@@ -157,5 +157,10 @@
       transition: 0.2s cubic-bezier(0.3, 0, 0.5, 1);
       transition-property: color, background-color, border-color;
     }
+  }
+
+  /* Ensure there is enough place to show the full list */
+  :global(textarea#note_note) {
+    min-height: 188px;
   }
 </style>

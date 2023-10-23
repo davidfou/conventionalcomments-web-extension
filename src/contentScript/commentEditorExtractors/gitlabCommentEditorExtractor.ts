@@ -3,10 +3,10 @@ import type { CommentEditorExtractor } from "./CommentEditorExtractor";
 const getIsMainComment = (el: Element): boolean => {
   const mainCommentEl = el
     .closest(".discussion-notes")
-    ?.querySelector("li[data-qa-selector=noteable_note_container]");
+    ?.querySelector("li[data-testid='noteable-note-container']");
   return (
     mainCommentEl === null ||
-    mainCommentEl === el.closest("li[data-qa-selector=noteable_note_container]")
+    mainCommentEl === el.closest("li[data-testid='noteable-note-container']")
   );
 };
 
@@ -34,7 +34,8 @@ const gitlabCommentEditorExtractor: CommentEditorExtractor = (
           return;
         }
         const mainEl = textarea.closest("form");
-        if (mainEl === null) {
+        const fileContainer = textarea.closest(".file-holder");
+        if (mainEl === null || fileContainer === null) {
           return;
         }
         const id = generateId();
@@ -45,7 +46,7 @@ const gitlabCommentEditorExtractor: CommentEditorExtractor = (
         const targetEl = mainEl.querySelector(".div-dropzone-wrapper");
         const anchorEl = mainEl.querySelector(".div-dropzone");
         const buttonAnchorEl = mainEl.querySelector(
-          "[data-testid='md-header-toolbar'] > button:last-child"
+          "[data-testid='md-header-toolbar'] > span:last-of-type"
         );
         if (
           navList === null ||
@@ -70,7 +71,6 @@ const gitlabCommentEditorExtractor: CommentEditorExtractor = (
           },
           productType: "gitlab",
         });
-        navList.insertBefore(document.createTextNode(" "), buttonAnchorEl);
 
         extractedTextareas.push({ id, textarea });
       });

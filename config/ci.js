@@ -8,4 +8,7 @@ module.exports = {
       project: "web-ext-test-ci-v2",
     },
   },
+  playwright: {
+    reporter: [["html", { open: "never" }], ["github"]],
+  },
 };

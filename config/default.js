@@ -2,20 +2,12 @@ const { deferConfig } = require("config/defer");
 
 module.exports = {
   codeceptjs: {
-    product: "gitlab",
-    screenshotNames: [
-      "editor-active",
-      "editor-inactive",
-      "label-selector",
-      "label-selector-mouse-hover",
-      "decorator-selector-mouse-hover-clear",
-    ],
-    updateScreenshots: false,
     gitlab: {
       username: undefined,
       password: undefined,
       project: undefined,
       token: undefined,
+      twoFactorSecret: undefined,
       baseUrl: "https://gitlab.com",
       mainPage: deferConfig(function mainPage() {
         return [
@@ -33,6 +25,14 @@ module.exports = {
           "-/merge_requests/1",
         ].join("/");
       }),
+      editPullRequestPage: deferConfig(function editPullRequestPage() {
+        return [
+          "",
+          this.codeceptjs.gitlab.username,
+          this.codeceptjs.gitlab.project,
+          "-/merge_requests/1/edit",
+        ].join("/");
+      }),
       newPullRequestPage: deferConfig(function newPullRequestPage() {
         return [
           "",
@@ -47,6 +47,14 @@ module.exports = {
           this.codeceptjs.gitlab.username,
           this.codeceptjs.gitlab.project,
           "-/issues/new",
+        ].join("/");
+      }),
+      issuePage: deferConfig(function mainPage() {
+        return [
+          "",
+          this.codeceptjs.gitlab.username,
+          this.codeceptjs.gitlab.project,
+          "-/issues/1",
         ].join("/");
       }),
       themes: [
@@ -102,6 +110,14 @@ module.exports = {
           "issues/new",
         ].join("/");
       }),
+      issuePage: deferConfig(function newIssuePage() {
+        return [
+          "",
+          this.codeceptjs.github.username,
+          this.codeceptjs.github.project,
+          "issues/2",
+        ].join("/");
+      }),
       themes: [
         "light",
         "light_high_contrast",
@@ -119,5 +135,10 @@ module.exports = {
     token: undefined,
     version: "v3",
     fileKey: "F5u9sP9QoNqEMpgJzQKzN1",
+  },
+  playwright: {
+    reporter: "html",
+    googleBin: "google-chrome",
+    debugGitLabGetCookies: false,
   },
 };
