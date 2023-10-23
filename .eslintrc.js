@@ -79,7 +79,7 @@ module.exports = {
       },
     },
     {
-      files: ["e2e/**/*"],
+      files: ["tests/**/*"],
       rules: {
         "no-restricted-syntax": "off",
         "no-await-in-loop": "off",

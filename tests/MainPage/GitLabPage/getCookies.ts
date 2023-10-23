@@ -212,7 +212,6 @@ async function getCookies() {
     let didAcceptCookies = false;
     let didSignin = false;
     let didTwoFactorAuthentication = false;
-    /* eslint-disable no-await-in-loop */
     while (!isDone) {
       if (!passedHumanCheck) {
         passedHumanCheck = await passHumanCheck(client).catch(() => false);

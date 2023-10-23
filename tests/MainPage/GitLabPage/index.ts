@@ -1,6 +1,5 @@
 import config from "config";
-import { Gitlab } from "@gitbeaker/rest";
-import { authenticator } from "otplib";
+import { Gitlab } from "@gitbeaker/rest/dist/index";
 import type { Locator, Page } from "@playwright/test";
 
 import AbstractPage from "../AbstractPage";
@@ -74,7 +73,6 @@ class GitLabPage extends AbstractPage<string, number> {
 
     const noteIds = [discussion.notes[0].id];
     let previousNoteId = discussion.notes[0].id;
-    /* eslint-disable no-await-in-loop,no-restricted-syntax */
     for (const reply of replies) {
       const note = await this.apiClient.MergeRequestDiscussions.addNote(
         this.projectPath,
