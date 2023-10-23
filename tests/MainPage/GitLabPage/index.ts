@@ -1,13 +1,13 @@
 import config from "config";
-import { Gitlab } from "@gitbeaker/node";
+import { Gitlab } from "@gitbeaker/rest";
 import { authenticator } from "otplib";
 import type { Locator, Page } from "@playwright/test";
 
 import AbstractPage from "../AbstractPage";
 import getCookies from "./getCookies";
 
-class GitLabPage extends AbstractPage {
-  private apiClient: Gitlab;
+class GitLabPage extends AbstractPage<string, number> {
+  private apiClient: InstanceType<typeof Gitlab>;
 
   private projectPath: string;
 
@@ -68,8 +68,13 @@ class GitLabPage extends AbstractPage {
       }
     );
 
+    if (discussion.notes?.[0] === undefined) {
+      throw new Error("Expected discussion to have at least one note");
+    }
+
     const noteIds = [discussion.notes[0].id];
     let previousNoteId = discussion.notes[0].id;
+    /* eslint-disable no-await-in-loop,no-restricted-syntax */
     for (const reply of replies) {
       const note = await this.apiClient.MergeRequestDiscussions.addNote(
         this.projectPath,

@@ -7,6 +7,7 @@ test.beforeEach(async ({ mainPage }) => {
 test("visual testing", async ({ page, mainPage }) => {
   const themes = await mainPage.getAvailableThemes();
   test.setTimeout(30_000 * themes.length);
+  /* eslint-disable no-await-in-loop,no-restricted-syntax */
   for (const theme of themes) {
     await mainPage.selectTheme(theme);
 

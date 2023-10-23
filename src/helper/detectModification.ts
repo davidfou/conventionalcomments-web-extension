@@ -17,7 +17,7 @@ const detectModification = (
     return prependedComment;
   }
 
-  return prependedComment + comment.substr(index);
+  return prependedComment + comment.substring(index);
 };
 
 export default detectModification;

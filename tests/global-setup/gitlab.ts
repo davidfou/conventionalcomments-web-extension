@@ -1,5 +1,5 @@
 import config from "config";
-import { Gitlab } from "@gitbeaker/node";
+import { Gitlab } from "@gitbeaker/rest";
 import { HTTPError } from "got";
 
 const globalSetup = async () => {

@@ -1,9 +1,4 @@
-import {
-  test as base,
-  chromium,
-  firefox,
-  type BrowserContext,
-} from "@playwright/test";
+import { test as base, chromium, type BrowserContext } from "@playwright/test";
 import path from "path";
 import fs from "fs/promises";
 import config from "config";

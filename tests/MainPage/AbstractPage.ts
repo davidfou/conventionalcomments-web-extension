@@ -3,7 +3,7 @@ import config from "config";
 
 import { expect } from "../fixtures";
 
-abstract class AbstractPage {
+abstract class AbstractPage<T, U> {
   public product: string;
 
   readonly page: Page;
@@ -37,28 +37,28 @@ abstract class AbstractPage {
   abstract createThread(
     comments: string[],
     line: number
-  ): Promise<{ id: number; noteIds: number[] }>;
+  ): Promise<{ id: T; noteIds: U[] }>;
 
-  abstract retrievePullRequestCommentIds(): Promise<string[]>;
+  abstract retrievePullRequestCommentIds(): Promise<T[]>;
 
-  abstract retrieveIssueCommentIds(): Promise<string[]>;
+  abstract retrieveIssueCommentIds(): Promise<T[]>;
 
   abstract login(): Promise<BrowserContext | null>;
 
   abstract openNewThread(): Promise<void>;
 
-  abstract editComment(threadId: number, noteId: number): Promise<void>;
+  abstract editComment(threadId: T, noteId: U): Promise<void>;
 
   abstract editCommentFromMainPage(
     noteId: number,
     pageType?: "pullRequestDescription" | "issueDescription"
   ): Promise<void>;
 
-  abstract getReplyInputLocator(threadId: number): Locator;
+  abstract getReplyInputLocator(threadId: T): Locator;
 
-  abstract getMessageContainer(messageId: number): Locator;
+  abstract getMessageContainer(messageId: U): Locator;
 
-  abstract getThreadContainer(threadId: number): Locator;
+  abstract getThreadContainer(threadId: T): Locator;
 
   abstract waitPageIsReady(): Promise<void>;
 
@@ -67,7 +67,6 @@ abstract class AbstractPage {
   abstract selectTheme(theme: string): Promise<void>;
 
   async goToMainPage() {
-    console.log(config.get<string>(`codeceptjs.${this.product}.mainPage`));
     await this.page.goto(
       config.get<string>(`codeceptjs.${this.product}.mainPage`)
     );

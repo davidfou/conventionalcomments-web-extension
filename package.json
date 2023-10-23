@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@babel/core": "7.18.2",
-    "@gitbeaker/node": "28.3.0",
+    "@gitbeaker/rest": "39.21.1",
     "@octokit/request-error": "2.1.0",
     "@playwright/test": "1.37.1",
     "@rollup/plugin-commonjs": "22.0.0",

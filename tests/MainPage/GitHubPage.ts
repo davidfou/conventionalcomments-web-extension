@@ -8,7 +8,7 @@ import { expect } from "../fixtures";
 
 const MAX_RETRY = 4;
 
-class GitHubPage extends AbstractPage {
+class GitHubPage extends AbstractPage<number, number> {
   private apiClient: Octokit["rest"];
 
   constructor(page: Page) {
