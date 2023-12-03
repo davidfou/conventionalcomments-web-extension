@@ -18,6 +18,11 @@
       " btn gl-mr-2 btn-default btn-sm gl-button btn-default-tertiary btn-icon";
     iconClasses += " gl-button-icon gl-icon s16";
   }
+  if (product === "gitlab-v2") {
+    classes +=
+      " btn gl-mr-2 btn-default btn-sm gl-button btn-default-tertiary btn-icon";
+    iconClasses += " gl-button-icon gl-icon s16";
+  }
 
   function handleClick() {
     textarea.focus();
@@ -62,6 +67,10 @@
   }
 
   .cc-button-icon-gitlab-v1.cc-active {
+    fill: var(--primary);
+  }
+
+  .cc-button-icon-gitlab-v2.cc-active {
     fill: var(--primary);
   }
 </style>

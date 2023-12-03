@@ -18,10 +18,12 @@
   const VALUE_CLASS: Record<ProductType, string> = {
     github: "f5 text-bold",
     "gitlab-v1": "",
+    "gitlab-v2": "",
   };
   const DESCRIPTION_CLASS: Record<ProductType, string> = {
     github: "text-small color-text-secondary text-normal pb-1",
     "gitlab-v1": "",
+    "gitlab-v2": "",
   };
 </script>
 
@@ -63,6 +65,16 @@
       }
     }
 
+    &.cc-select-item-gitlab-v2 {
+      color: var(--gl-text-color);
+      background: transparent;
+
+      &.cc-ext-hover,
+      &.cc-ext-active {
+        background: #eee;
+      }
+    }
+
     &.cc-select-item-github {
       color: var(--color-fg-default);
       background-color: var(--color-canvas-overlay);
@@ -75,6 +87,13 @@
   }
 
   :global(body.gl-dark) button.cc-select-item-gitlab-v1 {
+    &.cc-ext-hover,
+    &.cc-ext-active {
+      background: var(--gray-200);
+    }
+  }
+
+  :global(html.gl-dark) button.cc-select-item-gitlab-v2 {
     &.cc-ext-hover,
     &.cc-ext-active {
       background: var(--gray-200);

@@ -101,7 +101,65 @@
     }
   }
 
+  .cc-select-wrapper-gitlab-v2 {
+    margin: 8px;
+    text-align: left;
+    color: #303030;
+    --inputColor: #303030;
+    --border: none;
+    --borderRadius: 0.25rem;
+    --background: #fff;
+    --listBackground: var(--white);
+    --listBorder: 1px solid #dbdbdb;
+    --listBorderRadius: 0.25rem;
+    --listEmptyPadding: 8px 0;
+    --listShadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --clearSelectColor: #666;
+    --clearSelectFocusColor: #666;
+    --clearSelectHoverColor: var(--primary);
+    --multiClearBG: transparent;
+    --multiClearHoverBG: transparent;
+    --multiClearFill: var(--primary);
+    --multiClearHoverFill: var(--primary);
+    > :global(.selectContainer) {
+      box-shadow: inset 0 0 0 1px #bfbfbf;
+      transition: 100ms linear;
+      transition-property: box-shadow, background;
+    }
+    &.cc-select-wrapper-focussed,
+    &:hover {
+      > :global(.selectContainer) {
+        box-shadow: inset 0 0 0 2px #868686, 0 2px 2px 0 rgba(0, 0, 0, 0.08);
+        background: #f0f0f0;
+      }
+    }
+  }
+
   :global(body.gl-dark) .cc-select-wrapper-gitlab-v1 {
+    color: #fafafa;
+    --inputColor: #fafafa;
+    --background: #333;
+    --listBackground: #333;
+    --listBorder: 1px solid #404040;
+    --multiItemBG: var(--gray-200);
+    --multiItemActiveBG: var(--gray-200);
+    --multiItemActiveColor: #fafafa;
+    --clearSelectColor: #999;
+    --clearSelectFocusColor: #999;
+    > :global(.selectContainer) {
+      box-shadow: inset 0 0 0 1px #525252;
+    }
+
+    &.cc-select-wrapper-focussed,
+    &:hover {
+      > :global(.selectContainer) {
+        box-shadow: inset 0 0 0 2px #868686, 0 2px 2px 0 rgba(0, 0, 0, 0.08);
+        background: #303030;
+      }
+    }
+  }
+
+  :global(html.gl-dark) .cc-select-wrapper-gitlab-v2 {
     color: #fafafa;
     --inputColor: #fafafa;
     --background: #333;
