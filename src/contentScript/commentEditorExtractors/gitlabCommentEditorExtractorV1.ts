@@ -69,7 +69,7 @@ const gitlabCommentEditorExtractor: CommentEditorExtractor = (
             target: targetEl,
             anchor: anchorEl,
           },
-          productType: "gitlab",
+          productType: "gitlab-v1",
         });
 
         extractedTextareas.push({ id, textarea });

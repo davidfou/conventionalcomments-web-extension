@@ -67,7 +67,7 @@
 {/if}
 
 <style lang="scss">
-  .cc-select-wrapper-gitlab {
+  .cc-select-wrapper-gitlab-v1 {
     padding: 10px 0.25rem 0 0.25rem;
     text-align: left;
     color: #303030;
@@ -101,7 +101,7 @@
     }
   }
 
-  :global(body.gl-dark) .cc-select-wrapper-gitlab {
+  :global(body.gl-dark) .cc-select-wrapper-gitlab-v1 {
     color: #fafafa;
     --inputColor: #fafafa;
     --background: #333;

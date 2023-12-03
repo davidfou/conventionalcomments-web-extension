@@ -1,1 +1,1 @@
-export default ["github", "gitlab"] as const;
+export default ["github", "gitlab-v1"] as const;

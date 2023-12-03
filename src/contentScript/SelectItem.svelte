@@ -17,11 +17,11 @@
 
   const VALUE_CLASS: Record<ProductType, string> = {
     github: "f5 text-bold",
-    gitlab: "",
+    "gitlab-v1": "",
   };
   const DESCRIPTION_CLASS: Record<ProductType, string> = {
     github: "text-small color-text-secondary text-normal pb-1",
-    gitlab: "",
+    "gitlab-v1": "",
   };
 </script>
 
@@ -53,7 +53,7 @@
     outline: none;
     width: 100%;
 
-    &.cc-select-item-gitlab {
+    &.cc-select-item-gitlab-v1 {
       color: var(--gl-text-color);
       background: transparent;
 
@@ -74,7 +74,7 @@
     }
   }
 
-  :global(body.gl-dark) button.cc-select-item-gitlab {
+  :global(body.gl-dark) button.cc-select-item-gitlab-v1 {
     &.cc-ext-hover,
     &.cc-ext-active {
       background: var(--gray-200);
