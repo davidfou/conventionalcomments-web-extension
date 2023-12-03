@@ -3,10 +3,10 @@ import type { CommentEditorExtractor } from "./CommentEditorExtractor";
 const getIsMainComment = (el: Element): boolean => {
   const mainCommentEl = el
     .closest(".discussion-notes")
-    ?.querySelector("li[data-qa-selector=noteable_note_container]");
+    ?.querySelector("li[data-testid=noteable-note-container]");
   return (
     mainCommentEl === null ||
-    mainCommentEl === el.closest("li[data-qa-selector=noteable_note_container]")
+    mainCommentEl === el.closest("li[data-testid=noteable-note-container]")
   );
 };
 
@@ -41,19 +41,11 @@ const gitlabCommentEditorExtractor: CommentEditorExtractor = (
         const id = generateId();
 
         const navList = mainEl.querySelector(
-          "[data-testid='md-header-toolbar']"
+          "[data-testid='md-header-toolbar'] > div:first-child"
         );
         const targetEl = mainEl.querySelector(".div-dropzone-wrapper");
         const anchorEl = mainEl.querySelector(".div-dropzone");
-        const buttonAnchorEl = mainEl.querySelector(
-          "[data-testid='md-header-toolbar'] > span:last-of-type"
-        );
-        if (
-          navList === null ||
-          targetEl === null ||
-          anchorEl === null ||
-          buttonAnchorEl === null
-        ) {
+        if (navList === null || targetEl === null || anchorEl === null) {
           return;
         }
 
@@ -63,13 +55,12 @@ const gitlabCommentEditorExtractor: CommentEditorExtractor = (
           textarea,
           buttonParams: {
             target: navList,
-            anchor: buttonAnchorEl,
           },
           editorParams: {
             target: targetEl,
             anchor: anchorEl,
           },
-          productType: "gitlab",
+          productType: "gitlab-v2",
         });
 
         extractedTextareas.push({ id, textarea });

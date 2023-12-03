@@ -8,12 +8,22 @@
 
   let classes = `cc-button-${product}`;
   let iconClasses = `cc-button-icon-${product}`;
-  if (product === "github") {
+  if (product === "github-v1") {
     classes +=
       " flex-auto text-center toolbar-item btn-octicon p-2 p-md-1 mx-1";
     iconClasses += " octicon";
   }
-  if (product === "gitlab") {
+  if (product === "github-v2") {
+    classes +=
+      " flex-auto text-center toolbar-item btn-octicon p-2 p-md-1 mx-1";
+    iconClasses += " octicon";
+  }
+  if (product === "gitlab-v1") {
+    classes +=
+      " btn gl-mr-2 btn-default btn-sm gl-button btn-default-tertiary btn-icon";
+    iconClasses += " gl-button-icon gl-icon s16";
+  }
+  if (product === "gitlab-v2") {
     classes +=
       " btn gl-mr-2 btn-default btn-sm gl-button btn-default-tertiary btn-icon";
     iconClasses += " gl-button-icon gl-icon s16";
@@ -53,15 +63,27 @@
 </span>
 
 <style>
-  .cc-button-icon-github {
+  .cc-button-icon-github-v1 {
     fill: currentColor;
   }
 
-  .cc-button-icon-github.cc-active {
+  .cc-button-icon-github-v2 {
+    fill: currentColor;
+  }
+
+  .cc-button-icon-github-v1.cc-active {
     fill: var(--color-accent-fg);
   }
 
-  .cc-button-icon-gitlab.cc-active {
+  .cc-button-icon-github-v2.cc-active {
+    fill: var(--color-accent-fg);
+  }
+
+  .cc-button-icon-gitlab-v1.cc-active {
+    fill: var(--primary);
+  }
+
+  .cc-button-icon-gitlab-v2.cc-active {
     fill: var(--primary);
   }
 </style>

@@ -30,6 +30,12 @@ const LABELS: SelectableItem[] = [
       "Issues highlight specific problems with the subject under review. These problems can be user-facing or behind the scenes. It is strongly recommended to pair this comment with a `suggestion`. If you are not sure if a problem exists or not, consider leaving a `question`.",
   },
   {
+    value: "todo",
+    label: "todo",
+    description:
+      "TODO's are small, trivial, but necessary changes. Distinguishing todo comments from issues: or suggestions: helps direct the reader's attention to comments requiring more involvement.",
+  },
+  {
     value: "question",
     label: "question",
     description:
@@ -46,6 +52,24 @@ const LABELS: SelectableItem[] = [
     label: "chore",
     description:
       'Chores are simple tasks that must be done before the subject can be "officially" accepted. Usually, these comments reference some common process. Try to leave a link to the process description so that the reader knows how to resolve the chore.',
+  },
+  {
+    value: "note",
+    label: "note",
+    description:
+      "Notes are always non-blocking and simply highlight something the reader should take note of.",
+  },
+  {
+    value: "typo",
+    label: "typo",
+    description:
+      "Typo comments are like **todo**, where the main issue is a mispelling.",
+  },
+  {
+    value: "polish",
+    label: "polish",
+    description:
+      "Polish comments are like a **suggestion**, where there is nothing necessarily wrong with the relevant content, there's just some ways to immediately improve the quality.",
   },
 ];
 

@@ -16,12 +16,16 @@
   const { product } = getContext<Store>(CONTEXT_KEY);
 
   const VALUE_CLASS: Record<ProductType, string> = {
-    github: "f5 text-bold",
-    gitlab: "",
+    "github-v1": "f5 text-bold",
+    "github-v2": "f5 text-bold",
+    "gitlab-v1": "",
+    "gitlab-v2": "",
   };
   const DESCRIPTION_CLASS: Record<ProductType, string> = {
-    github: "text-small color-text-secondary text-normal pb-1",
-    gitlab: "",
+    "github-v1": "text-small color-text-secondary text-normal pb-1",
+    "github-v2": "text-small color-text-secondary text-normal pb-1",
+    "gitlab-v1": "",
+    "gitlab-v2": "",
   };
 </script>
 
@@ -53,7 +57,7 @@
     outline: none;
     width: 100%;
 
-    &.cc-select-item-gitlab {
+    &.cc-select-item-gitlab-v1 {
       color: var(--gl-text-color);
       background: transparent;
 
@@ -63,7 +67,27 @@
       }
     }
 
-    &.cc-select-item-github {
+    &.cc-select-item-gitlab-v2 {
+      color: var(--gl-text-color);
+      background: transparent;
+
+      &.cc-ext-hover,
+      &.cc-ext-active {
+        background: #eee;
+      }
+    }
+
+    &.cc-select-item-github-v1 {
+      color: var(--color-fg-default);
+      background-color: var(--color-canvas-overlay);
+
+      &.cc-ext-hover,
+      &.cc-ext-active {
+        background-color: var(--color-neutral-subtle);
+      }
+    }
+
+    &.cc-select-item-github-v2 {
       color: var(--color-fg-default);
       background-color: var(--color-canvas-overlay);
 
@@ -74,7 +98,14 @@
     }
   }
 
-  :global(body.gl-dark) button.cc-select-item-gitlab {
+  :global(body.gl-dark) button.cc-select-item-gitlab-v1 {
+    &.cc-ext-hover,
+    &.cc-ext-active {
+      background: var(--gray-200);
+    }
+  }
+
+  :global(html.gl-dark) button.cc-select-item-gitlab-v2 {
     &.cc-ext-hover,
     &.cc-ext-active {
       background: var(--gray-200);

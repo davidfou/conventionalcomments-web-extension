@@ -71,7 +71,7 @@ const githubCommentEditorExtractor: CommentEditorExtractor = (
             target: editorTargetEl,
             anchor: editorAnchorEl,
           },
-          productType: "github",
+          productType: "github-v1",
         });
 
         extractedTextareas.push({
