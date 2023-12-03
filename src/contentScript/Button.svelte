@@ -8,7 +8,7 @@
 
   let classes = `cc-button-${product}`;
   let iconClasses = `cc-button-icon-${product}`;
-  if (product === "github") {
+  if (product === "github-v1") {
     classes +=
       " flex-auto text-center toolbar-item btn-octicon p-2 p-md-1 mx-1";
     iconClasses += " octicon";
@@ -58,11 +58,11 @@
 </span>
 
 <style>
-  .cc-button-icon-github {
+  .cc-button-icon-github-v1 {
     fill: currentColor;
   }
 
-  .cc-button-icon-github.cc-active {
+  .cc-button-icon-github-v1.cc-active {
     fill: var(--color-accent-fg);
   }
 

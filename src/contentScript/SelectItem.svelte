@@ -16,12 +16,12 @@
   const { product } = getContext<Store>(CONTEXT_KEY);
 
   const VALUE_CLASS: Record<ProductType, string> = {
-    github: "f5 text-bold",
+    "github-v1": "f5 text-bold",
     "gitlab-v1": "",
     "gitlab-v2": "",
   };
   const DESCRIPTION_CLASS: Record<ProductType, string> = {
-    github: "text-small color-text-secondary text-normal pb-1",
+    "github-v1": "text-small color-text-secondary text-normal pb-1",
     "gitlab-v1": "",
     "gitlab-v2": "",
   };
@@ -75,7 +75,7 @@
       }
     }
 
-    &.cc-select-item-github {
+    &.cc-select-item-github-v1 {
       color: var(--color-fg-default);
       background-color: var(--color-canvas-overlay);
 

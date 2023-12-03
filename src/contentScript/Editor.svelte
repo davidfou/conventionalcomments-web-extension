@@ -183,7 +183,7 @@
     }
   }
 
-  .cc-select-wrapper-github {
+  .cc-select-wrapper-github-v1 {
     color: var(--color-fg-default);
     --inputColor: var(--color-fg-default);
     margin: 0 8px 8px;
