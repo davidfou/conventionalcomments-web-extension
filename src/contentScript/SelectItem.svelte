@@ -17,11 +17,13 @@
 
   const VALUE_CLASS: Record<ProductType, string> = {
     "github-v1": "f5 text-bold",
+    "github-v2": "f5 text-bold",
     "gitlab-v1": "",
     "gitlab-v2": "",
   };
   const DESCRIPTION_CLASS: Record<ProductType, string> = {
     "github-v1": "text-small color-text-secondary text-normal pb-1",
+    "github-v2": "text-small color-text-secondary text-normal pb-1",
     "gitlab-v1": "",
     "gitlab-v2": "",
   };
@@ -76,6 +78,16 @@
     }
 
     &.cc-select-item-github-v1 {
+      color: var(--color-fg-default);
+      background-color: var(--color-canvas-overlay);
+
+      &.cc-ext-hover,
+      &.cc-ext-active {
+        background-color: var(--color-neutral-subtle);
+      }
+    }
+
+    &.cc-select-item-github-v2 {
       color: var(--color-fg-default);
       background-color: var(--color-canvas-overlay);
 

@@ -217,6 +217,40 @@
     }
   }
 
+  .cc-select-wrapper-github-v2 {
+    color: var(--color-fg-default);
+    --inputColor: var(--color-fg-default);
+    margin: 8px;
+    --background: var(--color-btn-bg);
+    &.cc-select-wrapper-focussed,
+    &:hover {
+      --background: var(--color-btn-hover-bg);
+    }
+    --border: 1px solid var(--color-btn-border);
+    --borderFocusColor: var(--color-btn-focus-border);
+    --borderHoverColor: var(--color-btn-hover-border);
+    --borderRadius: 6px;
+    --clearSelectColor: var(--color-fg-muted);
+    --clearSelectFocusColor: var(--color-fg-muted);
+    --clearSelectHoverColor: var(--color-accent-fg);
+    --listBackground: var(--color-canvas-overlay);
+    --listBorder: 1px solid var(--color-border-default);
+    --listBorderRadius: 6px;
+    --listShadow: var(--color-shadow-large);
+    --multiItemBG: var(--color-neutral-muted);
+    --multiItemActiveBG: var(--color-neutral-muted);
+    --multiItemActiveColor: var(--color-fg-default);
+    --multiClearBG: transparent;
+    --multiClearHoverBG: transparent;
+    --multiClearFill: var(--color-fg-default);
+    --multiClearHoverFill: var(--color-accent-fg);
+
+    > :global(.selectContainer) {
+      transition: 0.2s cubic-bezier(0.3, 0, 0.5, 1);
+      transition-property: color, background-color, border-color;
+    }
+  }
+
   /* Ensure there is enough place to show the full list */
   :global(textarea#note_note) {
     min-height: 188px;
