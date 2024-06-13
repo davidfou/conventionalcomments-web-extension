@@ -1,67 +1,59 @@
 const { deferConfig } = require("config/defer");
 
 module.exports = {
-  codeceptjs: {
-    product: "gitlab",
-    screenshotNames: [
-      "editor-active",
-      "editor-inactive",
-      "label-selector",
-      "label-selector-mouse-hover",
-      "decorator-selector-mouse-hover-clear",
-    ],
-    updateScreenshots: false,
+  e2e: {
     gitlab: {
       username: undefined,
       password: undefined,
       project: undefined,
       token: undefined,
+      twoFactorSecret: undefined,
       baseUrl: "https://gitlab.com",
       mainPage: deferConfig(function mainPage() {
         return [
           "",
-          this.codeceptjs.gitlab.username,
-          this.codeceptjs.gitlab.project,
+          this.e2e.gitlab.username,
+          this.e2e.gitlab.project,
           "-/merge_requests/1/diffs",
         ].join("/");
       }),
       overviewPage: deferConfig(function mainPage() {
         return [
           "",
-          this.codeceptjs.gitlab.username,
-          this.codeceptjs.gitlab.project,
+          this.e2e.gitlab.username,
+          this.e2e.gitlab.project,
           "-/merge_requests/1",
         ].join("/");
       }),
-      editPullRequestPage: deferConfig(function mainPage() {
+      editPullRequestPage: deferConfig(function editPullRequestPage() {
         return [
           "",
-          this.codeceptjs.gitlab.username,
-          this.codeceptjs.gitlab.project,
-          "-/merge_requests/1",
+          this.e2e.gitlab.username,
+          this.e2e.gitlab.project,
+          "-/merge_requests/1/edit",
         ].join("/");
       }),
       newPullRequestPage: deferConfig(function newPullRequestPage() {
         return [
           "",
-          this.codeceptjs.gitlab.username,
-          this.codeceptjs.gitlab.project,
+          this.e2e.gitlab.username,
+          this.e2e.gitlab.project,
           "-/merge_requests/new?merge_request[source_branch]=new_branch2",
         ].join("/");
       }),
       newIssuePage: deferConfig(function newIssuePage() {
         return [
           "",
-          this.codeceptjs.gitlab.username,
-          this.codeceptjs.gitlab.project,
+          this.e2e.gitlab.username,
+          this.e2e.gitlab.project,
           "-/issues/new",
         ].join("/");
       }),
       issuePage: deferConfig(function mainPage() {
         return [
           "",
-          this.codeceptjs.gitlab.username,
-          this.codeceptjs.gitlab.project,
+          this.e2e.gitlab.username,
+          this.e2e.gitlab.project,
           "-/issues/1",
         ].join("/");
       }),
@@ -89,40 +81,40 @@ module.exports = {
       mainPage: deferConfig(function mainPage() {
         return [
           "",
-          this.codeceptjs.github.username,
-          this.codeceptjs.github.project,
+          this.e2e.github.username,
+          this.e2e.github.project,
           "pull/1/files",
         ].join("/");
       }),
       overviewPage: deferConfig(function overviewPage() {
         return [
           "",
-          this.codeceptjs.github.username,
-          this.codeceptjs.github.project,
+          this.e2e.github.username,
+          this.e2e.github.project,
           "pull/1",
         ].join("/");
       }),
       newPullRequestPage: deferConfig(function newPullRequestPage() {
         return [
           "",
-          this.codeceptjs.github.username,
-          this.codeceptjs.github.project,
+          this.e2e.github.username,
+          this.e2e.github.project,
           "compare/new_branch2?expand=1",
         ].join("/");
       }),
       newIssuePage: deferConfig(function newIssuePage() {
         return [
           "",
-          this.codeceptjs.github.username,
-          this.codeceptjs.github.project,
+          this.e2e.github.username,
+          this.e2e.github.project,
           "issues/new",
         ].join("/");
       }),
       issuePage: deferConfig(function newIssuePage() {
         return [
           "",
-          this.codeceptjs.github.username,
-          this.codeceptjs.github.project,
+          this.e2e.github.username,
+          this.e2e.github.project,
           "issues/2",
         ].join("/");
       }),
@@ -143,5 +135,10 @@ module.exports = {
     token: undefined,
     version: "v3",
     fileKey: "F5u9sP9QoNqEMpgJzQKzN1",
+  },
+  playwright: {
+    reporter: "html",
+    googleBin: "google-chrome",
+    debugGitLabGetCookies: false,
   },
 };

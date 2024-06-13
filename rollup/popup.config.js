@@ -9,7 +9,7 @@ import commonjs from "@rollup/plugin-commonjs";
 import livereload from "rollup-plugin-livereload";
 import { terser } from "rollup-plugin-terser";
 import { spawn } from "child_process";
-import { firefox, chromium } from "playwright";
+import { firefox, chromium } from "@playwright/test";
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -33,13 +33,39 @@ function serve() {
         const userDataDir = await fs.mkdtemp(
           path.join(os.tmpdir(), "conventionalcomments-web-ext-chrome-profile")
         );
-        await chromium.launchPersistentContext(userDataDir, {
-          headless: false,
-          args: [
-            `--disable-extensions-except=${pathToExtension}`,
-            `--load-extension=${pathToExtension}`,
-          ],
-        });
+        const chromeContext = await chromium.launchPersistentContext(
+          userDataDir,
+          {
+            headless: false,
+            args: [
+              `--disable-extensions-except=${pathToExtension}`,
+              `--load-extension=${pathToExtension}`,
+            ],
+          }
+        );
+
+        await Promise.all(
+          ["github", "gitlab"].map(async (product) => {
+            const content = await fs
+              .readFile(
+                path.join(
+                  __dirname,
+                  `../playwright/.auth/user-${product}.json`
+                ),
+                "utf8"
+              )
+              .catch((error) => {
+                if (error.code !== "ENOENT") {
+                  throw error;
+                }
+                return null;
+              });
+            if (content !== null) {
+              const { cookies } = JSON.parse(content);
+              chromeContext.addCookies(cookies);
+            }
+          })
+        );
       }
     },
   };

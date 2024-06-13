@@ -3,4 +3,5 @@ module.exports = {
   preset: "ts-jest",
   testEnvironment: "jsdom",
   setupFiles: ["jest-webextension-mock", "./setup.jest"],
+  testMatch: ["**/*.test.ts"],
 };

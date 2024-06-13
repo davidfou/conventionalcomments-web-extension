@@ -21,6 +21,7 @@ export default {
         "public/*",
         "src/popup/**",
         "src/contentScript/**",
+        "e2e/**",
       ],
     }),
 

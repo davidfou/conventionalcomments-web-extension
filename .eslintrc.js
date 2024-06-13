@@ -7,7 +7,6 @@ module.exports = {
     "airbnb",
     "airbnb/hooks",
     "prettier",
-    "plugin:codeceptjs/recommended",
     "plugin:storybook/recommended",
   ],
   parser: "@typescript-eslint/parser",
@@ -32,6 +31,7 @@ module.exports = {
         devDependencies: true,
       },
     ],
+    "import/no-unresolved": ["error", { ignore: ["^@gitbeaker/rest$"] }],
     "prettier/prettier": "warn",
     "import/extensions": [
       "error",
@@ -76,6 +76,13 @@ module.exports = {
         "import/first": "off",
         "import/prefer-default-export": "off",
         "import/no-mutable-exports": "off",
+      },
+    },
+    {
+      files: ["tests/**/*"],
+      rules: {
+        "no-restricted-syntax": "off",
+        "no-await-in-loop": "off",
       },
     },
   ],
