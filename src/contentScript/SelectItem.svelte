@@ -93,7 +93,10 @@
 
       &.cc-ext-hover,
       &.cc-ext-active {
-        background-color: var(--color-neutral-subtle);
+        background-color: var(
+          --bgColor-neutral-muted,
+          var(--color-neutral-subtle)
+        );
       }
     }
   }

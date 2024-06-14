@@ -218,32 +218,45 @@
   }
 
   .cc-select-wrapper-github-v2 {
-    color: var(--color-fg-default);
-    --inputColor: var(--color-fg-default);
+    --inputColor: var(--fgColor-default, var(--color-fg-default));
     margin: 8px;
-    --background: var(--color-btn-bg);
-    &.cc-select-wrapper-focussed,
-    &:hover {
-      --background: var(--color-btn-hover-bg);
-    }
-    --border: 1px solid var(--color-btn-border);
+    --padding: var(--base-size-8);
+    --background: var(--bgColor-default, var(--color-canvas-default));
+    --border: 1px solid
+      var(--control-borderColor-rest, var(--color-border-default));
     --borderFocusColor: var(--color-btn-focus-border);
-    --borderHoverColor: var(--color-btn-hover-border);
-    --borderRadius: 6px;
-    --clearSelectColor: var(--color-fg-muted);
-    --clearSelectFocusColor: var(--color-fg-muted);
-    --clearSelectHoverColor: var(--color-accent-fg);
-    --listBackground: var(--color-canvas-overlay);
-    --listBorder: 1px solid var(--color-border-default);
-    --listBorderRadius: 6px;
-    --listShadow: var(--color-shadow-large);
-    --multiItemBG: var(--color-neutral-muted);
-    --multiItemActiveBG: var(--color-neutral-muted);
-    --multiItemActiveColor: var(--color-fg-default);
-    --multiClearBG: transparent;
-    --multiClearHoverBG: transparent;
-    --multiClearFill: var(--color-fg-default);
-    --multiClearHoverFill: var(--color-accent-fg);
+    --borderHoverColor: var(
+      --bgColor-neutral-muted,
+      var(--color-neutral-subtle)
+    );
+    --borderRadius: var(--borderRadius-medium);
+    --clearSelectColor: var(--fgColor-muted, var(--color-fg-muted));
+    --clearSelectFocusColor: var(--fgColor-muted, var(--color-fg-muted));
+    --clearSelectHoverColor: var(--fgColor-accent, var(--color-accent-fg));
+    --listBackground: var(--overlay-bgColor);
+    --listBorderRadius: var(--borderRadius-large);
+    --listShadow: var(--shadow-floating-small);
+    --multiSelectPadding: 0 var(--base-size-8);
+    --multiItemBG: var(--bgColor-accent-muted, var(--color-accent-subtle));
+    --multiItemActiveBG: var(
+      --bgColor-accent-emphasis,
+      var(--color-accent-emphasis)
+    );
+    --multiItemActiveColor: var(
+      --fgColor-onEmphasis,
+      var(--color-fg-on-emphasis)
+    );
+    --multiClearBG: var(--bgColor-accent-muted, var(--color-accent-subtle));
+    --multiClearHoverBG: var(
+      --bgColor-accent-emphasis,
+      var(--color-accent-emphasis)
+    );
+    --multiItemBorderRadius: 2em;
+    --multiClearFill: var(--button-default-fgColor-rest);
+    --multiClearHoverFill: var(
+      --fgColor-onEmphasis,
+      var(--color-fg-on-emphasis)
+    );
 
     > :global(.selectContainer) {
       transition: 0.2s cubic-bezier(0.3, 0, 0.5, 1);
