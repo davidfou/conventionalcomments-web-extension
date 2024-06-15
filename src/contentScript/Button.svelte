@@ -14,8 +14,7 @@
     iconClasses += " octicon";
   }
   if (product === "github-v2") {
-    classes +=
-      " flex-auto text-center toolbar-item btn-octicon p-2 p-md-1 mx-1";
+    classes += " flex-auto text-center toolbar-item btn-octicon p-2 mx-0";
     iconClasses += " octicon";
   }
   if (product === "gitlab-v1") {
@@ -68,7 +67,7 @@
   }
 
   .cc-button-icon-github-v2 {
-    fill: currentColor;
+    fill: var(--control-fgColor-disabled);
   }
 
   .cc-button-icon-github-v1.cc-active {
@@ -76,7 +75,7 @@
   }
 
   .cc-button-icon-github-v2.cc-active {
-    fill: var(--color-accent-fg);
+    fill: var(--fgColor-muted, var(--color-fg-muted));
   }
 
   .cc-button-icon-gitlab-v1.cc-active {
