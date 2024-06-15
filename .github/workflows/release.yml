@@ -29,8 +29,10 @@ jobs:
         id: cache-extention
         uses: actions/cache@v4
         with:
-          path: public/web-ext-artifacts
-          key: extension-${{ github.run_id }}
+          path: |
+            web-ext-artifacts
+            public
+          key: release-${{ github.run_id }}
 
   publish-firefox:
     name: Publish Firefox
@@ -55,10 +57,16 @@ jobs:
         id: cache-extention
         uses: actions/cache@v4
         with:
-          path: public/build
-          key: extension-${{ github.run_id }}
+          path: |
+            web-ext-artifacts
+            public
+          key: release-${{ github.run_id }}
 
       - name: Publish
+        env:
+          EXTENSION_ID: ${{ secrets.EXTENSION_ID }}
+          WEB_EXT_API_KEY: ${{ secrets.WEB_EXT_API_KEY }}
+          WEB_EXT_API_SECRET: ${{ secrets.WEB_EXT_API_SECRET }}
         run: yarn web-ext-submit
 
   publish-chrome:
@@ -84,11 +92,18 @@ jobs:
         id: cache-extention
         uses: actions/cache@v4
         with:
-          path: public/build
-          key: extension-${{ github.run_id }}
+          path: |
+            web-ext-artifacts
+            public
+          key: release-${{ github.run_id }}
 
       - name: Publish
-        run: yarn chrome-webstore-upload upload --source "web-ext-artifacts/conventional_comments-${GITHUB_REF:1}.zip" --auto-publish
+        env:
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          EXTENSION_ID: ${{ secrets.EXTENSION_ID }}
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+        run: yarn chrome-webstore-upload upload --source "web-ext-artifacts/conventional_comments-${GITHUB_REF#refs/tags/v}.zip" --auto-publish
 
   create-release:
     name: Create Release
@@ -105,8 +120,10 @@ jobs:
         id: cache-extention
         uses: actions/cache@v4
         with:
-          path: public/build
-          key: extension-${{ github.run_id }}
+          path: |
+            web-ext-artifacts
+            public
+          key: release-${{ github.run_id }}
 
       - name: Create release
         uses: ncipollo/release-action@v1
