@@ -147,7 +147,7 @@ async function doTwoFactorAuthentication(client: CDP.Client) {
 async function isOnExpectedPage(client: CDP.Client) {
   const { targetInfos } = await client.Target.getTargets();
   return targetInfos.some(
-    (target) => target.type === "page" && target.url === "https://gitlab.com/"
+    (target) => target.type === "page" && target.url === "https://gitlab.com/",
   );
 }
 
@@ -164,7 +164,7 @@ function takeScreenshots(client: CDP.Client): () => void {
       await fs
         .writeFile(
           path.join(__dirname, `../../../playwright-videos/${screenshotName}`),
-          Buffer.from(data, "base64")
+          Buffer.from(data, "base64"),
         )
         .catch(() => {});
     } catch (error) {
@@ -216,7 +216,7 @@ async function getCookies() {
       }
       if (!didTwoFactorAuthentication) {
         didTwoFactorAuthentication = await doTwoFactorAuthentication(
-          client
+          client,
         ).catch(() => {
           log("something went wrong!\n");
           return false;

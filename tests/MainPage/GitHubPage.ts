@@ -1,5 +1,5 @@
 import config from "config";
-import { Octokit } from "octokit"; // eslint-disable-line
+import { Octokit } from "octokit";  
 import { authenticator } from "otplib";
 import type { Locator, Page } from "@playwright/test";
 
@@ -44,8 +44,8 @@ class GitHubPage extends AbstractPage {
           owner: config.get<string>("e2e.github.username"),
           repo: config.get<string>("e2e.github.project"),
           comment_id: id,
-        })
-      )
+        }),
+      ),
     );
   }
 
@@ -129,7 +129,7 @@ class GitHubPage extends AbstractPage {
     await this.page.keyboard.press("Enter");
     await this.page.fill(
       "#app_totp",
-      authenticator.generate(config.get("e2e.github.twoFactorSecret"))
+      authenticator.generate(config.get("e2e.github.twoFactorSecret")),
     );
     await this.page.waitForURL("https://github.com");
 
@@ -192,7 +192,7 @@ class GitHubPage extends AbstractPage {
 
   getReplyInputLocator(threadId: string) {
     return this.page.locator(
-      `.comment-holder:has(#r${threadId}) button.review-thread-reply-button`
+      `.comment-holder:has(#r${threadId}) button.review-thread-reply-button`,
     );
   }
 
@@ -227,7 +227,7 @@ class GitHubPage extends AbstractPage {
         (request) =>
           request.url() ===
             "https://github.com/settings/appearance/color_mode" &&
-          request.method() === "POST"
+          request.method() === "POST",
       );
       await this.page.locator(`input#option-${theme}`).check();
       await waitForRequest;

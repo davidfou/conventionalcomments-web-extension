@@ -31,7 +31,7 @@ const globalSetup = async () => {
     "README.md",
     "master",
     "# Main title\n\nMy first line.\n",
-    "Initial commit"
+    "Initial commit",
   );
 
   await client.RepositoryFiles.edit(
@@ -42,13 +42,13 @@ const globalSetup = async () => {
     "Update doc",
     {
       startBranch: "master",
-    }
+    },
   );
   await client.MergeRequests.create(
     projectPath,
     "new_branch",
     "master",
-    "Update doc"
+    "Update doc",
   );
   await client.MergeRequestNotes.create(projectPath, 1, "My comment");
 
@@ -60,7 +60,7 @@ const globalSetup = async () => {
     "Update doc",
     {
       startBranch: "master",
-    }
+    },
   );
 
   await client.Issues.create(projectPath, "My first issue", {

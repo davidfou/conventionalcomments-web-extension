@@ -1,16 +1,33 @@
-/node_modules/
-/public/build/
-/public/fonts/
-/config/local*
-/output
-/web-ext-artifacts
-
-yarn-debug.log*
-yarn-error.log*
-
+# General
 .DS_Store
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Dependency directories
+/node_modules/
+
+# Local config
+/config/local*
+
+# Playwright
+/output/
 /test-results/
 /playwright-report/
 /playwright-videos/
 /playwright/.cache/
 /playwright/.auth/
+
+# Build files
+/dist
+
+*storybook.log
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

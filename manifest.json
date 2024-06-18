@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "Conventional: comments",
+  "version": "2.1.2",
+  "description": "Write conventional comments directly in your favorite repository manager.",
+  "icons": {
+    "16": "public/icons/icon_16.png",
+    "48": "public/icons/icon_48.png",
+    "96": "public/icons/icon_96.png",
+    "128": "public/icons/icon_128.png"
+  },
+  "background": {
+    "service_worker": "./src_new/background/index.ts"
+  },
+  "action": {
+    "default_icon": {
+      "16": "public/icons/browser_action_16.png",
+      "24": "public/icons/browser_action_24.png",
+      "32": "public/icons/browser_action_32.png",
+      "64": "public/icons/browser_action_64.png"
+    },
+    "default_title": "Conventional: comments",
+    "default_popup": "./src_new/popup/index.html"
+  },
+  "permissions": ["activeTab", "storage"],
+  "host_permissions": ["https://github.com/*", "https://gitlab.com/*"],
+  "optional_host_permissions": ["*://*/*"]
+}

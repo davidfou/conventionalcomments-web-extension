@@ -34,7 +34,7 @@ const test = base.extend<MyOptions & MyFixtures>({
     const content = await fs
       .readFile(
         path.join(__dirname, `../../playwright/.auth/user-${product}.json`),
-        "utf8"
+        "utf8",
       )
       .catch((error) => {
         if (error.code !== "ENOENT") {

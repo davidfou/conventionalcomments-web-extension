@@ -15,7 +15,7 @@ abstract class AbstractPage {
     this.page = page;
     this.changesSelector = page
       .locator(
-        `a[href="${config.get<string>(`e2e.${this.product}.mainPage`)}"]`
+        `a[href="${config.get<string>(`e2e.${this.product}.mainPage`)}"]`,
       )
       .locator("visible=true")
       .first();
@@ -29,7 +29,7 @@ abstract class AbstractPage {
 
   abstract createThread(
     comments: string[],
-    line: number
+    line: number,
   ): Promise<{ id: string; noteIds: string[] }>;
 
   abstract retrievePullRequestCommentIds(): Promise<string[]>;
@@ -69,7 +69,7 @@ abstract class AbstractPage {
 
   async goToOverviewPage() {
     await this.page.goto(
-      config.get<string>(`e2e.${this.product}.overviewPage`)
+      config.get<string>(`e2e.${this.product}.overviewPage`),
     );
     await this.waitPageIsReady();
   }
@@ -81,14 +81,14 @@ abstract class AbstractPage {
 
   async goToNewIssuePage() {
     await this.page.goto(
-      config.get<string>(`e2e.${this.product}.newIssuePage`)
+      config.get<string>(`e2e.${this.product}.newIssuePage`),
     );
     await this.waitPageIsReady();
   }
 
   async goToNewPullRequestPage() {
     await this.page.goto(
-      config.get<string>(`e2e.${this.product}.newPullRequestPage`)
+      config.get<string>(`e2e.${this.product}.newPullRequestPage`),
     );
     await this.waitPageIsReady();
   }
@@ -105,11 +105,11 @@ abstract class AbstractPage {
         }
         (<HTMLTextAreaElement>element).setSelectionRange(
           position.start,
-          position.end
+          position.end,
         );
         return null;
       },
-      { start, end }
+      { start, end },
     );
     expect(isCorrect).toBeNull();
   }

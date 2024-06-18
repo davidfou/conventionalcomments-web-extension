@@ -18,7 +18,7 @@ test("visual testing", async ({ page, mainPage }) => {
     await expect
       .soft(
         mainPage.newCommentEditorLocator,
-        `the plugin is well integrated when active (${theme})`
+        `the plugin is well integrated when active (${theme})`,
       )
       .toHaveScreenshot([mainPage.product, theme, "editor-active.png"]);
 
@@ -30,7 +30,7 @@ test("visual testing", async ({ page, mainPage }) => {
     await expect
       .soft(
         mainPage.newCommentEditorLocator,
-        `the plugin is well integrated when inactive (${theme})`
+        `the plugin is well integrated when inactive (${theme})`,
       )
       .toHaveScreenshot([mainPage.product, theme, "editor-inactive.png"]);
 
@@ -44,7 +44,7 @@ test("visual testing", async ({ page, mainPage }) => {
     await expect
       .soft(
         mainPage.newCommentEditorLocator,
-        `the label selector is well integrated (${theme})`
+        `the label selector is well integrated (${theme})`,
       )
       .toHaveScreenshot([mainPage.product, theme, "label-selector.png"]);
 
@@ -62,7 +62,7 @@ test("visual testing", async ({ page, mainPage }) => {
     await expect
       .soft(
         mainPage.newCommentEditorLocator,
-        `the decorator with the mouse on the label is well integrated (${theme})`
+        `the decorator with the mouse on the label is well integrated (${theme})`,
       )
       .toHaveScreenshot([
         mainPage.product,
@@ -84,7 +84,7 @@ test("visual testing", async ({ page, mainPage }) => {
     await expect
       .soft(
         mainPage.newCommentEditorLocator,
-        `the decorator with the mouse on the clear button is well integrated (${theme})`
+        `the decorator with the mouse on the clear button is well integrated (${theme})`,
       )
       .toHaveScreenshot([
         mainPage.product,
@@ -106,7 +106,7 @@ test("visual testing", async ({ page, mainPage }) => {
     await expect
       .soft(
         mainPage.newCommentEditorLocator,
-        `the mouse on the clear all button is well integrated (${theme})`
+        `the mouse on the clear all button is well integrated (${theme})`,
       )
       .toHaveScreenshot([
         mainPage.product,

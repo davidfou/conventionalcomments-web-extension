@@ -38,14 +38,14 @@ class GitLabPage extends AbstractPage {
   async removeAllThreads() {
     const notes = await this.apiClient.MergeRequestNotes.all(
       this.projectPath,
-      1
+      1,
     );
     await Promise.all(
       notes
         .filter(({ type }) => type === "DiffNote")
         .map(({ id }) =>
-          this.apiClient.MergeRequestNotes.remove(this.projectPath, 1, id)
-        )
+          this.apiClient.MergeRequestNotes.remove(this.projectPath, 1, id),
+        ),
     );
   }
 
@@ -53,7 +53,7 @@ class GitLabPage extends AbstractPage {
     const [baseComment, ...replies] = comments;
     const mergeRequest = await this.apiClient.MergeRequests.show(
       this.projectPath,
-      1
+      1,
     );
 
     const discussion = await this.apiClient.MergeRequestDiscussions.create(
@@ -70,7 +70,7 @@ class GitLabPage extends AbstractPage {
           newPath: "README.md",
           oldLine: line.toString(),
         },
-      }
+      },
     );
 
     if (discussion.notes?.[0] === undefined) {
@@ -85,7 +85,7 @@ class GitLabPage extends AbstractPage {
         1,
         discussion.id,
         previousNoteId,
-        reply
+        reply,
       );
       previousNoteId = note.id;
       noteIds.push(note.id.toString());
@@ -97,7 +97,7 @@ class GitLabPage extends AbstractPage {
   async retrievePullRequestCommentIds() {
     const notes = await this.apiClient.MergeRequestNotes.all(
       this.projectPath,
-      1
+      1,
     );
     return [
       "",
@@ -135,7 +135,7 @@ class GitLabPage extends AbstractPage {
     await this.page
       .locator("#diffs")
       .locator(
-        "*[data-testid=left-side][data-interop-type=old][data-interop-line='1'][data-interop-old-line='1']"
+        "*[data-testid=left-side][data-interop-type=old][data-interop-line='1'][data-interop-old-line='1']",
       )
       .locator("*[data-testid='left-comment-button']")
       .click();
@@ -143,20 +143,20 @@ class GitLabPage extends AbstractPage {
 
   private getNoteContainerSelector(
     threadId: string,
-    messageId: string
+    messageId: string,
   ): Locator {
     return (
       threadId === "" ? this.page : this.getThreadContainer(threadId)
     ).locator(
       `*[data-testid='noteable-note-container'][data-note-id=${JSON.stringify(
-        messageId
-      )}]`
+        messageId,
+      )}]`,
     );
   }
 
   private getNoteEditSelector(threadId: string, messageId: string): Locator {
     return this.getNoteContainerSelector(threadId, messageId).locator(
-      "*[data-testid='note-edit-button']"
+      "*[data-testid='note-edit-button']",
     );
   }
 
@@ -182,7 +182,7 @@ class GitLabPage extends AbstractPage {
 
   getReplyInputLocator(threadId: string) {
     return this.getThreadContainer(threadId).locator(
-      "*[data-testid='discussion-reply-tab']"
+      "*[data-testid='discussion-reply-tab']",
     );
   }
 
@@ -193,8 +193,8 @@ class GitLabPage extends AbstractPage {
   getThreadContainer(threadId: string): Locator {
     return this.page.locator(
       `*[data-testid='discussion-content'][data-discussion-id=${JSON.stringify(
-        threadId
-      )}]`
+        threadId,
+      )}]`,
     );
   }
 
@@ -213,8 +213,8 @@ class GitLabPage extends AbstractPage {
             throw new Error("Expect text to be defined");
           }
           return text.trim();
-        })
-      )
+        }),
+      ),
     );
   }
 

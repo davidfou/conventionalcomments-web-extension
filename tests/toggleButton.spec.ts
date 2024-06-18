@@ -73,7 +73,7 @@ test("keeps valid label and decoration (reactivation)", async ({
 
   await page.getByTestId("toggle-button").click();
   await expect(mainPage.textareaLocator).toHaveValue(
-    "**nitpick (non-blocking):** my comment"
+    "**nitpick (non-blocking):** my comment",
   );
 });
 
