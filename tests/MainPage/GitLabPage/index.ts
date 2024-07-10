@@ -118,6 +118,9 @@ class GitLabPage extends AbstractPage {
       return null;
     }
 
+    if (!config.get<boolean>("playwright.skipGitLabLogin")) {
+      throw new Error("User login not available");
+    }
     const cookies = await getCookies();
     await this.page.context().addCookies(cookies);
     await this.page.goto("https://gitlab.com/");

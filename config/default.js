@@ -140,5 +140,6 @@ module.exports = {
     reporter: "html",
     googleBin: "google-chrome",
     debugGitLabGetCookies: false,
+    skipGitLabLogin: false,
   },
 };

@@ -252,6 +252,11 @@ jobs:
       - name: Install Playwright dependencies
         run: yarn playwright install --with-deps chromium
 
+      - name: Dump cookies
+        env:
+          E2E_GITLAB_COOKIES: ${{ secrets.E2E_GITLAB_COOKIES }}
+        run: echo $E2E_GITLAB_COOKIES > playwright/.auth/user-gitlab.json
+
       - name: Run Playwright tests
         uses: coactions/setup-xvfb@v1
         env:
