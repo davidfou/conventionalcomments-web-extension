@@ -10,5 +10,6 @@ module.exports = {
   },
   playwright: {
     reporter: [["html", { open: "never" }], ["github"]],
+    skipGitLabLogin: true,
   },
 };
