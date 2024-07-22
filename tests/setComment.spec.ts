@@ -8,10 +8,10 @@ test.beforeEach(async ({ mainPage }) => {
 });
 
 test("another label can be selected", async ({ page, mainPage }) => {
-  await page.getByTestId("label-selector").getByRole("textbox").type("nitpick");
+  await page.getByTestId("label-selector").getByRole("textbox").type("quibble");
   await page.keyboard.press("Enter");
 
-  await expect(mainPage.textareaLocator).toHaveValue("**nitpick:** ");
+  await expect(mainPage.textareaLocator).toHaveValue("**quibble:** ");
 });
 
 test("one decoration can be added", async ({ page, mainPage }) => {
@@ -93,7 +93,7 @@ test("the cursor position keeps the same position within the subject", async ({
   await mainPage.setSelectionRange(18, 18);
 
   await page.getByTestId("label-selector").getByRole("textbox").click();
-  await page.keyboard.type("nitpick");
+  await page.keyboard.type("quibble");
   await page.keyboard.press("Enter");
 
   await expect(mainPage.textareaLocator).toBeFocused();

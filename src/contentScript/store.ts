@@ -12,10 +12,10 @@ const LABELS: SelectableItem[] = [
       "Praises highlight something positive. Try to leave at least one of these comments per review. _Do not_ leave false praise (which can actually be damaging). _Do_ look for something to sincerely praise.",
   },
   {
-    value: "nitpick",
-    label: "nitpick",
+    value: "quibble",
+    label: "quibble",
     description:
-      "Nitpicks are small, trivial, but necessary changes. Distinguishing nitpick comments significantly helps direct the reader's attention to comments requiring more involvement.",
+      "Quibbles are small, trivial, but necessary changes. Distinguishing quibble comments significantly helps direct the reader's attention to comments requiring more involvement.",
   },
   {
     value: "suggestion",
