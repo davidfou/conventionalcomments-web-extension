@@ -12,7 +12,7 @@ test.beforeAll(async ({ mainPage }) => {
   thread2 = await mainPage.createThread(
     [
       "Check this out",
-      "**nitpick (if-minor, non-blocking):** let's use conventional comments",
+      "**quibble (if-minor, non-blocking):** let's use conventional comments",
     ],
     3
   );
