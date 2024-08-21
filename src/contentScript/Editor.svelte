@@ -264,6 +264,10 @@
     }
   }
 
+  .cc-select-wrapper-phabricator-v1 {
+    margin-bottom: 8px;
+  }
+
   /* Ensure there is enough place to show the full list */
   :global(textarea#note_note) {
     min-height: 188px;
