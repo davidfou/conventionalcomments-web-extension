@@ -20,12 +20,14 @@
     "github-v2": "f5 text-bold",
     "gitlab-v1": "",
     "gitlab-v2": "",
+    "phabricator-v1": "cc-select-item-title-phabricator-v1",
   };
   const DESCRIPTION_CLASS: Record<ProductType, string> = {
     "github-v1": "text-small color-text-secondary text-normal pb-1",
     "github-v2": "text-small color-text-secondary text-normal pb-1",
     "gitlab-v1": "",
     "gitlab-v2": "",
+    "phabricator-v1": "",
   };
 </script>
 
@@ -97,6 +99,26 @@
           --bgColor-neutral-muted,
           var(--color-neutral-subtle)
         );
+      }
+    }
+
+    &.cc-select-item-phabricator-v1 {
+      color: var(--color-fg-default);
+      border: none;
+      font-weight: 200;
+      background-image: none;
+      background-color: transparent;
+      border-radius: 0;
+      box-shadow: none !important;
+      white-space: wrap;
+
+      &.cc-ext-hover,
+      &.cc-ext-active {
+        background: #eee;
+      }
+
+      & > .cc-select-item-title-phabricator-v1 {
+        font-weight: 600;
       }
     }
   }
