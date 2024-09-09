@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Conventional: comments",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "Write conventional comments directly in your favorite repository manager.",
   "icons": {
     "16": "/icons/icon_16.png",
