@@ -1,27 +1,33 @@
-import poly from "webextension-polyfill";
-
 import runMigrations from "./runMigrations";
-import registerContentScript from "./registerContentScript";
 import { getDeactivatedUrls } from "./deactivatedUrls";
 import refreshIcon from "./refreshIcon";
 
 const initialize = async (
-  registeredUrls: Map<string, { unregister: () => void }>
+  registeredUrls: Map<string, string>
 ): Promise<void> => {
   await runMigrations();
   const [permissions, deactivatedUrls] = await Promise.all([
-    poly.permissions.getAll(),
+    chrome.permissions.getAll(),
     getDeactivatedUrls(),
     refreshIcon(),
   ]);
 
-  await Promise.all(
-    (permissions.origins ?? []).map(async (url) => {
-      if (deactivatedUrls.includes(url)) {
-        return;
-      }
-      const { unregister } = await registerContentScript(url);
-      registeredUrls.set(url, { unregister });
+  await chrome.scripting.unregisterContentScripts();
+
+  const contentScriptUrls = (permissions.origins ?? []).filter(
+    (url) => !deactivatedUrls.includes(url)
+  );
+
+  await chrome.scripting.registerContentScripts(
+    contentScriptUrls.map((url, index) => {
+      const id = `contentScript-${index}`;
+      registeredUrls.set(url, id);
+      return {
+        id,
+        matches: [url],
+        js: ["build/contentScript.js"],
+        css: ["build/contentScript.css"],
+      };
     })
   );
 };

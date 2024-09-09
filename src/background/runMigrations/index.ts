@@ -1,9 +1,7 @@
-import poly from "webextension-polyfill";
-
 import getMigrations from "./getMigrations";
 
 const getLastMigration = async (): Promise<null | string> => {
-  const { lastMigration } = await poly.storage.local.get("lastMigration");
+  const { lastMigration } = await chrome.storage.local.get("lastMigration");
   return typeof lastMigration === "string" ? lastMigration : null;
 };
 
@@ -24,7 +22,7 @@ export default async (): Promise<void> => {
     await migrations[index].run();
   }
 
-  await poly.storage.local.set({
+  await chrome.storage.local.set({
     lastMigration: migrations[migrations.length - 1].key,
   });
 };

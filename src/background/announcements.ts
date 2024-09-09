@@ -1,9 +1,7 @@
-import poly from "webextension-polyfill";
-
 const KEY = "announcements";
 
 const getAnnouncements = async (): Promise<Record<string, boolean>> => {
-  const { [KEY]: announcements } = await poly.storage.local.get(KEY);
+  const { [KEY]: announcements } = await chrome.storage.local.get(KEY);
   return announcements;
 };
 
@@ -12,7 +10,7 @@ const addAnnouncement = async (announcement: string): Promise<void> => {
   if (announcement in announcements) {
     return;
   }
-  await poly.storage.local.set({
+  await chrome.storage.local.set({
     [KEY]: { ...announcements, [announcement]: true },
   });
 };
@@ -22,7 +20,7 @@ const removeAnnouncement = async (announcement: string): Promise<void> => {
   if (!(announcement in announcements)) {
     return;
   }
-  await poly.storage.local.set({
+  await chrome.storage.local.set({
     [KEY]: { ...announcements, [announcement]: false },
   });
 };

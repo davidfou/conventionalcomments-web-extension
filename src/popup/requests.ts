@@ -1,5 +1,3 @@
-import poly from "webextension-polyfill";
-
 import type {
   GetRegisteredUrlsMessage,
   GetRegisteredUrlsResponseMessage,
@@ -16,18 +14,18 @@ const getRegisteredUrls =
     const message: GetRegisteredUrlsMessage = {
       type: "get-registered-urls",
     };
-    return poly.runtime.sendMessage(message);
+    return chrome.runtime.sendMessage(message);
   };
 
 const registerUrl = async (url: string): Promise<void> => {
-  const result = await poly.permissions.request({
+  const result = await chrome.permissions.request({
     origins: [url],
   });
   if (!result) {
     throw ApplicationError.userDeniedAuthorization();
   }
   const message: RegisterUrlMessage = { type: "register-url", url };
-  return poly.runtime.sendMessage(message);
+  return chrome.runtime.sendMessage(message);
 };
 
 const unregisterUrl = async (url: string): Promise<void> => {
@@ -35,14 +33,14 @@ const unregisterUrl = async (url: string): Promise<void> => {
     type: "unregister-url",
     url,
   };
-  return poly.runtime.sendMessage(message);
+  return chrome.runtime.sendMessage(message);
 };
 
 const getAnnouncements = async (): Promise<GetAnnouncementsResponseMessage> => {
   const message: GetAnnouncementsMessage = {
     type: "get-announcements",
   };
-  return poly.runtime.sendMessage(message);
+  return chrome.runtime.sendMessage(message);
 };
 
 const removeAnnouncement = async (announcement: string): Promise<void> => {
@@ -50,7 +48,7 @@ const removeAnnouncement = async (announcement: string): Promise<void> => {
     type: "remove-announcement",
     announcement,
   };
-  return poly.runtime.sendMessage(message);
+  return chrome.runtime.sendMessage(message);
 };
 
 export {

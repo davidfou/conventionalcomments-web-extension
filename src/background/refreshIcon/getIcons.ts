@@ -12,7 +12,7 @@ const getIcons = (
   Object.fromEntries(
     SIZES.map((size) => [
       size,
-      `icons/browser_action${FLAVORS[flavor]}${
+      `/icons/browser_action${FLAVORS[flavor]}${
         hasAnnouncement ? "_announcement" : ""
       }_${size}.png`,
     ])
