@@ -109,7 +109,8 @@ jobs:
     name: Create Release
     timeout-minutes: 10
     runs-on: ubuntu-latest
-    needs: [publish-firefox, publish-chrome]
+    # needs: [publish-firefox, publish-chrome]
+    needs: [publish-chrome]
     permissions:
       contents: write
     steps:
