@@ -10,8 +10,8 @@ function Layout(): JSX.Element {
     null
   );
   React.useEffect(() => {
-    getAnnouncements().then(({ announcements: loadedAnnouncements }) => {
-      setAnnouncements(loadedAnnouncements);
+    getAnnouncements().then((data) => {
+      setAnnouncements(data.announcements);
     });
   }, []);
   const value = React.useMemo((): State => {

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import poly from "webextension-polyfill";
 
 import ApplicationError from "../../../../ApplicationError";
 import getDomainFromUrl from "../../../../helper/getDomainFromUrl";
@@ -16,7 +15,7 @@ const useCurrentUrl = (): State => {
     let isSubscribed = true;
     Promise.resolve()
       .then(async () => {
-        const [tab] = await poly.tabs.query({ active: true });
+        const [tab] = await chrome.tabs.query({ active: true });
         if (!isSubscribed) {
           return;
         }

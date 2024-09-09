@@ -1,9 +1,7 @@
-import poly from "webextension-polyfill";
-
 import getDomainFromUrl from "../helper/getDomainFromUrl";
 
 const getTabIds = async (currentUrl: string): Promise<number[]> => {
-  const tabs = await poly.tabs.query({});
+  const tabs = await chrome.tabs.query({});
   const tabIds: number[] = [];
   tabs.forEach((tab) => {
     if (

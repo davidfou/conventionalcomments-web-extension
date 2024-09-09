@@ -6,7 +6,7 @@ import sizeOf from "image-size";
 import manifest from "../../../public/manifest.json";
 import getIcons from "./getIcons";
 
-const DEFAULT_ICONS = manifest.browser_action.default_icon;
+const DEFAULT_ICONS = manifest.action.default_icon;
 const EXPECTED_SIZES = Object.keys(DEFAULT_ICONS);
 
 describe.each`
@@ -46,7 +46,7 @@ it("returns default icons when flavor is normal and hasAnnouncement false", () =
 
 it.each<[string, string]>([
   ...Object.entries(manifest.icons),
-  ...Object.entries(manifest.browser_action.default_icon),
+  ...Object.entries(manifest.action.default_icon),
 ])("has size %s for image %s", async (key, filename) => {
   const expectedSize = parseInt(key, 10);
   const size = await promisify(sizeOf)(

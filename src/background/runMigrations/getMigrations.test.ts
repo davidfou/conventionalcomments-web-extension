@@ -3,8 +3,6 @@ import path from "path";
 
 import getMigrations from "./getMigrations";
 
-jest.mock("webextension-polyfill");
-
 let fileNames: string[];
 
 beforeEach(async () => {

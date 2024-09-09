@@ -1,5 +1,4 @@
 import { v4 as uuidv4 } from "uuid";
-import poly from "webextension-polyfill";
 
 import commentEditorExtractors from "./commentEditorExtractors";
 import type { ContentRequestMessage } from "../messageTypes";
@@ -53,7 +52,7 @@ const disposeFunctions = commentEditorExtractors.map((commentEditorExtractor) =>
   )
 );
 
-poly.runtime.onMessage.addListener((message: ContentRequestMessage): void => {
+chrome.runtime.onMessage.addListener((message: ContentRequestMessage): void => {
   if (message.type !== "notify-unregister") {
     return;
   }
