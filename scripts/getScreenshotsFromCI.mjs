@@ -43,8 +43,16 @@ try {
     })
     .then((body) => body.data.artifacts);
 
+  const latestArtifacts = artifacts.reduce((acc, current) => {
+    acc[current.name] ??= current;
+    if (acc[current.name].created_at < current.created_at) {
+      acc[current.name] = current;
+    }
+    return acc;
+  }, {});
+
   await Promise.all(
-    artifacts.map(async (artifact) => {
+    Object.values(latestArtifacts).map(async (artifact) => {
       const filename = path.join(outDir, `${artifact.name}.zip`);
       const { data } = await client.rest.actions.downloadArtifact({
         ...basePayload,
