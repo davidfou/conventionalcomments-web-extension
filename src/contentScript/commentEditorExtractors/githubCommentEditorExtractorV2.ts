@@ -45,16 +45,15 @@ const githubCommentEditorExtractor: CommentEditorExtractor = (
         if (mainEl === null) {
           return;
         }
-        const buttonAnchorEl = mainEl.querySelector(
-          "markdown-toolbar slash-command-toolbar-button"
-        );
         const editorAnchorEl = mainEl.querySelector("file-attachment");
-        if (buttonAnchorEl === null || editorAnchorEl === null) {
+        if (editorAnchorEl === null) {
           return;
         }
 
-        const buttonTargetEl = buttonAnchorEl.parentElement;
         const editorTargetEl = editorAnchorEl.parentElement;
+        const buttonTargetEl = mainEl.querySelector(
+          "action-bar .ActionBar-item-container"
+        );
         if (buttonTargetEl === null || editorTargetEl === null) {
           return;
         }
@@ -67,7 +66,6 @@ const githubCommentEditorExtractor: CommentEditorExtractor = (
           textarea,
           buttonParams: {
             target: buttonTargetEl,
-            anchor: buttonAnchorEl,
           },
           editorParams: {
             target: editorTargetEl,
