@@ -2,7 +2,7 @@ name: Release
 on:
   push:
     tags:
-      - "v*"
+      - "mv2-v*"
 jobs:
   build:
     name: Build
@@ -69,47 +69,47 @@ jobs:
           WEB_EXT_API_SECRET: ${{ secrets.WEB_EXT_API_SECRET }}
         run: yarn web-ext-submit
 
-  publish-chrome:
-    name: Publish Chrome
-    timeout-minutes: 10
-    runs-on: ubuntu-latest
-    needs: [build]
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+  # publish-chrome:
+  #   name: Publish Chrome
+  #   timeout-minutes: 10
+  #   runs-on: ubuntu-latest
+  #   needs: [build]
+  #   steps:
+  #     - name: Checkout repo
+  #       uses: actions/checkout@v4
 
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.13.1
-          cache: yarn
-          cache-dependency-path: ./yarn.lock
+  #     - name: Setup node
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: 20.13.1
+  #         cache: yarn
+  #         cache-dependency-path: ./yarn.lock
 
-      - name: Install deps
-        run: yarn install --frozen-lockfile
+  #     - name: Install deps
+  #       run: yarn install --frozen-lockfile
 
-      - name: Restore extension
-        id: cache-extention
-        uses: actions/cache@v4
-        with:
-          path: |
-            web-ext-artifacts
-            public
-          key: release-${{ github.run_id }}
+  #     - name: Restore extension
+  #       id: cache-extention
+  #       uses: actions/cache@v4
+  #       with:
+  #         path: |
+  #           web-ext-artifacts
+  #           public
+  #         key: release-${{ github.run_id }}
 
-      - name: Publish
-        env:
-          CLIENT_ID: ${{ secrets.CLIENT_ID }}
-          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-          EXTENSION_ID: ${{ secrets.EXTENSION_ID }}
-          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
-        run: yarn chrome-webstore-upload upload --source "web-ext-artifacts/conventional_comments-${GITHUB_REF#refs/tags/v}.zip" --auto-publish
+  #     - name: Publish
+  #       env:
+  #         CLIENT_ID: ${{ secrets.CLIENT_ID }}
+  #         CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+  #         EXTENSION_ID: ${{ secrets.EXTENSION_ID }}
+  #         REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+  #       run: yarn chrome-webstore-upload upload --source "web-ext-artifacts/conventional_comments-${GITHUB_REF#refs/tags/mv2-v}.zip" --auto-publish
 
   create-release:
     name: Create Release
     timeout-minutes: 10
     runs-on: ubuntu-latest
-    needs: [publish-firefox, publish-chrome]
+    needs: [publish-firefox]
     permissions:
       contents: write
     steps:
