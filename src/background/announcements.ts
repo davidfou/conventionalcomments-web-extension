@@ -5,13 +5,16 @@ const getAnnouncements = async (): Promise<Record<string, boolean>> => {
   return announcements;
 };
 
-const addAnnouncement = async (announcement: string): Promise<void> => {
+const addAnnouncement = async (
+  announcement: string,
+  isActive: boolean
+): Promise<void> => {
   const announcements = await getAnnouncements();
   if (announcement in announcements) {
     return;
   }
   await chrome.storage.local.set({
-    [KEY]: { ...announcements, [announcement]: true },
+    [KEY]: { ...announcements, [announcement]: isActive },
   });
 };
 
