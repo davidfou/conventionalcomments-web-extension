@@ -17,7 +17,7 @@
     "lint:svelte": "svelte-check --fail-on-warnings --fail-on-hints",
     "test": "jest",
     "version": "node scripts/newVersion.js && git add public/manifest.json",
-    "postversion": "git push origin main && git push origin refs/tags/v$npm_package_version",
+    "postversion": "git push origin main-mv2 && git push origin refs/tags/mv2-v$npm_package_version",
     "2fa-code": "node scripts/getTwoFactorAuthenticationCode.mjs",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
