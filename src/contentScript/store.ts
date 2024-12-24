@@ -15,7 +15,7 @@ const LABELS: SelectableItem[] = [
     value: "nitpick",
     label: "nitpick",
     description:
-      "Nitpicks are small, trivial, but necessary changes. Distinguishing nitpick comments significantly helps direct the reader's attention to comments requiring more involvement.",
+      "Nitpicks are trivial preference-based requests. These should be non-blocking by nature.",
   },
   {
     value: "suggestion",
@@ -33,7 +33,7 @@ const LABELS: SelectableItem[] = [
     value: "todo",
     label: "todo",
     description:
-      "TODO's are small, trivial, but necessary changes. Distinguishing todo comments from issues: or suggestions: helps direct the reader's attention to comments requiring more involvement.",
+      "TODO's are small, trivial, but necessary changes. Distinguishing todo comments from issues or suggestions helps direct the reader's attention to comments requiring more involvement.",
   },
   {
     value: "question",
@@ -63,7 +63,7 @@ const LABELS: SelectableItem[] = [
     value: "typo",
     label: "typo",
     description:
-      "Typo comments are like **todo**, where the main issue is a mispelling.",
+      "Typo comments are like **todo:**, where the main issue is a misspelling.",
   },
   {
     value: "polish",
