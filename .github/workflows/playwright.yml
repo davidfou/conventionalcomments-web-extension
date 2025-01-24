@@ -10,7 +10,7 @@ jobs:
   setup:
     name: Setup
     timeout-minutes: 10
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -18,7 +18,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 20.13.1
+          node-version: 22.13.1
           cache: yarn
           cache-dependency-path: ./yarn.lock
 
@@ -28,7 +28,7 @@ jobs:
   eslint:
     name: ESLint
     timeout-minutes: 10
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [setup]
     steps:
       - name: Checkout repo
@@ -37,7 +37,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 20.13.1
+          node-version: 22.13.1
           cache: yarn
           cache-dependency-path: ./yarn.lock
 
@@ -50,7 +50,7 @@ jobs:
   prettier:
     name: Prettier
     timeout-minutes: 10
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [setup]
     steps:
       - name: Checkout repo
@@ -59,7 +59,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 20.13.1
+          node-version: 22.13.1
           cache: yarn
           cache-dependency-path: ./yarn.lock
 
@@ -72,7 +72,7 @@ jobs:
   typecheck:
     name: TypeScript check
     timeout-minutes: 10
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [setup]
     steps:
       - name: Checkout repo
@@ -81,7 +81,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 20.13.1
+          node-version: 22.13.1
           cache: yarn
           cache-dependency-path: ./yarn.lock
 
@@ -94,7 +94,7 @@ jobs:
   svelte:
     name: Svelte check
     timeout-minutes: 10
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [setup]
     steps:
       - name: Checkout repo
@@ -103,7 +103,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 20.13.1
+          node-version: 22.13.1
           cache: yarn
           cache-dependency-path: ./yarn.lock
 
@@ -116,7 +116,7 @@ jobs:
   jest:
     name: Jest
     timeout-minutes: 10
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [setup]
     steps:
       - name: Checkout repo
@@ -125,7 +125,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 20.13.1
+          node-version: 22.13.1
           cache: yarn
           cache-dependency-path: ./yarn.lock
 
@@ -138,7 +138,7 @@ jobs:
   build:
     name: Build
     timeout-minutes: 10
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [eslint, prettier, typecheck, svelte, jest]
     steps:
       - name: Checkout repo
@@ -147,7 +147,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 20.13.1
+          node-version: 22.13.1
           cache: yarn
           cache-dependency-path: ./yarn.lock
 
@@ -167,7 +167,7 @@ jobs:
   e2e-github:
     name: Test extension on GitHub
     timeout-minutes: 60
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [build]
     steps:
       - name: Checkout repo
@@ -176,7 +176,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 20.13.1
+          node-version: 22.13.1
           cache: yarn
           cache-dependency-path: ./yarn.lock
 
@@ -222,7 +222,7 @@ jobs:
   e2e-gitlab:
     name: Test extension on GitLab
     timeout-minutes: 60
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [build]
     steps:
       - name: Checkout repo
@@ -231,7 +231,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 20.13.1
+          node-version: 22.13.1
           cache: yarn
           cache-dependency-path: ./yarn.lock
 
