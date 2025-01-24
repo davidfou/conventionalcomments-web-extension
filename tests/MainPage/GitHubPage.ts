@@ -131,6 +131,7 @@ class GitHubPage extends AbstractPage {
       "#app_totp",
       authenticator.generate(config.get("e2e.github.twoFactorSecret"))
     );
+    await this.page.waitForURL("https://github.com");
 
     return this.page.context();
   }
