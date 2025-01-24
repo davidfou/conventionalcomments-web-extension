@@ -7,7 +7,7 @@ jobs:
   build:
     name: Build
     timeout-minutes: 10
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -15,7 +15,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 20.13.1
+          node-version: 22.13.1
           cache: yarn
           cache-dependency-path: ./yarn.lock
 
@@ -37,7 +37,7 @@ jobs:
   publish-firefox:
     name: Publish Firefox
     timeout-minutes: 10
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [build]
     steps:
       - name: Checkout repo
@@ -46,7 +46,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 20.13.1
+          node-version: 22.13.1
           cache: yarn
           cache-dependency-path: ./yarn.lock
 
@@ -108,7 +108,7 @@ jobs:
   create-release:
     name: Create Release
     timeout-minutes: 10
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [publish-firefox]
     permissions:
       contents: write
