@@ -118,7 +118,7 @@ class GitLabPage extends AbstractPage {
       return null;
     }
 
-    if (!config.get<boolean>("playwright.skipGitLabLogin")) {
+    if (config.get<boolean>("playwright.skipGitLabLogin")) {
       throw new Error("User login not available");
     }
     const cookies = await getCookies();
@@ -164,24 +164,20 @@ class GitLabPage extends AbstractPage {
     await this.getNoteEditSelector(threadId, commentId).click();
   }
 
-  async editCommentFromMainPage(
-    messageId: string,
-    pageType?: "pullRequestDescription" | "issueDescription"
-  ) {
-    switch (pageType) {
-      case "pullRequestDescription":
-        await this.page.goto(
-          config.get<string>("e2e.gitlab.editPullRequestPage")
-        );
-        break;
-      case "issueDescription":
-        await this.page.click(
-          "button[aria-label='Edit title and description']"
-        );
-        break;
-      default:
-        await this.getNoteEditSelector("", messageId).click();
-    }
+  async editMainCommentFromPullRequestPage() {
+    await this.page.goto(config.get<string>("e2e.gitlab.editPullRequestPage"));
+  }
+
+  async editCommentFromPullRequestPage(noteId: string): Promise<void> {
+    await this.getNoteEditSelector("", noteId).click();
+  }
+
+  async editMainCommentFromIssuePage() {
+    await this.page.goto(config.get<string>("e2e.gitlab.issuePage"));
+  }
+
+  async editCommentFromIssuePage(noteId: string) {
+    await this.getNoteEditSelector("", noteId).click();
   }
 
   getReplyInputLocator(threadId: string) {

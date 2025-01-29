@@ -10,7 +10,7 @@ jobs:
   setup:
     name: Setup
     timeout-minutes: 10
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -18,7 +18,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 20.13.1
+          node-version: 22.13.1
           cache: yarn
           cache-dependency-path: ./yarn.lock
 
@@ -28,7 +28,7 @@ jobs:
   eslint:
     name: ESLint
     timeout-minutes: 10
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [setup]
     steps:
       - name: Checkout repo
@@ -37,7 +37,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 20.13.1
+          node-version: 22.13.1
           cache: yarn
           cache-dependency-path: ./yarn.lock
 
@@ -50,7 +50,7 @@ jobs:
   prettier:
     name: Prettier
     timeout-minutes: 10
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [setup]
     steps:
       - name: Checkout repo
@@ -59,7 +59,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 20.13.1
+          node-version: 22.13.1
           cache: yarn
           cache-dependency-path: ./yarn.lock
 
@@ -72,7 +72,7 @@ jobs:
   typecheck:
     name: TypeScript check
     timeout-minutes: 10
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [setup]
     steps:
       - name: Checkout repo
@@ -81,7 +81,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 20.13.1
+          node-version: 22.13.1
           cache: yarn
           cache-dependency-path: ./yarn.lock
 
@@ -94,7 +94,7 @@ jobs:
   svelte:
     name: Svelte check
     timeout-minutes: 10
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [setup]
     steps:
       - name: Checkout repo
@@ -103,7 +103,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 20.13.1
+          node-version: 22.13.1
           cache: yarn
           cache-dependency-path: ./yarn.lock
 
@@ -116,7 +116,7 @@ jobs:
   jest:
     name: Jest
     timeout-minutes: 10
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [setup]
     steps:
       - name: Checkout repo
@@ -125,7 +125,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 20.13.1
+          node-version: 22.13.1
           cache: yarn
           cache-dependency-path: ./yarn.lock
 
@@ -138,7 +138,7 @@ jobs:
   build:
     name: Build
     timeout-minutes: 10
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [eslint, prettier, typecheck, svelte, jest]
     steps:
       - name: Checkout repo
@@ -147,7 +147,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 20.13.1
+          node-version: 22.13.1
           cache: yarn
           cache-dependency-path: ./yarn.lock
 
@@ -167,16 +167,28 @@ jobs:
   e2e-github:
     name: Test extension on GitHub
     timeout-minutes: 60
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [build]
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Load secret
+        id: op-load-secret
+        uses: 1password/load-secrets-action@v2
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          E2E_GITHUB_USERNAME: "op://Conventional comments/GitHub - cc-web-ext/username"
+          E2E_GITHUB_PASSWORD: "op://Conventional comments/GitHub - cc-web-ext/password"
+          E2E_GITHUB_TOKEN: "op://Conventional comments/GitHub - cc-web-ext/token"
+          E2E_GITHUB_2FA_SECRET: "op://Conventional comments/GitHub - cc-web-ext/2fa secret"
+
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 20.13.1
+          node-version: 22.13.1
           cache: yarn
           cache-dependency-path: ./yarn.lock
 
@@ -187,10 +199,6 @@ jobs:
           path: public/build
           key: extension-${{ github.run_id }}
 
-      - name: Install Chrome
-        id: setup-chrome
-        uses: browser-actions/setup-chrome@v1
-
       - name: Install deps
         run: yarn install --frozen-lockfile
 
@@ -200,11 +208,6 @@ jobs:
       - name: Run Playwright tests
         uses: coactions/setup-xvfb@v1
         env:
-          E2E_GITHUB_USERNAME: ${{ secrets.E2E_GITHUB_USERNAME }}
-          E2E_GITHUB_PASSWORD: ${{ secrets.E2E_GITHUB_PASSWORD }}
-          E2E_GITHUB_TOKEN: ${{ secrets.E2E_GITHUB_TOKEN }}
-          E2E_GITHUB_2FA_SECRET: ${{ secrets.E2E_GITHUB_2FA_SECRET }}
-          E2E_GOOGLE_BIN: ${{ steps.setup-chrome.outputs.chrome-path }}
           NODE_CONFIG_ENV: ci
         with:
           run: yarn playwright test --project=github
@@ -222,16 +225,35 @@ jobs:
   e2e-gitlab:
     name: Test extension on GitLab
     timeout-minutes: 60
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [build]
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Setup 1password
+        uses: 1password/load-secrets-action/configure@v2
+        with:
+          service-account-token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+
+      - name: Load secret
+        id: op-load-secret
+        uses: 1password/load-secrets-action@v2
+        with:
+          export-env: true
+        env:
+          E2E_GITLAB_USERNAME: "op://Conventional comments/GitLab/username"
+          E2E_GITLAB_PASSWORD: "op://Conventional comments/GitLab/password"
+          E2E_GITLAB_TOKEN: "op://Conventional comments/GitLab/token"
+          E2E_GITLAB_2FA_SECRET: "op://Conventional comments/GitLab/2fa secret key"
+
+      - name: Dump cookies
+        run: op read --out-file playwright/.auth/user-gitlab.json "op://Conventional comments/GitLab/cookies"
+
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 20.13.1
+          node-version: 22.13.1
           cache: yarn
           cache-dependency-path: ./yarn.lock
 
@@ -242,29 +264,15 @@ jobs:
           path: public/build
           key: extension-${{ github.run_id }}
 
-      - name: Install Chrome
-        id: setup-chrome
-        uses: browser-actions/setup-chrome@v1
-
       - name: Install deps
         run: yarn install --frozen-lockfile
 
       - name: Install Playwright dependencies
         run: yarn playwright install --with-deps chromium
 
-      - name: Dump cookies
-        env:
-          E2E_GITLAB_COOKIES: ${{ secrets.E2E_GITLAB_COOKIES }}
-        run: echo $E2E_GITLAB_COOKIES > playwright/.auth/user-gitlab.json
-
       - name: Run Playwright tests
         uses: coactions/setup-xvfb@v1
         env:
-          E2E_GITLAB_USERNAME: ${{ secrets.E2E_GITLAB_USERNAME }}
-          E2E_GITLAB_PASSWORD: ${{ secrets.E2E_GITLAB_PASSWORD }}
-          E2E_GITLAB_TOKEN: ${{ secrets.E2E_GITLAB_TOKEN }}
-          E2E_GITLAB_2FA_SECRET: ${{ secrets.E2E_GITLAB_2FA_SECRET }}
-          E2E_GOOGLE_BIN: ${{ steps.setup-chrome.outputs.chrome-path }}
           NODE_CONFIG_ENV: ci
         with:
           run: yarn playwright test --project=gitlab

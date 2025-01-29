@@ -33,10 +33,7 @@ test("Plugin is not loaded on the overview page (edit description)", async ({
   page,
 }) => {
   await mainPage.goToOverviewPage();
-  await mainPage.editCommentFromMainPage(
-    pullRequestCommentIds[0],
-    "pullRequestDescription"
-  );
+  await mainPage.editMainCommentFromPullRequestPage(pullRequestCommentIds[0]);
   await expect(page.getByTestId("toggle-button")).not.toBeVisible();
 });
 
@@ -45,7 +42,7 @@ test("Plugin is not loaded on the overview page (edit comment)", async ({
   page,
 }) => {
   await mainPage.goToOverviewPage();
-  await mainPage.editCommentFromMainPage(pullRequestCommentIds[1]);
+  await mainPage.editCommentFromPullRequestPage(pullRequestCommentIds[1]);
   await expect(page.getByTestId("toggle-button")).not.toBeVisible();
 });
 
@@ -59,10 +56,7 @@ test("Plugin is not loaded on the issue page (edit description)", async ({
   page,
 }) => {
   await mainPage.goToIssuePage();
-  await mainPage.editCommentFromMainPage(
-    issueCommentIds[0],
-    "issueDescription"
-  );
+  await mainPage.editMainCommentFromIssuePage();
   await expect(page.getByTestId("toggle-button")).not.toBeVisible();
 });
 
@@ -71,7 +65,7 @@ test("Plugin is not loaded on the issue page (edit comment)", async ({
   page,
 }) => {
   await mainPage.goToIssuePage();
-  await mainPage.editCommentFromMainPage(issueCommentIds[1]);
+  await mainPage.editCommentFromIssuePage(issueCommentIds[1]);
   await expect(page.getByTestId("toggle-button")).not.toBeVisible();
 });
 

@@ -131,6 +131,7 @@ class GitHubPage extends AbstractPage {
       "#app_totp",
       authenticator.generate(config.get("e2e.github.twoFactorSecret"))
     );
+    await this.page.waitForURL("https://github.com");
 
     return this.page.context();
   }
@@ -147,7 +148,7 @@ class GitHubPage extends AbstractPage {
     await this.page.getByRole("menuitem", { name: "Edit comment" }).click();
   }
 
-  async editCommentFromMainPage(messageId: string) {
+  async editMainCommentFromPullRequestPage(messageId: string) {
     await this.page
       .locator(`div[data-gid="${messageId}"]`)
       .locator(".timeline-comment-action")
@@ -157,6 +158,35 @@ class GitHubPage extends AbstractPage {
       .locator(`div[data-gid="${messageId}"]`)
       .locator(".js-comment-edit-button")
       .last()
+      .click();
+  }
+
+  async editCommentFromPullRequestPage(messageId: string) {
+    await this.page
+      .locator(`div[data-gid="${messageId}"]`)
+      .locator(".timeline-comment-action")
+      .last()
+      .click();
+    await this.page
+      .locator(`div[data-gid="${messageId}"]`)
+      .locator(".js-comment-edit-button")
+      .last()
+      .click();
+  }
+
+  async editMainCommentFromIssuePage() {
+    await this.page.getByRole("button", { name: "Issue body actions" }).click();
+    await this.page.getByRole("button", { name: "Edit", exact: true }).click();
+  }
+
+  async editCommentFromIssuePage(messageId: string) {
+    await this.page
+      .locator(`div[data-testid='comment-viewer-outer-box-${messageId}']`)
+      .locator("button[data-testid='comment-header-hamburger']")
+      .click();
+    await this.page
+      .locator("ul[data-testid='comment-header-hamburger-open']")
+      .getByText("Edit")
       .click();
   }
 
