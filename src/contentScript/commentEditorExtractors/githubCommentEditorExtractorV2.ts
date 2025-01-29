@@ -51,12 +51,11 @@ const githubCommentEditorExtractor: CommentEditorExtractor = (
         }
 
         const editorTargetEl = editorAnchorEl.parentElement;
-        const buttonTargetEl = mainEl.querySelector(
-          "action-bar .ActionBar-item-container"
-        );
+        const buttonTargetEl = mainEl.querySelector("action-bar");
         if (buttonTargetEl === null || editorTargetEl === null) {
           return;
         }
+        const buttonAnchorEl = mainEl.querySelector("action-bar > action-menu");
 
         const id = generateId();
 
@@ -66,6 +65,7 @@ const githubCommentEditorExtractor: CommentEditorExtractor = (
           textarea,
           buttonParams: {
             target: buttonTargetEl,
+            anchor: buttonAnchorEl ?? undefined,
           },
           editorParams: {
             target: editorTargetEl,
