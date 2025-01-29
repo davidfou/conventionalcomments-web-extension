@@ -1,7 +1,7 @@
 {
   "name": "conventionalcomments-web-ext",
   "license": "GPL-3.0-only",
-  "version": "2.3.3",
+  "version": "2.3.4",
   "scripts": {
     "postinstall": "node scripts/postInstall.mjs",
     "rollup:popup": "rollup -c rollup/popup.config.js",
