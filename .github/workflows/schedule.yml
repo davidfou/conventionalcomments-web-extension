@@ -1,0 +1,75 @@
+name: Schedule
+on:
+  schedule:
+    - cron: "25 14 * * *"
+jobs:
+  e2e:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - "gitlab-v1"
+          - "github-v1"
+          - "github-v2"
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v5
+
+      - name: Setup 1password
+        uses: 1password/load-secrets-action/configure@v2
+        with:
+          service-account-token: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+        if: ${{ matrix.project == 'gitlab-v1' }}
+
+      - name: Load secret
+        uses: 1password/load-secrets-action@v2
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          E2E_GITHUB_V1_USERNAME: "op://Conventional comments/GitHub V1/username"
+          E2E_GITHUB_V1_PASSWORD: "op://Conventional comments/GitHub V1/password"
+          E2E_GITHUB_V1_TOKEN: "op://Conventional comments/GitHub V1/token"
+          E2E_GITHUB_V1_TWO_FACTOR_SECRET: "op://Conventional comments/GitHub V1/2fa secret"
+          E2E_GITHUB_V2_USERNAME: "op://Conventional comments/GitHub V2/username"
+          E2E_GITHUB_V2_PASSWORD: "op://Conventional comments/GitHub V2/password"
+          E2E_GITHUB_V2_TOKEN: "op://Conventional comments/GitHub V2/token"
+          E2E_GITHUB_V2_TWO_FACTOR_SECRET: "op://Conventional comments/GitHub V2/2fa secret"
+          E2E_GITLAB_V1_USERNAME: "op://Conventional comments/GitLab - cc-web-ext/username"
+          E2E_GITLAB_V1_PASSWORD: "op://Conventional comments/GitLab - cc-web-ext/password"
+          E2E_GITLAB_V1_TOKEN: "op://Conventional comments/GitLab - cc-web-ext/token"
+          E2E_GITLAB_V1_TWO_FACTOR_SECRET: "op://Conventional comments/GitLab - cc-web-ext/2fa secret"
+
+      - name: Dump cookies
+        run: op read --out-file tests/e2e/playwright/.auth/user-gitlab-v1.json "op://Conventional comments/GitLab - cc-web-ext/cookies"
+        if: ${{ matrix.project == 'gitlab-v1' }}
+
+      - name: Setup node
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: ".tool-versions"
+          cache: "npm"
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Build
+        run: npm run build
+
+      - name: Run Playwright tests
+        run: npx playwright test -c tests/e2e/playwright.config.ts --project ${{ matrix.project }}
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report-e2e-${{ matrix.project }}
+          path: |
+            playwright-report/
+            playwright-videos/
+            test-results/
+          retention-days: 30

@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: InterVariable, sans-serif;
+}
+
+html {
+  @apply h-full bg-gray-100;
+}
+
+body {
+  @apply h-full;
+  width: 500px;
+  font-size: 100%;
+  font-family: var(
+    --default-font-family,
+    ui-sans-serif,
+    system-ui,
+    sans-serif,
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol",
+    "Noto Color Emoji"
+  );
+}

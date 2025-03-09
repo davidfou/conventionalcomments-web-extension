@@ -1,0 +1,23 @@
+# Dependency directories
+node_modules
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Build
+.output
+.wxt
+web-ext.config.ts
+
+# Local config
+.env*.local
+
+# Playwright
+/test-results/
+/playwright-report/
+/playwright-videos/
+/blob-report/
+/tests/components/playwright/.cache/
+/tests/e2e/playwright/

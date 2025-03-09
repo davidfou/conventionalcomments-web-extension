@@ -1,0 +1,91 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": [
+    "eslint",
+    "typescript",
+    "unicorn",
+    "react",
+    "react-perf",
+    "oxc",
+    "promise",
+    "vitest"
+  ],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "error",
+    "pedantic": "warn",
+    "perf": "warn",
+    "restriction": "error",
+    "nursery": "off"
+  },
+  "rules": {
+    "no-optional-chaining": "off",
+    "oxc/no-async-await": "off",
+    "class-methods-use-this": "off",
+    "react/jsx-filename-extension": [
+      "error",
+      { "extensions": [".jsx", ".tsx"] }
+    ],
+    "react/react-in-jsx-scope": "off",
+    "oxc/no-rest-spread-properties": "off",
+    "no-unused-vars": ["error", { "caughtErrors": false }],
+    "eslint/no-undefined": "off",
+    "default-case": "off"
+  },
+  "overrides": [
+    {
+      "files": ["tests/**"],
+      "rules": {
+        "no-await-in-loop": "off",
+        "max-lines": "off",
+        "max-lines-per-function": "off"
+      }
+    },
+    {
+      "files": ["devScripts/**"],
+      "rules": {
+        "no-await-in-loop": "off",
+        "no-console": "off"
+      }
+    },
+    {
+      "files": ["**/*.tsx"],
+      "rules": {
+        "max-lines-per-function": "off"
+      }
+    },
+    {
+      "files": ["tests/*/fixtures.ts"],
+      "rules": {
+        "react/rules-of-hooks": "off",
+        "no-empty-pattern": "off"
+      }
+    }
+  ],
+  "settings": {
+    "jsx-a11y": {
+      "polymorphicPropName": null,
+      "components": {},
+      "attributes": {}
+    },
+    "react": {
+      "formComponents": [],
+      "linkComponents": []
+    },
+    "jsdoc": {
+      "ignorePrivate": false,
+      "ignoreInternal": false,
+      "ignoreReplacesDocs": true,
+      "overrideReplacesDocs": true,
+      "augmentsExtendsReplacesDocs": false,
+      "implementsReplacesDocs": false,
+      "exemptDestructuredRootsFromChecks": false,
+      "tagNamePreference": {}
+    }
+  },
+  "env": {
+    "builtin": true
+  },
+  "globals": {},
+  "ignorePatterns": []
+}
