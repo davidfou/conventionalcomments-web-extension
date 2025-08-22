@@ -18,6 +18,11 @@
       " text-center toolbar-item btn-octicon p-2 mx-0 Button Button--iconOnly Button--invisible Button--medium";
     iconClasses += " octicon";
   }
+  if (product === "github-v3") {
+    classes +=
+      " text-center toolbar-item btn-octicon p-2 mx-0 Button Button--iconOnly Button--invisible Button--medium";
+    iconClasses += " octicon";
+  }
   if (product === "gitlab-v1") {
     classes +=
       " btn gl-mr-2 btn-default btn-sm gl-button btn-default-tertiary btn-icon";
@@ -71,11 +76,19 @@
     fill: var(--control-fgColor-disabled);
   }
 
+  .cc-button-icon-github-v3 {
+    fill: var(--control-fgColor-disabled);
+  }
+
   .cc-button-icon-github-v1.cc-active {
     fill: var(--color-accent-fg);
   }
 
   .cc-button-icon-github-v2.cc-active {
+    fill: var(--button-invisible-iconColor-rest, var(--color-fg-muted));
+  }
+
+  .cc-button-icon-github-v3.cc-active {
     fill: var(--button-invisible-iconColor-rest, var(--color-fg-muted));
   }
 

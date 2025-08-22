@@ -264,6 +264,53 @@
     }
   }
 
+  .cc-select-wrapper-github-v3 {
+    --inputColor: var(--fgColor-default, var(--color-fg-default));
+    margin: 8px;
+    --padding: var(--base-size-8);
+    --background: var(--bgColor-default, var(--color-canvas-default));
+    --border: 1px solid
+      var(--control-borderColor-rest, var(--color-border-default));
+    --borderFocusColor: var(--color-btn-focus-border);
+    --borderHoverColor: var(
+      --bgColor-neutral-muted,
+      var(--color-neutral-subtle)
+    );
+    --borderRadius: var(--borderRadius-medium);
+    --clearSelectColor: var(--fgColor-muted, var(--color-fg-muted));
+    --clearSelectFocusColor: var(--fgColor-muted, var(--color-fg-muted));
+    --clearSelectHoverColor: var(--fgColor-accent, var(--color-accent-fg));
+    --listBackground: var(--overlay-bgColor);
+    --listBorderRadius: var(--borderRadius-large);
+    --listShadow: var(--shadow-floating-small);
+    --multiSelectPadding: 0 var(--base-size-8);
+    --multiItemBG: var(--bgColor-accent-muted, var(--color-accent-subtle));
+    --multiItemActiveBG: var(
+      --bgColor-accent-emphasis,
+      var(--color-accent-emphasis)
+    );
+    --multiItemActiveColor: var(
+      --fgColor-onEmphasis,
+      var(--color-fg-on-emphasis)
+    );
+    --multiClearBG: var(--bgColor-accent-muted, var(--color-accent-subtle));
+    --multiClearHoverBG: var(
+      --bgColor-accent-emphasis,
+      var(--color-accent-emphasis)
+    );
+    --multiItemBorderRadius: 2em;
+    --multiClearFill: var(--button-default-fgColor-rest);
+    --multiClearHoverFill: var(
+      --fgColor-onEmphasis,
+      var(--color-fg-on-emphasis)
+    );
+
+    > :global(.selectContainer) {
+      transition: 0.2s cubic-bezier(0.3, 0, 0.5, 1);
+      transition-property: color, background-color, border-color;
+    }
+  }
+
   .cc-select-wrapper-phabricator-v1 {
     margin-bottom: 8px;
   }
