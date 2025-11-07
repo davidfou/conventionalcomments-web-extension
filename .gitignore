@@ -1,16 +1,23 @@
-/node_modules/
-/public/build/
-/public/fonts/
-/config/local*
-/output
-/web-ext-artifacts
+# Dependency directories
+node_modules
 
-yarn-debug.log*
-yarn-error.log*
+# Logs
+logs
+*.log
+npm-debug.log*
 
-.DS_Store
+# Build
+.output
+.wxt
+web-ext.config.ts
+
+# Local config
+.env*.local
+
+# Playwright
 /test-results/
 /playwright-report/
 /playwright-videos/
-/playwright/.cache/
-/playwright/.auth/
+/blob-report/
+/tests/components/playwright/.cache/
+/tests/e2e/playwright/

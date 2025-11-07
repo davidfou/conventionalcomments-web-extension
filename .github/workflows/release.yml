@@ -3,130 +3,82 @@ on:
   push:
     tags:
       - "v*"
+
 jobs:
-  build:
-    name: Build
-    timeout-minutes: 10
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22.13.1
-          cache: yarn
-          cache-dependency-path: ./yarn.lock
-
-      - name: Install deps
-        run: yarn install --frozen-lockfile
-
-      - name: Build extension
-        run: yarn build
-
-      - name: Save extension
-        id: cache-extention
-        uses: actions/cache@v4
-        with:
-          path: |
-            web-ext-artifacts
-            public
-          key: release-${{ github.run_id }}
-
-  # publish-firefox:
-  #   name: Publish Firefox
-  #   timeout-minutes: 10
-  #   runs-on: ubuntu-24.04
-  #   needs: [build]
-  #   steps:
-  #     - name: Checkout repo
-  #       uses: actions/checkout@v4
-
-  #     - name: Setup node
-  #       uses: actions/setup-node@v4
-  #       with:
-  #         node-version: 22.13.1
-  #         cache: yarn
-  #         cache-dependency-path: ./yarn.lock
-
-  #     - name: Install deps
-  #       run: yarn install --frozen-lockfile
-
-  #     - name: Restore extension
-  #       id: cache-extention
-  #       uses: actions/cache@v4
-  #       with:
-  #         path: |
-  #           web-ext-artifacts
-  #           public
-  #         key: release-${{ github.run_id }}
-
-  #     - name: Publish
-  #       env:
-  #         EXTENSION_ID: ${{ secrets.EXTENSION_ID }}
-  #         WEB_EXT_API_KEY: ${{ secrets.WEB_EXT_API_KEY }}
-  #         WEB_EXT_API_SECRET: ${{ secrets.WEB_EXT_API_SECRET }}
-  #       run: yarn web-ext-submit
-
   publish-chrome:
-    name: Publish Chrome
-    timeout-minutes: 10
+    name: Publish extension to the Chrome Webstore
     runs-on: ubuntu-24.04
-    needs: [build]
+    env:
+      CI_PUBLISH: "true"
+      CHROME_PUBLISH_TARGET: "default"
+      CHROME_SKIP_SUBMIT_REVIEW: "false"
+      IS_CANARY: "false"
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Load secret
+        uses: 1password/load-secrets-action@v2
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          CHROME_EXTENSION_ID: "op://Conventional comments/Chrome webstore/EXTENTION_ID"
+          CHROME_CLIENT_ID: "op://Conventional comments/Chrome webstore/CLIENT_ID"
+          CHROME_CLIENT_SECRET: "op://Conventional comments/Chrome webstore/CLIENT_SECRET"
+          CHROME_REFRESH_TOKEN: "op://Conventional comments/Chrome webstore/REFRESH_TOKEN"
 
       - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: 22.13.1
-          cache: yarn
-          cache-dependency-path: ./yarn.lock
+          node-version-file: ".tool-versions"
+          cache: "npm"
 
       - name: Install deps
-        run: yarn install --frozen-lockfile
+        run: npm ci
 
-      - name: Restore extension
-        id: cache-extention
-        uses: actions/cache@v4
-        with:
-          path: |
-            web-ext-artifacts
-            public
-          key: release-${{ github.run_id }}
+      - name: Build
+        run: npm run zip:chrome
 
       - name: Publish
-        env:
-          CLIENT_ID: ${{ secrets.CLIENT_ID }}
-          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-          EXTENSION_ID: ${{ secrets.EXTENSION_ID }}
-          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
-        run: yarn chrome-webstore-upload upload --source "web-ext-artifacts/conventional_comments-${GITHUB_REF#refs/tags/v}.zip" --auto-publish
+        run: npm run publish:chrome
 
-  create-release:
-    name: Create Release
-    timeout-minutes: 10
+  publish-firefox:
+    name: Publish extension to the Firefox add-ons
     runs-on: ubuntu-24.04
-    # needs: [publish-firefox, publish-chrome]
-    needs: [publish-chrome]
-    permissions:
-      contents: write
+    env:
+      CI_PUBLISH: "true"
+      FIREFOX_CHANNEL: "listed"
+      IS_CANARY: "false"
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Restore extension
-        id: cache-extention
-        uses: actions/cache@v4
+        uses: actions/checkout@v5
         with:
-          path: |
-            web-ext-artifacts
-            public
-          key: release-${{ github.run_id }}
+          fetch-depth: 0
 
-      - name: Create release
-        uses: ncipollo/release-action@v1
+      - name: Load secret
+        uses: 1password/load-secrets-action@v2
         with:
-          artifacts: "web-ext-artifacts/*.zip"
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          FIREFOX_EXTENSION_ID: "op://Conventional comments/Mozilla add-on/EXTENSION_ID"
+          FIREFOX_JWT_ISSUER: "op://Conventional comments/Mozilla add-on/JWT_ISSUER"
+          FIREFOX_JWT_SECRET: "op://Conventional comments/Mozilla add-on/JWT_SECRET"
+
+      - name: Setup node
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: ".tool-versions"
+          cache: "npm"
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build
+        run: npm run zip:firefox
+
+      - name: Publish
+        run: npm run publish:firefox

@@ -1,0 +1,86 @@
+name: Release canary
+on:
+  push:
+    branches:
+      - "main"
+    tags:
+      - "v*"
+
+jobs:
+  publish-chrome:
+    name: Publish extension to the Chrome Webstore
+    runs-on: ubuntu-24.04
+    env:
+      CI_PUBLISH: "true"
+      CHROME_PUBLISH_TARGET: "trustedTesters"
+      CHROME_SKIP_SUBMIT_REVIEW: "false"
+      IS_CANARY: "true"
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Load secret
+        uses: 1password/load-secrets-action@v2
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          CHROME_EXTENSION_ID: "op://Conventional comments/Chrome webstore/CANARY_EXTENTION_ID"
+          CHROME_CLIENT_ID: "op://Conventional comments/Chrome webstore/CLIENT_ID"
+          CHROME_CLIENT_SECRET: "op://Conventional comments/Chrome webstore/CLIENT_SECRET"
+          CHROME_REFRESH_TOKEN: "op://Conventional comments/Chrome webstore/REFRESH_TOKEN"
+
+      - name: Setup node
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: ".tool-versions"
+          cache: "npm"
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build
+        run: npm run zip:chrome
+
+      - name: Publish
+        run: npm run publish:chrome
+
+  publish-firefox:
+    name: Publish extension to the Firefox add-ons
+    runs-on: ubuntu-24.04
+    env:
+      CI_PUBLISH: "true"
+      FIREFOX_CHANNEL: "unlisted"
+      IS_CANARY: "true"
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Load secret
+        uses: 1password/load-secrets-action@v2
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          FIREFOX_EXTENSION_ID: "op://Conventional comments/Mozilla add-on/CANARY_EXTENSION_ID"
+          FIREFOX_JWT_ISSUER: "op://Conventional comments/Mozilla add-on/JWT_ISSUER"
+          FIREFOX_JWT_SECRET: "op://Conventional comments/Mozilla add-on/JWT_SECRET"
+
+      - name: Setup node
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: ".tool-versions"
+          cache: "npm"
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build
+        run: npm run zip:firefox
+
+      - name: Publish
+        run: npm run publish:firefox
