@@ -3,12 +3,12 @@ import { promisify } from "node:util";
 import { defineConfig } from "wxt";
 import tailwindcss from "@tailwindcss/vite";
 
+const isCanary = process.env.IS_CANARY === "true";
 async function getVersion(): Promise<string> {
   if (process.env.CI !== "true" || process.env.CI_PUBLISH !== "true") {
     return "1.0.0";
   }
   const execa = promisify(exec);
-  const isCanary = process.env.IS_CANARY === "true";
   const { stdout: latestTag } = await execa("git describe --tags --abbrev=0");
   const start = latestTag.replaceAll("v", "").trim();
   if (!isCanary) {
@@ -27,7 +27,7 @@ export default defineConfig({
   manifestVersion: 3,
   manifest: {
     version,
-    name: "Conventional: comments (canary)",
+    name: `Conventional: comments${isCanary ? " (canary)" : ""}`,
     description:
       "Write conventional comments directly in your favorite repository manager.",
     permissions: ["activeTab", "storage", "scripting"],
