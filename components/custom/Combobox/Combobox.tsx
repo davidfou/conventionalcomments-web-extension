@@ -1,5 +1,5 @@
 import type { ReactElement } from "react";
-import { useRef, useState, useEffect, useCallback } from "react";
+import { useRef, useState, useCallback } from "react";
 import { Check, Search, X } from "lucide-react";
 import {
   Popover,
@@ -53,12 +53,6 @@ export function Combobox({
   const inputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    if (!open) {
-      onAction();
-    }
-  }, [open, onAction]);
-
   const showPlaceholder = props.isMulti
     ? props.values.length === 0
     : props.value === props.emptyValue;
@@ -66,6 +60,14 @@ export function Combobox({
   const onClickWrapper = useCallback((): void => {
     inputRef.current?.focus();
   }, []);
+
+  const onContentAutoClose = useCallback(
+    (e: Event) => {
+      e.preventDefault();
+      onAction();
+    },
+    [onAction],
+  );
 
   const onClickOption = useCallback(
     (value: string) => {
@@ -151,6 +153,7 @@ export function Combobox({
                 className="ccext:popover-content ccext:z-50 ccext:overflow-hidden ccext:w-(--radix-popover-trigger-width)"
                 data-testid="combobox-options"
                 avoidCollisions={false}
+                onCloseAutoFocus={onContentAutoClose}
               >
                 <Command
                   data-slot="command"
