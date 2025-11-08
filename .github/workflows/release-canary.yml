@@ -27,7 +27,7 @@ jobs:
           export-env: true
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          CHROME_EXTENSION_ID: "op://Conventional comments/Chrome webstore/CANARY_EXTENTION_ID"
+          CHROME_EXTENSION_ID: "op://Conventional comments/Chrome webstore/CANARY_EXTENSION_ID"
           CHROME_CLIENT_ID: "op://Conventional comments/Chrome webstore/CLIENT_ID"
           CHROME_CLIENT_SECRET: "op://Conventional comments/Chrome webstore/CLIENT_SECRET"
           CHROME_REFRESH_TOKEN: "op://Conventional comments/Chrome webstore/REFRESH_TOKEN"
