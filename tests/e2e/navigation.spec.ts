@@ -56,7 +56,8 @@ test("Plugin is not loaded twice when the user navigates back to the diff page",
   await mainPage.goToOverviewPage();
   await mainPage.clearLocalStorage();
   await mainPage.getChangesSelector().click();
-  await mainPage.openNewThread();
+  const thread = await mainPage.openNewThread();
+  await expect(thread.locator("textarea")).toBeFocused();
   await page.keyboard.type("new comment...");
   await mainPage.getOverviewSelector().click();
   await expect(

@@ -195,8 +195,24 @@ export abstract class AbstractMainPage<P extends Product> {
   }
 
   async clearLocalStorage(): Promise<void> {
+    // localStorage.clear();
+
+    // Temporary workaround to bypass the modal to present the new GitLab interface
     await this.page.evaluate(() => {
-      localStorage.clear();
+      const keysToRemove = [];
+      for (let index = 0; index < localStorage.length; index += 1) {
+        if (localStorage.key(index) === "showDapWelcomeModal") {
+          continue;
+        }
+        const key = localStorage.key(index);
+        if (key === null) {
+          throw new Error("Unexpected null key in localStorage");
+        }
+        keysToRemove.push(key);
+      }
+      for (const key of keysToRemove) {
+        localStorage.removeItem(key);
+      }
     });
   }
 }

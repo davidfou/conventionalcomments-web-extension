@@ -36,7 +36,7 @@ export const test = baseTest.extend<MyOptions & MyFixtures>({
   context: async ({ product, version, config }, use) => {
     const pathToExtension = path.join(
       import.meta.dirname,
-      "../../.output/chrome-mv3/",
+      `../../.output/chrome-mv3${process.env.CI ? "" : "-dev"}/`,
     );
     const context = await chromium.launchPersistentContext("", {
       baseURL: config.baseUrl,
@@ -67,6 +67,17 @@ export const test = baseTest.extend<MyOptions & MyFixtures>({
       const { cookies } = JSON.parse(content);
       context.addCookies(cookies);
     }
+
+    // Temporary workaround to bypass the modal to present the new GitLab interface
+    if (product === "gitlab") {
+      const page = await context.newPage();
+      await page.goto("https://gitlab.com/");
+      await page.evaluate(() => {
+        localStorage.setItem("showDapWelcomeModal", "false");
+      });
+      await page.close();
+    }
+
     await use(context);
     await context.close();
   },
