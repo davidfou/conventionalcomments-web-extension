@@ -12,6 +12,14 @@ type State = {
   onTextareaDisposed: (id: string) => void;
 };
 
+const NEW_FILE_THREAD_SELECTOR_CLASS_PREFIX = "Diff-module__diffAddFileThread";
+
+const MAIN_CSS_SELECTORS = [
+  "[class*='InlineMarkers-module__markersWrapper']",
+  "[class*='InlineMarkers-module__fileMarkersWrapper']",
+  `[class*=${JSON.stringify(NEW_FILE_THREAD_SELECTOR_CLASS_PREFIX)}]`,
+];
+
 function handleTextarea(
   textarea: HTMLTextAreaElement,
   {
@@ -21,9 +29,7 @@ function handleTextarea(
     onTextareaExtracted,
   }: State,
 ): void {
-  const mainEl = textarea.closest(
-    "[class*='InlineMarkers-module__markersWrapper']",
-  );
+  const mainEl = textarea.closest(MAIN_CSS_SELECTORS.join(", "));
   if (mainEl === null) {
     return;
   }
@@ -45,11 +51,18 @@ function handleTextarea(
     return;
   }
 
+  const isMainComment =
+    mainEl.classList
+      .values()
+      .some((className) =>
+        className.startsWith(NEW_FILE_THREAD_SELECTOR_CLASS_PREFIX),
+      ) ||
+    textarea.closest("[data-marker-navigation-new-thread='true']") !== null;
+
   const id = generateId();
   onTextareaExtracted({
     id,
-    isMainComment:
-      textarea.closest("[data-marker-navigation-new-thread='true']") !== null,
+    isMainComment,
     textarea,
     anchor: anchorEl,
     productType: "github-v2",
@@ -60,11 +73,27 @@ function handleTextarea(
 
 function findTextareas(node: Element, state: State): void {
   const { extractedTextareas, hiddenTextareas } = state;
-  const textareas = node
-    .querySelectorAll(
-      "[class*='InlineMarkers-module__markersWrapper'] textarea",
-    )
-    .values()
+  let allTextareas = Array.from(
+    node
+      .querySelectorAll(
+        MAIN_CSS_SELECTORS.map((selector) => `${selector} textarea`).join(", "),
+      )
+      .values(),
+  );
+
+  if (
+    node.classList
+      .values()
+      .some((className) =>
+        className.startsWith(NEW_FILE_THREAD_SELECTOR_CLASS_PREFIX),
+      )
+  ) {
+    allTextareas = allTextareas.concat(
+      Array.from(node.querySelectorAll("textarea").values()),
+    );
+  }
+
+  const textareas = allTextareas
     .filter((el) => el instanceof HTMLTextAreaElement)
     .filter((el) => !extractedTextareas.has(el))
     .filter((el) => !hiddenTextareas.has(el));

@@ -20,7 +20,7 @@ export default class GitHubPageV2 extends GitHubPageV1 {
 
   getNewCommentEditorLocator(): Locator {
     return this.page.locator(
-      "[class^='AddCommentEditor-module__AddCommentEditor--']",
+      "[class*='AddCommentEditor-module__AddCommentEditor--']",
     );
   }
 
@@ -44,5 +44,12 @@ export default class GitHubPageV2 extends GitHubPageV1 {
     await line.hover();
     await line.locator("[data-add-comment-button='true']").click();
     return line.locator("[data-marker-navigation-new-thread='true']");
+  }
+
+  async openNewFileThread(): Promise<Locator> {
+    await this.page
+      .getByRole("button", { name: "Comment on this file" })
+      .click();
+    return this.page.locator("[class*='Diff-module__diffAddFileThread']");
   }
 }

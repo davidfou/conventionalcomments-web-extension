@@ -292,6 +292,24 @@ export default class GitHubPageV1 extends AbstractMainPage<"github"> {
       });
   }
 
+  async openNewFileThread(): Promise<Locator> {
+    await this.page
+      .locator("button[data-path='README.md'][data-subject-type=file]")
+      .click();
+    return this.page
+      .locator("form")
+      .filter({
+        has: this.page.locator(
+          "input[type='hidden'][name='subject_type'][value='file']",
+        ),
+      })
+      .filter({
+        has: this.page.locator(
+          "input[type='hidden'][name='side'][value='right']",
+        ),
+      });
+  }
+
   async waitPageIsReady(): Promise<void> {
     await this.page.locator("html[data-turbo-loaded]").waitFor();
   }
