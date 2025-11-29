@@ -1,9 +1,10 @@
 import type { CommentEditorExtractor } from "./CommentEditorExtractor";
 
 function getIsMainComment(el: Element): boolean {
-  const mainCommentEl = el
-    .closest(".discussion-notes")
-    ?.querySelector("li[data-testid='noteable-note-container']");
+  const mainCommentEl =
+    el
+      .closest(".discussion-notes")
+      ?.querySelector("li[data-testid='noteable-note-container']") ?? null;
   return (
     mainCommentEl === null ||
     mainCommentEl === el.closest("li[data-testid='noteable-note-container']")

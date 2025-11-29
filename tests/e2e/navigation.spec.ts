@@ -22,6 +22,18 @@ test("Plugin is loaded when navigating to the diff page", async ({
   await expect(container.locator("textarea")).toHaveValue("**praise:** ");
 });
 
+test("Plugin is loaded when navigating to the diff page on a file comment", async ({
+  mainPage,
+  page,
+}) => {
+  await mainPage.goToOverviewPage();
+  await mainPage.clearLocalStorage();
+  await mainPage.getChangesSelector().click();
+  const container = await mainPage.openNewFileThread();
+  await expect(page.getByTestId("ccext-container")).toBeVisible();
+  await expect(container.locator("textarea")).toHaveValue("**praise:** ");
+});
+
 test("Plugin isn't loaded when navigating to the diff page and check the preview", async ({
   mainPage,
   page,
@@ -52,7 +64,13 @@ test("Plugin isn't loaded when navigating to the diff page, check the preview an
 test("Plugin is not loaded twice when the user navigates back to the diff page", async ({
   mainPage,
   page,
+  product,
+  version,
 }) => {
+  test.skip(
+    product === "github" && version === 1,
+    "The form doesn't open automatically on GitHub V1",
+  );
   await mainPage.goToOverviewPage();
   await mainPage.clearLocalStorage();
   await mainPage.getChangesSelector().click();

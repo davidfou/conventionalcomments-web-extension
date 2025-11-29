@@ -219,6 +219,11 @@ export default class GitLabPageV1 extends AbstractMainPage<"gitlab"> {
     return this.page.locator("form[data-line-code$='_1_1']");
   }
 
+  async openNewFileThread(): Promise<Locator> {
+    await this.page.locator("*[data-testid=comment-files-button]").click();
+    return this.page.locator("form[data-line-code='']");
+  }
+
   async waitPageIsReady(): Promise<void> {
     await this.page.locator("body.page-initialised").waitFor();
   }

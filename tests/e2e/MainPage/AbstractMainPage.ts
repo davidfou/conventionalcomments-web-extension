@@ -163,6 +163,8 @@ export abstract class AbstractMainPage<P extends Product> {
 
   abstract openNewThread(): Promise<Locator>;
 
+  abstract openNewFileThread(): Promise<Locator>;
+
   abstract waitPageIsReady(): Promise<void>;
 
   abstract getAvailableThemes(): Promise<string[]>;
