@@ -55,6 +55,7 @@ test("Plugin isn't loaded when navigating to the diff page, check the preview an
   await mainPage.goToOverviewPage();
   await mainPage.clearLocalStorage();
   await mainPage.getChangesSelector().click();
+  await mainPage.waitPageIsReady();
   const container = await mainPage.openNewThread();
   await mainPage.getPreviewButtonSelector(container).click();
   await mainPage.getWriteButtonSelector(container).click();
@@ -65,18 +66,19 @@ test("Plugin is not loaded twice when the user navigates back to the diff page",
   mainPage,
   page,
   product,
-  version,
 }) => {
   test.skip(
-    product === "github" && version === 1,
-    "The form doesn't open automatically on GitHub V1",
+    product === "github",
+    "The form doesn't open automatically on GitHub",
   );
   await mainPage.goToOverviewPage();
   await mainPage.clearLocalStorage();
   await mainPage.getChangesSelector().click();
+  await mainPage.waitPageIsReady();
   const thread = await mainPage.openNewThread();
   await expect(thread.locator("textarea")).toBeFocused();
   await page.keyboard.type("new comment...");
+  await page.waitForTimeout(500); // Wait to make sure the comment is written in the local storage
   await mainPage.getOverviewSelector().click();
   await expect(
     page.getByTestId("ccext-container").filter({ visible: true }),

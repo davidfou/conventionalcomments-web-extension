@@ -37,6 +37,7 @@ function getEnvValue(product: Product, version: number, key: string): string {
 
 function getUrls(
   product: Product,
+  version: number,
   username: string,
   project: string,
 ): {
@@ -51,7 +52,7 @@ function getUrls(
     case "github":
       return {
         baseUrl: "https://github.com",
-        mainPageUrl: `/${username}/${project}/pull/1/files`,
+        mainPageUrl: `/${username}/${project}/pull/1/${version === 1 ? "files" : "changes"}`,
         overviewPageUrl: `/${username}/${project}/pull/1`,
         issuePageUrl: `/${username}/${project}/issues/2`,
         newPullRequestPageUrl: `/${username}/${project}/compare/new_branch2?expand=1`,
@@ -80,6 +81,6 @@ export function getConfig(product: Product, version: number): Config {
 
   return {
     ...baseConfig,
-    ...getUrls(product, baseConfig.username, baseConfig.project),
+    ...getUrls(product, version, baseConfig.username, baseConfig.project),
   };
 }

@@ -20,6 +20,24 @@ const MAIN_CSS_SELECTORS = [
   `[class*=${JSON.stringify(NEW_FILE_THREAD_SELECTOR_CLASS_PREFIX)}]`,
 ];
 
+function extractElements(
+  textarea: HTMLTextAreaElement,
+): null | { mainEl: Element; anchorEl: Element } {
+  const mainEl = textarea.closest(MAIN_CSS_SELECTORS.join(", "));
+  if (mainEl === null) {
+    return null;
+  }
+
+  const anchorEl = mainEl.querySelector(
+    "[class*='MarkdownInput-module__inputWrapper']",
+  );
+  if (anchorEl === null) {
+    return null;
+  }
+
+  return { mainEl, anchorEl };
+}
+
 function handleTextarea(
   textarea: HTMLTextAreaElement,
   {
@@ -29,16 +47,16 @@ function handleTextarea(
     onTextareaExtracted,
   }: State,
 ): void {
-  const mainEl = textarea.closest(MAIN_CSS_SELECTORS.join(", "));
-  if (mainEl === null) {
+  if (extractedTextareas.has(textarea)) {
+    // return;
+  }
+
+  const elements = extractElements(textarea);
+  if (elements === null) {
     return;
   }
-  const anchorEl = mainEl.querySelector(
-    "[class*='InlineAutocomplete-module__container']",
-  );
-  if (anchorEl === null) {
-    return;
-  }
+
+  const { mainEl, anchorEl } = elements;
   const existingContainers = mainEl.querySelectorAll(
     '[data-testid="ccext-container"]',
   );
@@ -60,6 +78,7 @@ function handleTextarea(
     textarea.closest("[data-marker-navigation-new-thread='true']") !== null;
 
   const id = generateId();
+  extractedTextareas.set(textarea, id);
   onTextareaExtracted({
     id,
     isMainComment,
@@ -67,8 +86,6 @@ function handleTextarea(
     anchor: anchorEl,
     productType: "github-v2",
   });
-
-  extractedTextareas.set(textarea, id);
 }
 
 function findTextareas(node: Element, state: State): void {
@@ -131,6 +148,7 @@ function checkTextareaVisibility(state: State): void {
     const id = extractedTextareas.get(textarea);
     invariant(id !== undefined);
     onTextareaDisposed(id);
+    extractedTextareas.delete(textarea);
     hiddenTextareas.add(textarea);
   }
 
