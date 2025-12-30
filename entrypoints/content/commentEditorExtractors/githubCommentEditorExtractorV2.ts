@@ -34,7 +34,7 @@ function handleTextarea(
     return;
   }
   const anchorEl = mainEl.querySelector(
-    "[class*='InlineAutocomplete-module__container']",
+    "[class*='MarkdownInput-module__inputWrapper']",
   );
   if (anchorEl === null) {
     return;

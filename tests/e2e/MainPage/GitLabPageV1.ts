@@ -160,7 +160,7 @@ export default class GitLabPageV1 extends AbstractMainPage<"gitlab"> {
     commentIndex: number,
   ): Locator {
     return this.getNoteContainerSelector(thread, commentIndex).locator(
-      "*[data-testid='note-edit-button']",
+      "*[data-testid='pencil-icon']",
     );
   }
 
@@ -183,7 +183,7 @@ export default class GitLabPageV1 extends AbstractMainPage<"gitlab"> {
     invariant(noteId !== undefined, "The thread has no note at this index.");
     await this.page
       .locator(`#note_${noteId}`)
-      .locator("*[data-testid=note-edit-button]")
+      .locator("*[data-testid=pencil-icon]")
       .click();
   }
 
