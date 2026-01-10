@@ -48,7 +48,7 @@ function handleTextarea(
   }: State,
 ): void {
   if (extractedTextareas.has(textarea)) {
-    // return;
+    return;
   }
 
   const elements = extractElements(textarea);
