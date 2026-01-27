@@ -1,12 +1,7 @@
 import type { ReactElement } from "react";
 import { EMPTY_LABEL } from "./constants";
 import { Combobox } from "~/components/custom/Combobox";
-import { ProductType } from "./types";
-
-interface SelectableItem {
-  label: string;
-  description: string;
-}
+import { ProductType, SelectableItem } from "./types";
 
 interface EditorProps {
   productType: ProductType;

@@ -1,12 +1,7 @@
-import type { ProductType } from "./types";
+import type { ProductType, SelectableItem } from "./types";
 import { LABELS, DECORATIONS, EMPTY_LABEL } from "./constants";
 import { fetchConventionConfig } from "./fetchConvention";
 import logger from "./logger";
-
-interface SelectableItem {
-  label: string;
-  description: string;
-}
 
 interface ConventionData {
   labels: readonly SelectableItem[];

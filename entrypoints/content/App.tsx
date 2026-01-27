@@ -1,7 +1,7 @@
 import type { ReactElement } from "react";
 import { useCallback, useEffect, useState } from "react";
 import Editor from "./Editor";
-import { ProductType } from "./types";
+import { ProductType, SelectableItem } from "./types";
 import extractComment from "./extractComment";
 import { DECORATIONS, EMPTY_LABEL, LABELS } from "./constants";
 import { getConventions } from "./getConventions";
@@ -11,11 +11,6 @@ interface AppProps {
   productType: ProductType;
   textarea: HTMLTextAreaElement;
   isMainComment: boolean;
-}
-
-interface SelectableItem {
-  label: string;
-  description: string;
 }
 
 function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>): void {
@@ -37,25 +32,9 @@ function App({ productType, textarea, isMainComment }: AppProps): ReactElement {
   const [{ label, decorations }, setState] = useState<{
     label: string;
     decorations: string[];
-  }>(() => {
-    const initialComment = extractComment(
-      textarea.value,
-      LABELS.map(({ label }) => label),
-      DECORATIONS.map(({ label }) => label),
-    );
-
-    if (initialComment !== null) {
-      return {
-        label: initialComment.label,
-        decorations: initialComment.decorations,
-      };
-    }
-
-    return {
-      label:
-        isMainComment && textarea.value === "" ? LABELS[1].label : EMPTY_LABEL,
-      decorations: [],
-    };
+  }>({
+    label: EMPTY_LABEL,
+    decorations: [],
   });
 
   // Load custom conventions if available
@@ -63,12 +42,34 @@ function App({ productType, textarea, isMainComment }: AppProps): ReactElement {
     getConventions(productType)
       .then((customConventions) => {
         setConventions(customConventions);
+
+        // Re-extract comment with the loaded conventions
+        const initialComment = extractComment(
+          textarea.value,
+          customConventions.labels.map(({ label }) => label),
+          customConventions.decorations.map(({ label }) => label),
+        );
+
+        if (initialComment !== null) {
+          setState({
+            label: initialComment.label,
+            decorations: initialComment.decorations,
+          });
+        } else if (isMainComment && textarea.value === "") {
+          // Set default label for main comment only if textarea is empty
+          // Use index 1 which should be "praise" in defaults or first custom label
+          setState({
+            label: customConventions.labels[1]?.label ?? EMPTY_LABEL,
+            decorations: [],
+          });
+        }
+
         return customConventions;
       })
       .catch(() => {
         // Keep using default conventions on error
       });
-  }, [productType]);
+  }, [productType, textarea, isMainComment]);
 
   useTextareaWrapper(textarea, label, decorations);
 
