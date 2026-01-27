@@ -60,7 +60,7 @@ function App({ productType, textarea, isMainComment }: AppProps): ReactElement {
 
   // Load custom conventions if available
   useEffect(() => {
-    void getConventions(productType)
+    getConventions(productType)
       .then((customConventions) => {
         setConventions(customConventions);
         return customConventions;

@@ -47,10 +47,9 @@ function getConventionFileUrl(
   if (productType.startsWith("github")) {
     // GitHub raw content URL
     return `https://raw.githubusercontent.com/${repoInfo.owner}/${repoInfo.repo}/HEAD/conventional-comments.json`;
-  } else {
-    // GitLab raw content URL
-    return `https://gitlab.com/${repoInfo.owner}/${repoInfo.repo}/-/raw/HEAD/conventional-comments.json`;
   }
+  // GitLab raw content URL
+  return `https://gitlab.com/${repoInfo.owner}/${repoInfo.repo}/-/raw/HEAD/conventional-comments.json`;
 }
 
 /**
