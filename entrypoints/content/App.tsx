@@ -1,15 +1,21 @@
 import type { ReactElement } from "react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Editor from "./Editor";
 import { ProductType } from "./types";
 import extractComment from "./extractComment";
 import { DECORATIONS, EMPTY_LABEL, LABELS } from "./constants";
+import { getConventions } from "./getConventions";
 import useTextareaWrapper from "./useTextareaWrapper";
 
 interface AppProps {
   productType: ProductType;
   textarea: HTMLTextAreaElement;
   isMainComment: boolean;
+}
+
+interface SelectableItem {
+  label: string;
+  description: string;
 }
 
 function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>): void {
@@ -20,6 +26,14 @@ function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>): void {
 }
 
 function App({ productType, textarea, isMainComment }: AppProps): ReactElement {
+  const [conventions, setConventions] = useState<{
+    labels: readonly SelectableItem[];
+    decorations: readonly SelectableItem[];
+  }>({
+    labels: LABELS,
+    decorations: DECORATIONS,
+  });
+
   const [{ label, decorations }, setState] = useState<{
     label: string;
     decorations: string[];
@@ -43,6 +57,18 @@ function App({ productType, textarea, isMainComment }: AppProps): ReactElement {
       decorations: [],
     };
   });
+
+  // Load custom conventions if available
+  useEffect(() => {
+    void getConventions(productType)
+      .then((customConventions) => {
+        setConventions(customConventions);
+        return customConventions;
+      })
+      .catch(() => {
+        // Keep using default conventions on error
+      });
+  }, [productType]);
 
   useTextareaWrapper(textarea, label, decorations);
 
@@ -70,6 +96,8 @@ function App({ productType, textarea, isMainComment }: AppProps): ReactElement {
         productType={productType}
         label={label}
         decorations={decorations}
+        labels={conventions.labels}
+        conventionDecorations={conventions.decorations}
         onSelectLabel={onSelectLabel}
         onToggleDecoration={onToggleDecoration}
         onAction={onAction}
