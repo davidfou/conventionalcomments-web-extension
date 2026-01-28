@@ -1,7 +1,4 @@
-interface SelectableItem {
-  label: string;
-  description: string;
-}
+import { SelectableItem } from "./types";
 
 const EMPTY_LABEL = "none";
 
