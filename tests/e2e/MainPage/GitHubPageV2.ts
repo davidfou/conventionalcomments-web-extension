@@ -20,7 +20,7 @@ export default class GitHubPageV2 extends GitHubPageV1 {
 
   getNewCommentEditorLocator(): Locator {
     return this.page.locator(
-      "[class*='AddCommentEditor-module__AddCommentEditor--']",
+      "[class*='AddCommentEditor-module__AddCommentEditor']",
     );
   }
 
