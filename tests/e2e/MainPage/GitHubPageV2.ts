@@ -46,6 +46,14 @@ export default class GitHubPageV2 extends GitHubPageV1 {
     return line.locator("[data-marker-navigation-new-thread='true']");
   }
 
+  getPreviewButtonSelector(container: Locator): Locator {
+    return container.locator('[role="tab"]', { hasText: "Preview" });
+  }
+
+  getWriteButtonSelector(container: Locator): Locator {
+    return container.locator('[role="tab"]', { hasText: "Write" });
+  }
+
   async openNewFileThread(): Promise<Locator> {
     await this.page
       .getByRole("button", { name: "Comment on this file" })
