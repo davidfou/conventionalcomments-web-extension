@@ -1,12 +1,14 @@
 import type { ReactElement } from "react";
-import { DECORATIONS, EMPTY_LABEL, LABELS } from "./constants";
+import { EMPTY_LABEL } from "./constants";
 import { Combobox } from "~/components/custom/Combobox";
-import { ProductType } from "./types";
+import { ProductType, SelectableItem } from "./types";
 
 interface EditorProps {
   productType: ProductType;
   label: string;
   decorations: string[];
+  labels: readonly SelectableItem[];
+  conventionDecorations: readonly SelectableItem[];
   onSelectLabel: (label: string) => void;
   onToggleDecoration: (decoration: string) => void;
   onAction: () => void;
@@ -26,6 +28,8 @@ function Editor({
   productType,
   label,
   decorations,
+  labels,
+  conventionDecorations,
   onSelectLabel,
   onToggleDecoration,
   onAction,
@@ -45,7 +49,7 @@ function Editor({
         emptyValue={EMPTY_LABEL}
         placeholder="Select label..."
         searchPlaceholder="Search labels..."
-        options={LABELS}
+        options={labels}
         value={label}
         emptyState={LABEL_EMPTY_STATE}
         onSelect={onSelectLabel}
@@ -58,7 +62,7 @@ function Editor({
         isMulti
         placeholder="Add decorations..."
         searchPlaceholder="Search decorations..."
-        options={DECORATIONS}
+        options={conventionDecorations}
         values={decorations}
         emptyState={DECORATION_EMPTY_STATE}
         onToggle={onToggleDecoration}
