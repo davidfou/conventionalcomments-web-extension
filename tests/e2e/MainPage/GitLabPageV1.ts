@@ -72,16 +72,13 @@ export default class GitLabPageV1 extends AbstractMainPage<"gitlab"> {
     );
 
     const noteIds = [firstNote.id];
-    let previousNoteId = firstNote.id;
     for (const reply of replies) {
       const note = await this.apiClient.MergeRequestDiscussions.addNote(
         this.projectPath,
         1,
         discussion.id,
-        previousNoteId,
         reply,
       );
-      previousNoteId = note.id;
       noteIds.push(note.id);
     }
 
