@@ -46,7 +46,7 @@
   },
   "overrides": [
     {
-      "files": ["tests/**"],
+      "files": ["tests/**", "**/*.test.ts"],
       "rules": {
         "no-await-in-loop": "off",
         "max-lines": "off",
