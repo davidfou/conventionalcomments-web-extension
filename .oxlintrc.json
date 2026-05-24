@@ -30,11 +30,23 @@
     "oxc/no-rest-spread-properties": "off",
     "no-unused-vars": ["error", { "caughtErrors": false }],
     "eslint/no-undefined": "off",
-    "default-case": "off"
+    "default-case": "off",
+    "vitest/require-test-timeout": "off",
+    "eslint/require-unicode-regexp": "off",
+    "typescript/explicit-member-accessibility": "off",
+    "react/forbid-component-props": "off",
+    "react/no-multi-comp": "off",
+    "typescript/explicit-function-return-type": "off",
+    "typescript/explicit-module-boundary-types": "off",
+    "eslint/no-inline-comments": "off",
+    "eslint/no-shadow": "off",
+    "eslint/no-useless-return": "off",
+    "unicorn/prefer-import-meta-properties": "off",
+    "oxc/no-map-spread": "off"
   },
   "overrides": [
     {
-      "files": ["tests/**"],
+      "files": ["tests/**", "**/*.test.ts"],
       "rules": {
         "no-await-in-loop": "off",
         "max-lines": "off",

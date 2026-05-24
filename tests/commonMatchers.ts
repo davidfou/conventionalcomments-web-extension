@@ -39,7 +39,6 @@ async function extractSelection(locator: Locator): Promise<{
   return { actual, customMessage };
 }
 
-// oxlint-disable-next-line typescript/explicit-function-return-type,typescript/explicit-module-boundary-types
 export function extendExpect(baseExpect: typeof expect) {
   return baseExpect.extend({
     async toHaveSelectedText(
