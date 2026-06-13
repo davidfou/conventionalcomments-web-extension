@@ -75,5 +75,8 @@
     "vitest": "4.1.6",
     "wxt": "0.20.26",
     "yauzl": "3.3.0"
+  },
+  "overrides": {
+    "publish-browser-extension": "4.0.0"
   }
 }
