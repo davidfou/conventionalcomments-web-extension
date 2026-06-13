@@ -222,7 +222,8 @@ export default class GitLabPageV1 extends AbstractMainPage<"gitlab"> {
   }
 
   async waitPageIsReady(): Promise<void> {
-    await this.page.locator("body.page-initialised").waitFor();
+    await this.page.waitForLoadState("domcontentloaded");
+    await this.page.locator("body[data-page]").waitFor();
   }
 
   getPreviewButtonSelector(container: Locator): Locator {
@@ -242,7 +243,9 @@ export default class GitLabPageV1 extends AbstractMainPage<"gitlab"> {
   }
 
   async selectTheme(theme: string): Promise<void> {
-    await this.page.goto("https://gitlab.com/-/profile/preferences");
+    await this.page.goto("https://gitlab.com/-/profile/preferences", {
+      waitUntil: "domcontentloaded",
+    });
     await this.waitPageIsReady();
 
     const currentValue = await this.page

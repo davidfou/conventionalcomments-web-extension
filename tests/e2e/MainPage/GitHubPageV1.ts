@@ -311,6 +311,7 @@ export default class GitHubPageV1 extends AbstractMainPage<"github"> {
   }
 
   async waitPageIsReady(): Promise<void> {
+    await this.page.waitForLoadState("domcontentloaded");
     await this.page.locator("html[data-turbo-loaded]").waitFor();
   }
 

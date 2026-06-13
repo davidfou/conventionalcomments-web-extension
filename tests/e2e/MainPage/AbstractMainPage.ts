@@ -172,27 +172,37 @@ export abstract class AbstractMainPage<P extends Product> {
   abstract selectTheme(theme: string): Promise<void>;
 
   async goToMainPage(): Promise<void> {
-    await this.page.goto(this.config.mainPageUrl);
+    await this.page.goto(this.config.mainPageUrl, {
+      waitUntil: "domcontentloaded",
+    });
     await this.waitPageIsReady();
   }
 
   async goToOverviewPage(): Promise<void> {
-    await this.page.goto(this.config.overviewPageUrl);
+    await this.page.goto(this.config.overviewPageUrl, {
+      waitUntil: "domcontentloaded",
+    });
     await this.waitPageIsReady();
   }
 
   async goToIssuePage(): Promise<void> {
-    await this.page.goto(this.config.issuePageUrl);
+    await this.page.goto(this.config.issuePageUrl, {
+      waitUntil: "domcontentloaded",
+    });
     await this.waitPageIsReady();
   }
 
   async goToNewPullRequestPage(): Promise<void> {
-    await this.page.goto(this.config.newPullRequestPageUrl);
+    await this.page.goto(this.config.newPullRequestPageUrl, {
+      waitUntil: "domcontentloaded",
+    });
     await this.waitPageIsReady();
   }
 
   async goToNewIssuePage(): Promise<void> {
-    await this.page.goto(this.config.newIssuePageUrl);
+    await this.page.goto(this.config.newIssuePageUrl, {
+      waitUntil: "domcontentloaded",
+    });
     await this.waitPageIsReady();
   }
 
