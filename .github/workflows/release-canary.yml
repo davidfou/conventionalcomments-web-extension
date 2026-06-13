@@ -82,5 +82,9 @@ jobs:
       - name: Build
         run: npm run zip:firefox
 
+      # publish-browser-extension >=4.0.1 strips one layer of {} from the
+      # extension ID before calling AMO, which 404s for GUID-based addons.
+      # Double-wrap the ID at publish time so one strip leaves the {guid}
+      # form AMO requires. See aklinker1/publish-browser-extension#52.
       - name: Publish
-        run: npm run publish:firefox
+        run: FIREFOX_EXTENSION_ID="{$FIREFOX_EXTENSION_ID}" npm run publish:firefox
