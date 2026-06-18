@@ -13,15 +13,22 @@ function getIsMainComment(el: Element): boolean {
 
 const config: PlatformConfig = {
   productType: "gitlab-v1",
-  initialScan: false,
 
   findTextareasInNode(node) {
-    // GitLab only matches textareas that are directly added to the DOM,
-    // not nested inside added subtrees
-    if (node instanceof HTMLTextAreaElement) {
-      return [node];
+    if (!(node instanceof Element)) {
+      return [];
     }
-    return [];
+    const root =
+      node instanceof HTMLTextAreaElement ? node.parentElement : node;
+    if (root === null) {
+      return [];
+    }
+    return Array.from(
+      root
+        .querySelectorAll("textarea#note_note")
+        .values()
+        .filter((el) => el instanceof HTMLTextAreaElement),
+    );
   },
 
   extractElements(textarea) {

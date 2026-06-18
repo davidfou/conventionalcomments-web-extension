@@ -19,7 +19,6 @@ function createMockConfig(
 ): PlatformConfig {
   return {
     productType: "github-v1",
-    initialScan: false,
     findTextareasInNode: (node) => {
       if (node instanceof Element) {
         return Array.from(node.querySelectorAll("textarea"));
@@ -83,9 +82,9 @@ describe("createExtractor", () => {
   }
 
   describe("initial scan", () => {
-    it("scans document.body when initialScan is true", () => {
+    it("scans document.body on init", () => {
       const textarea = addTextareaToDOM();
-      const config = createMockConfig({ initialScan: true });
+      const config = createMockConfig();
       setupExtractor(config);
 
       expect(onTextareaExtracted).toHaveBeenCalledWith(
@@ -96,14 +95,6 @@ describe("createExtractor", () => {
           productType: "github-v1",
         }),
       );
-    });
-
-    it("does not scan on init when initialScan is false", () => {
-      addTextareaToDOM();
-      const config = createMockConfig({ initialScan: false });
-      setupExtractor(config);
-
-      expect(onTextareaExtracted).not.toHaveBeenCalled();
     });
   });
 
@@ -120,7 +111,7 @@ describe("createExtractor", () => {
     });
 
     it("disposes a textarea when removed from the DOM", async () => {
-      const config = createMockConfig({ initialScan: true });
+      const config = createMockConfig();
       const textarea = addTextareaToDOM();
       setupExtractor(config);
 
@@ -134,7 +125,7 @@ describe("createExtractor", () => {
     });
 
     it("does not extract the same textarea twice", async () => {
-      const config = createMockConfig({ initialScan: true });
+      const config = createMockConfig();
       const textarea = addTextareaToDOM();
       setupExtractor(config);
 
@@ -166,7 +157,7 @@ describe("createExtractor", () => {
     it("tracks hidden textareas and does not extract them", () => {
       HTMLElement.prototype.checkVisibility = () => false;
 
-      const config = createMockConfig({ initialScan: true });
+      const config = createMockConfig();
       addTextareaToDOM();
       setupExtractor(config);
 
@@ -175,7 +166,6 @@ describe("createExtractor", () => {
 
     it("disposes extracted textarea that becomes hidden via scoped observer", async () => {
       const config = createMockConfig({
-        initialScan: true,
         visibility: {
           target: document.body,
           observerInit: {
@@ -203,7 +193,6 @@ describe("createExtractor", () => {
       HTMLElement.prototype.checkVisibility = () => false;
 
       const config = createMockConfig({
-        initialScan: true,
         visibility: {
           target: document.body,
           observerInit: {
@@ -234,7 +223,7 @@ describe("createExtractor", () => {
     it("cleans up hidden textareas when their parent is removed", async () => {
       HTMLElement.prototype.checkVisibility = () => false;
 
-      const config = createMockConfig({ initialScan: true });
+      const config = createMockConfig();
       const textarea = addTextareaToDOM();
       setupExtractor(config);
 
@@ -265,7 +254,7 @@ describe("createExtractor", () => {
 
   describe("container cleanup", () => {
     it("removes existing ccext-container elements before extraction", () => {
-      const config = createMockConfig({ initialScan: true });
+      const config = createMockConfig();
       const textarea = addTextareaToDOM();
       const existing = document.createElement("div");
       existing.dataset.testid = "ccext-container";
@@ -282,7 +271,6 @@ describe("createExtractor", () => {
   describe("cleanup function", () => {
     it("disconnects all observers on cleanup", async () => {
       const config = createMockConfig({
-        initialScan: true,
         visibility: {
           target: document.body,
           observerInit: {
@@ -311,7 +299,6 @@ describe("createExtractor", () => {
   describe("isMainComment", () => {
     it("passes isMainComment result through to callback", () => {
       const config = createMockConfig({
-        initialScan: true,
         isMainComment: () => false,
       });
       addTextareaToDOM();

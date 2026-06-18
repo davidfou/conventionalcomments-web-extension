@@ -22,14 +22,18 @@ function isValidTextarea(textarea: HTMLTextAreaElement): boolean {
 
 const config: PlatformConfig = {
   productType: "github-v1",
-  initialScan: true,
 
   findTextareasInNode(node) {
     if (!(node instanceof Element)) {
       return [];
     }
+    const root =
+      node instanceof HTMLTextAreaElement ? node.parentElement : node;
+    if (root === null) {
+      return [];
+    }
     return Array.from(
-      node
+      root
         .querySelectorAll(".js-previewable-comment-form textarea")
         .values()
         .filter((el) => el instanceof HTMLTextAreaElement),

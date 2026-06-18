@@ -8,12 +8,7 @@ import type { ProductType } from "../types";
 export type PlatformConfig = {
   productType: ProductType;
 
-  // Whether to scan document.body for existing textareas on init
-  initialScan: boolean;
-
-  // Find textareas within a mutation-added node
-  // GitHub: querySelectorAll on descendants
-  // GitLab: check if the node itself is a matching textarea
+  // Find textareas within document.body on init or within a mutation-added node
   findTextareasInNode: (node: Node) => HTMLTextAreaElement[];
 
   // Validate textarea and extract its container + anchor elements
@@ -171,9 +166,7 @@ export default function createExtractor(
       config,
     };
 
-    if (config.initialScan) {
-      findAndHandleTextareas(document.body, state);
-    }
+    findAndHandleTextareas(document.body, state);
 
     const mutationObserver = new MutationObserver((mutations) => {
       handleMutations(mutations, state);

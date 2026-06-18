@@ -5,8 +5,15 @@ import CDP from "chrome-remote-interface";
 import { authenticator } from "otplib";
 import * as ChromeLauncher from "chrome-launcher";
 
+const version = process.argv[2];
+if (version !== "v1" && version !== "v2") {
+  throw new Error(
+    `Expected positional argument "v1" or "v2", received ${JSON.stringify(version)}`,
+  );
+}
+
 function getEnvValue(key: string): string {
-  const envKey = `E2E_GITLAB_V1_${key}`;
+  const envKey = `E2E_GITLAB_${version.toUpperCase()}_${key}`;
   const value = process.env[envKey];
   if (value === undefined || value === "") {
     throw new Error(`Environment variable ${envKey} is not set`);
@@ -32,6 +39,15 @@ async function click(client: CDP.Client, nodeId: number): Promise<void> {
     button: "left",
     ...coordinates,
   });
+}
+
+async function typeInto(
+  client: CDP.Client,
+  nodeId: number,
+  text: string,
+): Promise<void> {
+  await client.DOM.focus({ nodeId });
+  await client.Input.insertText({ text });
 }
 
 async function acceptCookies(client: CDP.Client): Promise<boolean> {
@@ -86,21 +102,9 @@ async function doSignin(client: CDP.Client): Promise<boolean> {
     return false;
   }
 
-  await client.DOM.setAttributeValue({
-    nodeId: selectors[0].nodeId,
-    name: "value",
-    value: getEnvValue("USERNAME"),
-  });
-  await client.DOM.setAttributeValue({
-    nodeId: selectors[1].nodeId,
-    name: "value",
-    value: getEnvValue("PASSWORD"),
-  });
-  await client.DOM.setAttributeValue({
-    nodeId: selectors[2].nodeId,
-    name: "checked",
-    value: "true",
-  });
+  await typeInto(client, selectors[0].nodeId, getEnvValue("USERNAME"));
+  await typeInto(client, selectors[1].nodeId, getEnvValue("PASSWORD"));
+  await click(client, selectors[2].nodeId);
   await click(client, selectors[3].nodeId);
   await client.Page.loadEventFired();
   console.log("Passed!\n");
@@ -124,11 +128,11 @@ async function doTwoFactorAuthentication(client: CDP.Client): Promise<boolean> {
     console.log("skipped - some selectors not found\n");
     return false;
   }
-  await client.DOM.setAttributeValue({
-    nodeId: selectors[0].nodeId,
-    name: "value",
-    value: authenticator.generate(getEnvValue("TWO_FACTOR_SECRET")),
-  });
+  await typeInto(
+    client,
+    selectors[0].nodeId,
+    authenticator.generate(getEnvValue("TWO_FACTOR_SECRET")),
+  );
   await click(client, selectors[1].nodeId);
   await client.Page.loadEventFired();
   console.log("Passed!\n");
@@ -147,7 +151,6 @@ let chrome;
 
 try {
   chrome = await ChromeLauncher.launch();
-  // await waitOn({ resources: ["tcp:9222"] });
   client = await CDP({ port: chrome.port });
   const { Network, Page } = client;
   await Page.enable();
@@ -191,7 +194,7 @@ try {
   await fs.writeFile(
     path.join(
       import.meta.dirname,
-      "../tests/e2e/playwright/.auth/user-gitlab-v1.json",
+      `../tests/e2e/playwright/.auth/user-gitlab-${version}.json`,
     ),
     JSON.stringify({ cookies }, null, 2),
   );
@@ -199,6 +202,6 @@ try {
   process.exitCode = 1;
   console.error(error);
 } finally {
-  await client?.close();
+  await Promise.allSettled([client?.Browser.close(), client?.close()]);
   chrome?.kill();
 }
