@@ -38,6 +38,11 @@ export const test = baseTest.extend<MyOptions & MyFixtures>({
       import.meta.dirname,
       `../../.output/chrome-mv3${process.env.CI ? "" : "-dev"}/`,
     );
+    await fs.access(path.join(pathToExtension, "manifest.json")).catch(() => {
+      throw new Error(
+        `Extension build not found at ${pathToExtension}. Run \`npm run ${process.env.CI ? "build" : "dev"}\` before running the e2e tests.`,
+      );
+    });
     const context = await chromium.launchPersistentContext("", {
       baseURL: config.baseUrl,
       channel: "chromium",
@@ -66,6 +71,19 @@ export const test = baseTest.extend<MyOptions & MyFixtures>({
     if (content !== null) {
       const { cookies } = JSON.parse(content);
       context.addCookies(cookies);
+    }
+
+    if (product === "gitlab" && version === 2) {
+      await context.addCookies([
+        {
+          name: "rapid_diffs_enabled",
+          value: "true",
+          domain: ".gitlab.com",
+          path: "/",
+          secure: true,
+          sameSite: "Lax",
+        },
+      ]);
     }
 
     // Temporary workaround to bypass the modal to present the new GitLab interface

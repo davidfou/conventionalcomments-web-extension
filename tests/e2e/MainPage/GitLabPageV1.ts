@@ -224,6 +224,7 @@ export default class GitLabPageV1 extends AbstractMainPage<"gitlab"> {
   async waitPageIsReady(): Promise<void> {
     await this.page.waitForLoadState("domcontentloaded");
     await this.page.locator("body[data-page]").waitFor();
+    await this.page.waitForLoadState("networkidle");
   }
 
   getPreviewButtonSelector(container: Locator): Locator {

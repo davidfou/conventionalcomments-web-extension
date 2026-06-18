@@ -10,15 +10,19 @@ const MAIN_CSS_SELECTORS = [
 
 const config: PlatformConfig = {
   productType: "github-v2",
-  initialScan: true,
 
   findTextareasInNode(node) {
     if (!(node instanceof Element)) {
       return [];
     }
+    const root =
+      node instanceof HTMLTextAreaElement ? node.parentElement : node;
+    if (root === null) {
+      return [];
+    }
 
     let allTextareas = Array.from(
-      node
+      root
         .querySelectorAll(
           MAIN_CSS_SELECTORS.map((selector) => `${selector} textarea`).join(
             ", ",
@@ -30,14 +34,14 @@ const config: PlatformConfig = {
     // Special case: when the added node itself is a new-file-thread container,
     // also search for all textareas within it (not scoped by main selectors)
     if (
-      node.classList
+      root.classList
         .values()
         .some((className) =>
           className.startsWith(NEW_FILE_THREAD_SELECTOR_CLASS_PREFIX),
         )
     ) {
       allTextareas = allTextareas.concat(
-        Array.from(node.querySelectorAll("textarea").values()),
+        Array.from(root.querySelectorAll("textarea").values()),
       );
     }
 

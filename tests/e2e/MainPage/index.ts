@@ -1,8 +1,9 @@
 import { Page } from "@playwright/test";
 import { Config } from "../config";
 import GitHubPageV1 from "./GitHubPageV1";
-import GitLabPageV1 from "./GitLabPageV1";
 import GitHubPageV2 from "./GitHubPageV2";
+import GitLabPageV1 from "./GitLabPageV1";
+import GitLabPageV2 from "./GitLabPageV2";
 import { Product } from "../types";
 import { CommentsMap, ThreadMap } from "./types";
 
@@ -19,6 +20,8 @@ function getMainPage<P extends Product>(
       return new GitHubPageV2(page, config);
     case "gitlab-v1":
       return new GitLabPageV1(page, config);
+    case "gitlab-v2":
+      return new GitLabPageV2(page, config);
     default:
       throw new Error(
         `Unsupported product/version combination: ${product} v${version}`,
