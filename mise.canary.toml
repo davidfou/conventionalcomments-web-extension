@@ -1,0 +1,32 @@
+# Overlay on top of mise.publish.toml when MISE_ENV=publish,canary. Holds
+# both the publish-flow value flips and the canary 1password references
+# (different extension IDs + a PUBLISHER_ID for the cancel-review step).
+
+[tasks."cws:cancel-pending"]
+description = "Best-effort cancel of a stuck canary CWS review"
+# CWS rejects new uploads while a previous canary submission is still in
+# review. Failures (e.g. nothing pending) are intentionally ignored by the
+# caller (continue-on-error: true in the workflow).
+run = '''{{vars.op_run}} bash -c '
+set -euo pipefail
+TOKEN=$(curl -sf -X POST https://oauth2.googleapis.com/token \
+  -d "client_id=$CHROME_CLIENT_ID" \
+  -d "client_secret=$CHROME_CLIENT_SECRET" \
+  -d "refresh_token=$CHROME_REFRESH_TOKEN" \
+  -d "grant_type=refresh_token" | jq -r .access_token)
+curl -sfS -X POST \
+  -H "Authorization: Bearer $TOKEN" \
+  "https://chromewebstore.googleapis.com/v2/publishers/$CHROME_PUBLISHER_ID/items/$CHROME_EXTENSION_ID:cancelSubmission"
+'
+'''
+
+[env]
+IS_CANARY = "true"
+CHROME_PUBLISH_TARGET = "trustedTesters"
+FIREFOX_CHANNEL = "unlisted"
+
+# Canary uses dedicated extension IDs and an extra PUBLISHER_ID for the
+# cws:cancel-pending task.
+CHROME_EXTENSION_ID = "op://Conventional comments/Chrome webstore/CANARY_EXTENSION_ID"
+CHROME_PUBLISHER_ID = "op://Conventional comments/Chrome webstore/PUBLISHER_ID"
+FIREFOX_EXTENSION_ID = "op://Conventional comments/Mozilla add-on/CANARY_EXTENSION_ID"

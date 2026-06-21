@@ -1,0 +1,55 @@
+# Loaded when MISE_ENV includes `publish` — release.yml sets MISE_ENV=publish
+# and release-canary.yml sets MISE_ENV=publish,canary so the canary overlay
+# layers on top. wxt.config.ts reads CI_PUBLISH + IS_CANARY; wxt submit
+# reads CHROME_PUBLISH_TARGET / CHROME_SKIP_SUBMIT_REVIEW / FIREFOX_CHANNEL.
+# Secret refs (op://…) are resolved at task runtime by `op run --`; the
+# release jobs must export OP_SERVICE_ACCOUNT_TOKEN so op can authenticate.
+
+[vars]
+# Resolve op:// references in this task's env before invoking the inner
+# command.
+op_run = "op run --"
+
+[tasks."zip:chrome"]
+description = "Package the extension as a zip (Chrome)"
+run = "pnpm wxt zip"
+
+[tasks."zip:firefox"]
+description = "Package the extension as a zip (Firefox)"
+run = "pnpm wxt zip -b firefox"
+
+[tasks."publish:chrome"]
+description = "Submit the packaged extension to the Chrome Web Store"
+run = "{{vars.op_run}} pnpm wxt submit --chrome-zip .output/*-chrome.zip"
+
+[tasks."publish:firefox"]
+description = "Submit the packaged extension to Firefox Add-ons"
+# publish-browser-extension >=4.0.1 strips one layer of {} from the
+# extension ID before calling AMO, which 404s for GUID-based addons.
+# Double-wrap the ID so one strip leaves the {guid} form AMO requires.
+# See aklinker1/publish-browser-extension#52.
+run = '''{{vars.op_run}} bash -c '
+set -euo pipefail
+FIREFOX_EXTENSION_ID="{$FIREFOX_EXTENSION_ID}" pnpm wxt submit \
+  --firefox-zip .output/*-firefox.zip \
+  --firefox-sources-zip .output/*-sources.zip
+'
+'''
+
+[env]
+CI_PUBLISH = "true"
+IS_CANARY = "false"
+CHROME_PUBLISH_TARGET = "default"
+CHROME_SKIP_SUBMIT_REVIEW = "false"
+FIREFOX_CHANNEL = "listed"
+
+# Chrome Web Store secrets (production extension)
+CHROME_EXTENSION_ID = "op://Conventional comments/Chrome webstore/EXTENSION_ID"
+CHROME_CLIENT_ID = "op://Conventional comments/Chrome webstore/CLIENT_ID"
+CHROME_CLIENT_SECRET = "op://Conventional comments/Chrome webstore/CLIENT_SECRET"
+CHROME_REFRESH_TOKEN = "op://Conventional comments/Chrome webstore/REFRESH_TOKEN"
+
+# Firefox Add-ons secrets (production extension)
+FIREFOX_EXTENSION_ID = "op://Conventional comments/Mozilla add-on/EXTENSION_ID"
+FIREFOX_JWT_ISSUER = "op://Conventional comments/Mozilla add-on/JWT_ISSUER"
+FIREFOX_JWT_SECRET = "op://Conventional comments/Mozilla add-on/JWT_SECRET"

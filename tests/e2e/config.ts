@@ -1,16 +1,4 @@
-import dotenv from "dotenv";
-import path from "node:path";
 import { Product } from "./types";
-
-function getPath(file: string): string {
-  return path.join(import.meta.dirname, file);
-}
-
-dotenv.config({
-  path: (process.env.CI ? [".env.ci", ".env"] : [".env.local", ".env"]).map(
-    (file) => getPath(file),
-  ),
-});
 
 export interface Config {
   baseUrl: string;

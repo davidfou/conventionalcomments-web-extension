@@ -1,0 +1,81 @@
+[tools]
+nodejs = '22.16.0'
+pnpm = '11.8.0'
+'1password-cli' = '2.34.1'
+
+[vars]
+# Extra flags appended to lint:oxlint. Empty by default; mise.ci.toml
+# overrides this to enable GitHub-Actions-friendly output.
+oxlint_args = ""
+
+# Prefix for tasks whose env may carry `op://` references. Empty locally
+# (assume literal values in mise.local.toml); CI overlays set this to
+# `op run --` so 1password references are resolved at task execution.
+op_run = ""
+
+[tasks.dev]
+description = "Run the extension in dev mode (Chrome)"
+run = "pnpm wxt"
+
+[tasks."dev:firefox"]
+description = "Run the extension in dev mode (Firefox)"
+run = "pnpm wxt -b firefox"
+
+[tasks.build]
+description = "Build the extension (Chrome)"
+run = "pnpm wxt build"
+
+[tasks."build:firefox"]
+description = "Build the extension (Firefox)"
+run = "pnpm wxt build -b firefox"
+
+[tasks.storybook]
+description = "Run Storybook at http://localhost:6006"
+run = "pnpm storybook dev -p 6006"
+
+[tasks."lint:ts"]
+description = "Type-check the project with tsc"
+run = "pnpm tsc --noEmit"
+
+[tasks."lint:oxlint"]
+description = "Lint the project with oxlint"
+run = "pnpm oxlint --max-warnings=0 {{vars.oxlint_args}}"
+
+[tasks."lint:prettier"]
+description = "Check formatting with prettier"
+run = "pnpm prettier . -l"
+
+[tasks.lint]
+description = "Run all lint checks (types, oxlint, prettier)"
+depends = ["lint:*"]
+
+[tasks.format]
+description = "Auto-format the project with prettier"
+run = "pnpm prettier . -w"
+
+[tasks."test:unit"]
+description = "Run vitest unit tests"
+run = "pnpm vitest run"
+
+[tasks."test-dev:unit"]
+description = "Run vitest in watch mode"
+run = "pnpm vitest"
+
+[tasks."test:components"]
+description = "Run Playwright component tests"
+run = "pnpm playwright test -c tests/components/playwright.config.ts"
+
+[tasks."test:e2e"]
+description = "Run Playwright end-to-end tests"
+run = "{{vars.op_run}} pnpm playwright test -c tests/e2e/playwright.config.ts"
+
+[env]
+# E2E test target repositories per product/version. CI overrides these via
+# mise.ci.toml (activated by MISE_ENV=ci). Secrets (USERNAME, PASSWORD,
+# TOKEN, TWO_FACTOR_SECRET) are NOT defined here — put literal values in a
+# `mise.local.toml` (gitignored) for dev. CI declares them as `op://` refs
+# in mise.ci.toml and resolves them at runtime via `op run --`.
+E2E_GITHUB_V1_PROJECT = "ccext-e2e-local"
+E2E_GITHUB_V2_PROJECT = "ccext-e2e-local"
+E2E_GITLAB_V1_PROJECT = "ccext-e2e-local"
+E2E_GITLAB_V2_PROJECT = "ccext-e2e-local"

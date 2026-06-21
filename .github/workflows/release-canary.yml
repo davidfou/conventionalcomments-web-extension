@@ -5,102 +5,50 @@ on:
       - "main"
     tags:
       - "v*"
+env:
+  MISE_ENV: publish,canary
 
 jobs:
   publish-chrome:
     name: Publish extension to the Chrome Webstore
     runs-on: ubuntu-24.04
     env:
-      CI_PUBLISH: "true"
-      CHROME_PUBLISH_TARGET: "trustedTesters"
-      CHROME_SKIP_SUBMIT_REVIEW: "false"
-      IS_CANARY: "true"
+      OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
-      - name: Load secret
-        uses: 1password/load-secrets-action@v2
-        with:
-          export-env: true
-        env:
-          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          CHROME_EXTENSION_ID: "op://Conventional comments/Chrome webstore/CANARY_EXTENSION_ID"
-          CHROME_PUBLISHER_ID: "op://Conventional comments/Chrome webstore/PUBLISHER_ID"
-          CHROME_CLIENT_ID: "op://Conventional comments/Chrome webstore/CLIENT_ID"
-          CHROME_CLIENT_SECRET: "op://Conventional comments/Chrome webstore/CLIENT_SECRET"
-          CHROME_REFRESH_TOKEN: "op://Conventional comments/Chrome webstore/REFRESH_TOKEN"
-
-      - name: Setup node
-        uses: actions/setup-node@v5
-        with:
-          node-version-file: ".tool-versions"
-          cache: "npm"
-
-      - name: Install deps
-        run: npm ci
+      - name: Setup
+        uses: ./.github/actions/setup
 
       - name: Build
-        run: npm run zip:chrome
+        run: mise run zip:chrome
 
-      # CWS rejects new uploads while a previous canary submission is still
-      # in review. Best-effort cancel so back-to-back canary pushes don't
-      # block on a stuck review; errors (e.g. nothing pending) are ignored.
       - name: Cancel pending review
         continue-on-error: true
-        run: |
-          TOKEN=$(curl -sf -X POST https://oauth2.googleapis.com/token \
-            -d "client_id=$CHROME_CLIENT_ID" \
-            -d "client_secret=$CHROME_CLIENT_SECRET" \
-            -d "refresh_token=$CHROME_REFRESH_TOKEN" \
-            -d "grant_type=refresh_token" | jq -r .access_token)
-          curl -sfS -X POST \
-            -H "Authorization: Bearer $TOKEN" \
-            "https://chromewebstore.googleapis.com/v2/publishers/$CHROME_PUBLISHER_ID/items/$CHROME_EXTENSION_ID:cancelSubmission"
+        run: mise run cws:cancel-pending
 
       - name: Publish
-        run: npm run publish:chrome
+        run: mise run publish:chrome
 
   publish-firefox:
     name: Publish extension to the Firefox add-ons
     runs-on: ubuntu-24.04
     env:
-      CI_PUBLISH: "true"
-      FIREFOX_CHANNEL: "unlisted"
-      IS_CANARY: "true"
+      OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
-      - name: Load secret
-        uses: 1password/load-secrets-action@v2
-        with:
-          export-env: true
-        env:
-          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          FIREFOX_EXTENSION_ID: "op://Conventional comments/Mozilla add-on/CANARY_EXTENSION_ID"
-          FIREFOX_JWT_ISSUER: "op://Conventional comments/Mozilla add-on/JWT_ISSUER"
-          FIREFOX_JWT_SECRET: "op://Conventional comments/Mozilla add-on/JWT_SECRET"
-
-      - name: Setup node
-        uses: actions/setup-node@v5
-        with:
-          node-version-file: ".tool-versions"
-          cache: "npm"
-
-      - name: Install deps
-        run: npm ci
+      - name: Setup
+        uses: ./.github/actions/setup
 
       - name: Build
-        run: npm run zip:firefox
+        run: mise run zip:firefox
 
-      # publish-browser-extension >=4.0.1 strips one layer of {} from the
-      # extension ID before calling AMO, which 404s for GUID-based addons.
-      # Double-wrap the ID at publish time so one strip leaves the {guid}
-      # form AMO requires. See aklinker1/publish-browser-extension#52.
       - name: Publish
-        run: FIREFOX_EXTENSION_ID="{$FIREFOX_EXTENSION_ID}" npm run publish:firefox
+        run: mise run publish:firefox
