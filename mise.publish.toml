@@ -16,7 +16,12 @@ run = "pnpm wxt zip"
 
 [tasks."zip:firefox"]
 description = "Package the extension as a zip (Firefox)"
-run = "pnpm wxt zip -b firefox"
+# wxt.config.ts bakes FIREFOX_EXTENSION_ID into manifest.browser_specific_settings.gecko.id
+# at build time, so the op:// reference must be resolved before `wxt zip`
+# (not just at submit time) — otherwise AMO sees a manifest ID that
+# doesn't match the addon being submitted and rejects with
+# "Upload is not valid."
+run = "{{vars.op_run}} pnpm wxt zip -b firefox"
 
 [tasks."publish:chrome"]
 description = "Submit the packaged extension to the Chrome Web Store"
