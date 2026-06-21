@@ -8,28 +8,16 @@ Browser web extension (Chrome & Firefox) that formats [conventional comments](ht
 
 ## Commands
 
+Tasks live in `mise.toml` (and the publish/canary overlays). Run `mise install` once to provision the pinned tools (Node, pnpm, op); `pnpm install` reads `pnpm-lock.yaml` and the `wxt prepare` postinstall runs automatically.
+
 ```bash
-# Development
-npm run dev              # Dev mode with hot reload (Chrome)
-npm run dev:firefox      # Dev mode (Firefox)
-npm run storybook        # Component preview at localhost:6006
-
-# Build
-npm run build            # Production build (Chrome)
-npm run build:firefox    # Production build (Firefox)
-
-# Quality checks (all run in CI)
-npm run compile          # TypeScript type check (tsc --noEmit)
-npm run lint             # Oxlint (--max-warnings=0)
-npx prettier . -l        # Formatting check
-
-# Testing
-npx vitest               # Unit tests
-npx vitest run entrypoints/content/formatComment.test.ts  # Single unit test
-npm run playwright:components    # Component tests (Playwright CT)
-npm run playwright:e2e           # All E2E tests
-npx playwright test -c tests/e2e/playwright.config.ts --project github-v1  # Single E2E project
+mise tasks ls                # list every available task with descriptions
+mise tasks info <task>       # show the command behind a single task
+mise run <task> -- ...args   # run a task, optionally passing extra args
+mise exec -- <cmd>           # run an arbitrary command with pinned tools on PATH
 ```
+
+Anything not exposed as a task (e.g. a single unit test) goes through `mise exec --`, e.g. `mise exec -- pnpm vitest run entrypoints/content/formatComment.test.ts`.
 
 ## Architecture
 
@@ -56,12 +44,38 @@ The background service worker dynamically registers/unregisters content scripts 
 
 - **Unit tests** (Vitest): Co-located with source files as `*.test.ts`
 - **Component tests** (Playwright CT): `tests/components/` - test React components in isolation
-- **E2E tests** (Playwright): `tests/e2e/` - four projects: `github-v1`, `github-v2`, `gitlab-v1`, `gitlab-v2`. Uses page object models in `tests/e2e/MainPage/`. Runs sequentially (1 worker). Requires credentials via `.env.local` or 1password in CI
-- **Visual regression**: E2E includes screenshot tests (`tests/e2e/__screenshots__/`). Baselines are pinned to CI's rendering (fonts, GPU, OS). Visual tests are **not expected to pass locally** — diffs against CI baselines are normal. To refresh baselines from CI after a UI change, run `npx tsx devScripts/getScreenshotsFromCI.ts` (needs `GITHUB_TOKEN`).
+- **E2E tests** (Playwright): `tests/e2e/` - four projects: `github-v1`, `github-v2`, `gitlab-v1`, `gitlab-v2`. Uses page object models in `tests/e2e/MainPage/`. Runs sequentially (1 worker). Requires credentials via a local `mise.local.toml` (see Environment) or 1password in CI
+- **Visual regression**: E2E includes screenshot tests (`tests/e2e/__screenshots__/`). Baselines are pinned to CI's rendering (fonts, GPU, OS). Visual tests are **not expected to pass locally** — diffs against CI baselines are normal. To refresh baselines from CI after a UI change, run `mise exec -- pnpm tsx devScripts/getScreenshotsFromCI.ts` (needs `GITHUB_TOKEN`).
+
+## Environment
+
+All env vars are managed by mise — there are no `.env` files.
+
+- **`mise.toml`** `[env]` – local-dev defaults (e.g. `E2E_*_PROJECT`).
+- **`mise.ci.toml`** – overlay activated by `MISE_ENV=ci`. Holds CI project overrides and `op://` references for the 16 E2E secrets.
+- **`mise.publish.toml`** / **`mise.canary.toml`** – overlays activated by `MISE_ENV=publish` (release) and `MISE_ENV=publish,canary` (canary). Hold publish-flow config (`CI_PUBLISH`, `IS_CANARY`, store target/channel) and `op://` references for Chrome/Firefox store credentials.
+- **`mise.local.toml`** – gitignored, per-developer overrides for E2E secrets.
+
+Secret values live in 1password; the overlays only declare references like `"op://Conventional comments/GitHub V1/password"`. Tasks that consume secrets (`test:e2e`, `publish:chrome`, `publish:firefox`, `cws:cancel-pending`) wrap their command with `{{vars.op_run}}` — empty by default, set to `op run --` in CI overlays. At runtime `op run` reads the op:// values from the task env, fetches the secrets, and substitutes them before the inner command runs.
+
+Local dev for E2E — either:
+
+- put literal credentials in `mise.local.toml` (no 1password CLI needed):
+
+  ```toml
+  [env]
+  E2E_GITHUB_V1_USERNAME = "..."
+  E2E_GITHUB_V1_PASSWORD = "..."
+  # repeat for V2 / GITLAB
+  ```
+
+- or, if you have the 1password CLI authenticated, point at your own vault and set `[vars] op_run = "op run --"` in `mise.local.toml`.
+
+In CI, workflows export `OP_SERVICE_ACCOUNT_TOKEN` so `op run` can authenticate against the shared 1password vault.
 
 ## Key Tools & Config
 
-- **Node 22.16.0** (`.tool-versions`)
+- **Node 22.16.0** + **pnpm 11.8.0** pinned in `mise.toml` (install with `mise install`)
 - **WXT** for extension scaffolding (`wxt.config.ts`) - run `wxt prepare` after install (happens via postinstall)
 - **Oxlint** for linting (`.oxlintrc.json`) - strict mode with react, typescript, vitest plugins
 - **Prettier** for formatting (`.prettierrc.json`) - double quotes, trailing commas

@@ -1,10 +1,10 @@
 import type { MainPage } from "./MainPage";
-import type { BrowserContext } from "playwright";
 import type { Config } from "./config";
 import {
   test as baseTest,
   expect as baseExpect,
   chromium,
+  type BrowserContext,
 } from "@playwright/test";
 import { extendExpect } from "../commonMatchers";
 import fs from "node:fs/promises";
@@ -40,7 +40,7 @@ export const test = baseTest.extend<MyOptions & MyFixtures>({
     );
     await fs.access(path.join(pathToExtension, "manifest.json")).catch(() => {
       throw new Error(
-        `Extension build not found at ${pathToExtension}. Run \`npm run ${process.env.CI ? "build" : "dev"}\` before running the e2e tests.`,
+        `Extension build not found at ${pathToExtension}. Run \`mise run ${process.env.CI ? "build" : "dev"}\` before running the e2e tests.`,
       );
     });
     const context = await chromium.launchPersistentContext("", {

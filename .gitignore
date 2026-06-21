@@ -11,8 +11,9 @@ npm-debug.log*
 .wxt
 web-ext.config.ts
 
-# Local config
-.env*.local
+# Local mise overrides (secrets, per-developer settings)
+mise.local.toml
+.mise.local.toml
 
 # Playwright
 /test-results/

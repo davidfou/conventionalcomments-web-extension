@@ -1,0 +1,22 @@
+name: Setup
+description: Install mise-managed tools and pnpm dependencies with caching
+runs:
+  using: composite
+  steps:
+    - uses: jdx/mise-action@v4
+
+    - name: Set stable pnpm store dir
+      shell: bash
+      run: mise exec -- pnpm config set store-dir ~/.pnpm-store
+
+    - name: Cache pnpm store
+      uses: actions/cache@v4
+      with:
+        path: ~/.pnpm-store
+        key: pnpm-store-v1-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          pnpm-store-v1-${{ runner.os }}-
+
+    - name: Install dependencies
+      shell: bash
+      run: mise exec -- pnpm install --frozen-lockfile
