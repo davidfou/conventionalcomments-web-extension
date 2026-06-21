@@ -1,15 +1,21 @@
 import type { ReactElement } from "react";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Editor from "./Editor";
 import { ProductType } from "./types";
 import extractComment from "./extractComment";
-import { DECORATIONS, EMPTY_LABEL, LABELS } from "./constants";
+import { EMPTY_LABEL, EMPTY_LABEL_ENTRY } from "./convention/emptyLabel";
+import type { ConventionFile } from "./convention/types";
+import useConvention from "./useConvention";
 import useTextareaWrapper from "./useTextareaWrapper";
 
 interface AppProps {
   productType: ProductType;
   textarea: HTMLTextAreaElement;
   isMainComment: boolean;
+}
+
+interface ResolvedAppProps extends AppProps {
+  convention: ConventionFile;
 }
 
 function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>): void {
@@ -19,15 +25,23 @@ function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>): void {
   }
 }
 
-function App({ productType, textarea, isMainComment }: AppProps): ReactElement {
+function ResolvedApp({
+  productType,
+  textarea,
+  isMainComment,
+  convention,
+}: ResolvedAppProps): ReactElement {
+  const labelNames = convention.labels.map(({ label }) => label);
+  const decorationNames = convention.decorations.map(({ label }) => label);
+
   const [{ label, decorations }, setState] = useState<{
     label: string;
     decorations: string[];
   }>(() => {
     const initialComment = extractComment(
       textarea.value,
-      LABELS.map(({ label }) => label),
-      DECORATIONS.map(({ label }) => label),
+      labelNames,
+      decorationNames,
     );
 
     if (initialComment !== null) {
@@ -39,7 +53,9 @@ function App({ productType, textarea, isMainComment }: AppProps): ReactElement {
 
     return {
       label:
-        isMainComment && textarea.value === "" ? LABELS[1].label : EMPTY_LABEL,
+        isMainComment && textarea.value === ""
+          ? (convention.defaultLabel ?? EMPTY_LABEL)
+          : EMPTY_LABEL,
       decorations: [],
     };
   });
@@ -64,17 +80,44 @@ function App({ productType, textarea, isMainComment }: AppProps): ReactElement {
 
   const onAction = useCallback(() => textarea.focus(), [textarea]);
 
+  const labelOptions = useMemo(
+    () => [EMPTY_LABEL_ENTRY, ...convention.labels],
+    [convention.labels],
+  );
+
   return (
     <div onKeyDown={onKeyDown}>
       <Editor
         productType={productType}
         label={label}
-        decorations={decorations}
+        selectedDecorations={decorations}
+        labels={labelOptions}
+        decorations={convention.decorations}
+        emptyLabel={EMPTY_LABEL}
         onSelectLabel={onSelectLabel}
         onToggleDecoration={onToggleDecoration}
         onAction={onAction}
       />
     </div>
+  );
+}
+
+function App({
+  productType,
+  textarea,
+  isMainComment,
+}: AppProps): ReactElement | null {
+  const convention = useConvention(window.location.href);
+  if (convention === null) {
+    return null;
+  }
+  return (
+    <ResolvedApp
+      productType={productType}
+      textarea={textarea}
+      isMainComment={isMainComment}
+      convention={convention}
+    />
   );
 }
 

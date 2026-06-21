@@ -178,6 +178,17 @@ export abstract class AbstractMainPage<P extends Product> {
     await this.waitPageIsReady();
   }
 
+  async goToConventionMainPage(variant: "valid" | "invalid"): Promise<void> {
+    const url =
+      variant === "valid"
+        ? this.config.mainPageUrlConventionValid
+        : this.config.mainPageUrlConventionInvalid;
+    await this.page.goto(url, {
+      waitUntil: "domcontentloaded",
+    });
+    await this.waitPageIsReady();
+  }
+
   async goToOverviewPage(): Promise<void> {
     await this.page.goto(this.config.overviewPageUrl, {
       waitUntil: "domcontentloaded",
