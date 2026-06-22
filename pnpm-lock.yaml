@@ -59,6 +59,9 @@ importers:
       tw-animate-css:
         specifier: 1.4.0
         version: 1.4.0
+      zod:
+        specifier: 4.4.3
+        version: 4.4.3
     devDependencies:
       '@gitbeaker/rest':
         specifier: 43.8.0
@@ -165,9 +168,6 @@ importers:
       yauzl:
         specifier: 3.3.0
         version: 3.3.0
-      zod:
-        specifier: 4.4.3
-        version: 4.4.3
 
 packages:
 

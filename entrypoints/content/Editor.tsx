@@ -1,12 +1,15 @@
 import type { ReactElement } from "react";
-import { DECORATIONS, EMPTY_LABEL, LABELS } from "./constants";
 import { Combobox } from "~/components/custom/Combobox";
 import { ProductType } from "./types";
+import type { SelectableItem } from "./convention/types";
 
 interface EditorProps {
   productType: ProductType;
   label: string;
-  decorations: string[];
+  selectedDecorations: string[];
+  labels: readonly SelectableItem[];
+  decorations: readonly SelectableItem[];
+  emptyLabel: string;
   onSelectLabel: (label: string) => void;
   onToggleDecoration: (decoration: string) => void;
   onAction: () => void;
@@ -25,7 +28,10 @@ const DECORATION_EMPTY_STATE = {
 function Editor({
   productType,
   label,
+  selectedDecorations,
+  labels,
   decorations,
+  emptyLabel,
   onSelectLabel,
   onToggleDecoration,
   onAction,
@@ -35,17 +41,17 @@ function Editor({
       className="ccext:m-(--ccext-margin) ccext:space-y-(--ccext-margin)"
       data-testid="editor"
       data-testlabel={label}
-      data-testdecorations={decorations.join(", ")}
+      data-testdecorations={selectedDecorations.join(", ")}
     >
       <Combobox
         data-testid="label-combobox"
         productType={productType}
         label="Select label to apply"
         isMulti={false}
-        emptyValue={EMPTY_LABEL}
+        emptyValue={emptyLabel}
         placeholder="Select label..."
         searchPlaceholder="Search labels..."
-        options={LABELS}
+        options={labels}
         value={label}
         emptyState={LABEL_EMPTY_STATE}
         onSelect={onSelectLabel}
@@ -58,8 +64,8 @@ function Editor({
         isMulti
         placeholder="Add decorations..."
         searchPlaceholder="Search decorations..."
-        options={DECORATIONS}
-        values={decorations}
+        options={decorations}
+        values={selectedDecorations}
         emptyState={DECORATION_EMPTY_STATE}
         onToggle={onToggleDecoration}
         onAction={onAction}
