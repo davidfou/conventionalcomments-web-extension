@@ -1,5 +1,5 @@
 import type { ReactElement } from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Editor from "./Editor";
 import { ProductType } from "./types";
 import extractComment from "./extractComment";
@@ -18,11 +18,43 @@ interface ResolvedAppProps extends AppProps {
   convention: ConventionFile;
 }
 
+interface EditorState {
+  label: string;
+  decorations: string[];
+}
+
 function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>): void {
   // Avoids keyboard shortcuts from being triggered when typing in an input
   if (e.target instanceof HTMLInputElement) {
     e.stopPropagation();
   }
+}
+
+function computeInitialState(
+  convention: ConventionFile,
+  textarea: HTMLTextAreaElement,
+  isMainComment: boolean,
+): EditorState {
+  const labelNames = convention.labels.map(({ label }) => label);
+  const decorationNames = convention.decorations.map(({ label }) => label);
+  const initialComment = extractComment(
+    textarea.value,
+    labelNames,
+    decorationNames,
+  );
+  if (initialComment !== null) {
+    return {
+      label: initialComment.label,
+      decorations: initialComment.decorations,
+    };
+  }
+  return {
+    label:
+      isMainComment && textarea.value === ""
+        ? (convention.defaultLabel ?? EMPTY_LABEL)
+        : EMPTY_LABEL,
+    decorations: [],
+  };
 }
 
 function ResolvedApp({
@@ -31,34 +63,31 @@ function ResolvedApp({
   isMainComment,
   convention,
 }: ResolvedAppProps): ReactElement {
-  const labelNames = convention.labels.map(({ label }) => label);
-  const decorationNames = convention.decorations.map(({ label }) => label);
+  const [{ label, decorations }, setState] = useState<EditorState>(() =>
+    computeInitialState(convention, textarea, isMainComment),
+  );
 
-  const [{ label, decorations }, setState] = useState<{
-    label: string;
-    decorations: string[];
-  }>(() => {
-    const initialComment = extractComment(
-      textarea.value,
-      labelNames,
-      decorationNames,
-    );
-
-    if (initialComment !== null) {
-      return {
-        label: initialComment.label,
-        decorations: initialComment.decorations,
-      };
+  // When the convention swaps mid-mount (default → custom fetched), reset
+  // state to the new convention's default. We deliberately ignore the current
+  // textarea.value here: it still carries the previous convention's prefix
+  // (written by useTextareaWrapper), so re-running extractComment against the
+  // new vocab would always fail and we'd fall through to EMPTY_LABEL.
+  // useTextareaWrapper's existing slice-based effect rewrites the prefix on
+  // the next render once `label`/`decorations` change, so we don't touch
+  // textarea.value directly here.
+  const prevConventionRef = useRef(convention);
+  useEffect(() => {
+    if (prevConventionRef.current === convention) {
+      return;
     }
-
-    return {
-      label:
-        isMainComment && textarea.value === ""
-          ? (convention.defaultLabel ?? EMPTY_LABEL)
-          : EMPTY_LABEL,
+    prevConventionRef.current = convention;
+    setState({
+      label: isMainComment
+        ? (convention.defaultLabel ?? EMPTY_LABEL)
+        : EMPTY_LABEL,
       decorations: [],
-    };
-  });
+    });
+  }, [convention, isMainComment]);
 
   useTextareaWrapper(textarea, label, decorations);
 
@@ -104,14 +133,6 @@ function ResolvedApp({
 
 function App({ productType, textarea, isMainComment }: AppProps): ReactElement {
   const convention = useConvention(window.location.href);
-  if (convention === null) {
-    // Reserve a sliver of vertical space so the wrapper has non-zero
-    // dimensions while the convention fetch resolves. Without this, the
-    // ccext-container span is empty (zero height) which Playwright treats
-    // as not-visible — breaking navigation specs that probe visibility
-    // mid-render.
-    return <div className="ccext:min-h-px" />;
-  }
   return (
     <ResolvedApp
       productType={productType}
