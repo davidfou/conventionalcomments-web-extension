@@ -14,7 +14,7 @@ async function fetchConvention(key: RepoKey): Promise<ConventionResult> {
   const url = buildRawUrl(key);
   let response: Response;
   try {
-    response = await fetch(url, { credentials: "omit" });
+    response = await fetch(url, { credentials: "include" });
   } catch {
     return { status: "default" };
   }

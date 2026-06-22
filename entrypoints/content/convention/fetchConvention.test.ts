@@ -45,14 +45,14 @@ describe("fetchConvention", () => {
     vi.restoreAllMocks();
   });
 
-  test("calls fetch with credentials omit", async () => {
+  test("calls fetch with same-origin credentials so private repos work", async () => {
     const spy = mockFetch(() =>
       Promise.resolve(new Response(JSON.stringify(validBody), { status: 200 })),
     );
     await fetchConvention(githubKey);
     expect(spy).toHaveBeenCalledWith(
       "https://github.com/acme/widget/raw/HEAD/.conventional-comments.json",
-      { credentials: "omit" },
+      { credentials: "include" },
     );
   });
 
