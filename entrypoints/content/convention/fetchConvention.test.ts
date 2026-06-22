@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import invariant from "tiny-invariant";
-import fetchConvention, { buildRawUrl } from "./fetchConvention";
+import fetchConvention, { buildFetchUrl } from "./fetchConvention";
 
 const githubKey = {
   platform: "github" as const,
@@ -24,15 +24,15 @@ function mockFetch(impl: () => Promise<Response>) {
   return vi.spyOn(globalThis, "fetch").mockImplementation(impl);
 }
 
-describe("buildRawUrl", () => {
-  test("github raw URL", () => {
-    expect(buildRawUrl(githubKey)).toBe(
-      "https://github.com/acme/widget/raw/HEAD/.conventional-comments.json",
+describe("buildFetchUrl", () => {
+  test("github content API URL", () => {
+    expect(buildFetchUrl(githubKey)).toBe(
+      "https://api.github.com/repos/acme/widget/contents/.conventional-comments.json",
     );
   });
-  test("gitlab raw URL with subgroup", () => {
-    expect(buildRawUrl(gitlabKey)).toBe(
-      "https://gitlab.com/group/sub/widget/-/raw/HEAD/.conventional-comments.json",
+  test("gitlab same-origin API URL with URL-encoded project path", () => {
+    expect(buildFetchUrl(gitlabKey)).toBe(
+      "https://gitlab.com/api/v4/projects/group%2Fsub%2Fwidget/repository/files/.conventional-comments.json/raw?ref=HEAD",
     );
   });
 });
@@ -45,13 +45,27 @@ describe("fetchConvention", () => {
     vi.restoreAllMocks();
   });
 
-  test("calls fetch with same-origin credentials so private repos work", async () => {
+  test("github request asks for raw content via the Accept header", async () => {
     const spy = mockFetch(() =>
       Promise.resolve(new Response(JSON.stringify(validBody), { status: 200 })),
     );
     await fetchConvention(githubKey);
     expect(spy).toHaveBeenCalledWith(
-      "https://github.com/acme/widget/raw/HEAD/.conventional-comments.json",
+      "https://api.github.com/repos/acme/widget/contents/.conventional-comments.json",
+      {
+        headers: { Accept: "application/vnd.github.raw" },
+        credentials: "omit",
+      },
+    );
+  });
+
+  test("gitlab request sends same-origin credentials so private repos work", async () => {
+    const spy = mockFetch(() =>
+      Promise.resolve(new Response(JSON.stringify(validBody), { status: 200 })),
+    );
+    await fetchConvention(gitlabKey);
+    expect(spy).toHaveBeenCalledWith(
+      "https://gitlab.com/api/v4/projects/group%2Fsub%2Fwidget/repository/files/.conventional-comments.json/raw?ref=HEAD",
       { credentials: "include" },
     );
   });

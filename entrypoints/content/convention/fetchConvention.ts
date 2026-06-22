@@ -3,18 +3,30 @@ import { validateConvention } from "./schema";
 
 const CONFIG_FILE = ".conventional-comments.json";
 
-function buildRawUrl(key: RepoKey): string {
+function buildFetchUrl(key: RepoKey): string {
   if (key.platform === "github") {
-    return `https://github.com/${key.owner}/${key.repo}/raw/HEAD/${CONFIG_FILE}`;
+    return `https://api.github.com/repos/${key.owner}/${key.repo}/contents/${CONFIG_FILE}`;
   }
-  return `https://gitlab.com/${key.owner}/${key.repo}/-/raw/HEAD/${CONFIG_FILE}`;
+  const projectPath = encodeURIComponent(`${key.owner}/${key.repo}`);
+  const filePath = encodeURIComponent(CONFIG_FILE);
+  return `https://gitlab.com/api/v4/projects/${projectPath}/repository/files/${filePath}/raw?ref=HEAD`;
+}
+
+function buildFetchInit(key: RepoKey): RequestInit {
+  if (key.platform === "github") {
+    return {
+      headers: { Accept: "application/vnd.github.raw" },
+      credentials: "omit",
+    };
+  }
+  return { credentials: "include" };
 }
 
 async function fetchConvention(key: RepoKey): Promise<ConventionResult> {
-  const url = buildRawUrl(key);
+  const url = buildFetchUrl(key);
   let response: Response;
   try {
-    response = await fetch(url, { credentials: "include" });
+    response = await fetch(url, buildFetchInit(key));
   } catch {
     return { status: "default" };
   }
@@ -45,4 +57,4 @@ async function fetchConvention(key: RepoKey): Promise<ConventionResult> {
 }
 
 export default fetchConvention;
-export { buildRawUrl };
+export { buildFetchUrl };
