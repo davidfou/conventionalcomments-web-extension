@@ -104,9 +104,16 @@ function ResolvedApp({
 
 function App({ productType, textarea, isMainComment }: AppProps): ReactElement {
   const convention = useConvention(window.location.href);
+  if (convention === null) {
+    // Reserve a sliver of vertical space so the wrapper has non-zero
+    // dimensions while the convention fetch resolves. Without this, the
+    // ccext-container span is empty (zero height) which Playwright treats
+    // as not-visible — breaking navigation specs that probe visibility
+    // mid-render.
+    return <div className="ccext:min-h-px" />;
+  }
   return (
     <ResolvedApp
-      key={convention.defaultLabel ?? ""}
       productType={productType}
       textarea={textarea}
       isMainComment={isMainComment}
