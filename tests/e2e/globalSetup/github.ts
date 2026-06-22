@@ -132,17 +132,19 @@ export default async function globalSetup(config: Config): Promise<void> {
     auth: config.token,
   });
 
-  await bootstrapRepo(client, config.username, config.project, null);
-  await bootstrapRepo(
-    client,
-    config.username,
-    config.projectConventionValid,
-    JSON.stringify(VALID_CONVENTION, null, 2),
-  );
-  await bootstrapRepo(
-    client,
-    config.username,
-    config.projectConventionInvalid,
-    JSON.stringify(INVALID_CONVENTION, null, 2),
-  );
+  await Promise.all([
+    bootstrapRepo(client, config.username, config.project, null),
+    bootstrapRepo(
+      client,
+      config.username,
+      config.projectConventionValid,
+      JSON.stringify(VALID_CONVENTION, null, 2),
+    ),
+    bootstrapRepo(
+      client,
+      config.username,
+      config.projectConventionInvalid,
+      JSON.stringify(INVALID_CONVENTION, null, 2),
+    ),
+  ]);
 }

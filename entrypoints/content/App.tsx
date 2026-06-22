@@ -102,17 +102,11 @@ function ResolvedApp({
   );
 }
 
-function App({
-  productType,
-  textarea,
-  isMainComment,
-}: AppProps): ReactElement | null {
+function App({ productType, textarea, isMainComment }: AppProps): ReactElement {
   const convention = useConvention(window.location.href);
-  if (convention === null) {
-    return null;
-  }
   return (
     <ResolvedApp
+      key={convention.defaultLabel ?? ""}
       productType={productType}
       textarea={textarea}
       isMainComment={isMainComment}

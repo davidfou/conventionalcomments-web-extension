@@ -4,10 +4,6 @@ test.beforeAll(async ({ mainPage }) => {
   await mainPage.removeAllThreads();
 });
 
-test.beforeEach(async ({ mainPage }) => {
-  await mainPage.clearLocalStorage();
-});
-
 test("default convention shows the built-in labels", async ({
   page,
   mainPage,

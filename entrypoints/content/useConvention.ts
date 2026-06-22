@@ -3,8 +3,9 @@ import type { ConventionFile } from "./convention/types";
 import getConvention from "./convention/getConvention";
 import DEFAULT_CONVENTION from "./convention/defaultConvention";
 
-function useConvention(url: string): ConventionFile | null {
-  const [convention, setConvention] = useState<ConventionFile | null>(null);
+function useConvention(url: string): ConventionFile {
+  const [convention, setConvention] =
+    useState<ConventionFile>(DEFAULT_CONVENTION);
 
   useEffect(() => {
     let cancelled = false;
