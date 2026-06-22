@@ -37,7 +37,13 @@ async function bootstrapRepo(
     return;
   }
 
-  await client.Projects.create({ name: projectName });
+  // Repos that ship a `.conventional-comments.json` must be public so the
+  // extension's same-origin fetch from a content script can read raw files
+  // without an auth header.
+  await client.Projects.create({
+    name: projectName,
+    visibility: conventionContent === null ? "private" : "public",
+  });
   await client.RepositoryFiles.create(
     projectPath,
     "README.md",

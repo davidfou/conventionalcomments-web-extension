@@ -35,9 +35,12 @@ async function bootstrapRepo(
     return;
   }
 
+  // Repos that ship a `.conventional-comments.json` must be public so the
+  // extension's same-origin fetch from a content script can read raw files
+  // without an auth header.
   await client.rest.repos.createForAuthenticatedUser({
     name: project,
-    private: true,
+    private: conventionContent === null,
   });
 
   const { data } = await client.rest.repos.createOrUpdateFileContents({
