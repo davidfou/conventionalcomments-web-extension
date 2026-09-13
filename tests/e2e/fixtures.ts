@@ -73,11 +73,11 @@ export const test = baseTest.extend<MyOptions & MyFixtures>({
       context.addCookies(cookies);
     }
 
-    if (product === "gitlab" && version === 2) {
+    if (product === "gitlab") {
       await context.addCookies([
         {
           name: "rapid_diffs_enabled",
-          value: "true",
+          value: version === 2 ? "true" : "false",
           domain: ".gitlab.com",
           path: "/",
           secure: true,
