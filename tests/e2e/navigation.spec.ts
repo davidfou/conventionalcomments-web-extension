@@ -16,7 +16,7 @@ test("Plugin is loaded when navigating to the diff page", async ({
 }) => {
   await mainPage.goToOverviewPage();
   await mainPage.clearLocalStorage();
-  await mainPage.getChangesSelector().click();
+  await mainPage.navigateToChangesPage();
   const container = await mainPage.openNewThread();
   await expect(page.getByTestId("ccext-container")).toBeVisible();
   await expect(container.locator("textarea")).toHaveValue("**praise:** ");
@@ -28,7 +28,7 @@ test("Plugin is loaded when navigating to the diff page on a file comment", asyn
 }) => {
   await mainPage.goToOverviewPage();
   await mainPage.clearLocalStorage();
-  await mainPage.getChangesSelector().click();
+  await mainPage.navigateToChangesPage();
   const container = await mainPage.openNewFileThread();
   await expect(page.getByTestId("ccext-container")).toBeVisible();
   await expect(container.locator("textarea")).toHaveValue("**praise:** ");
@@ -40,7 +40,7 @@ test("Plugin isn't loaded when navigating to the diff page and check the preview
 }) => {
   await mainPage.goToOverviewPage();
   await mainPage.clearLocalStorage();
-  await mainPage.getChangesSelector().click();
+  await mainPage.navigateToChangesPage();
   const container = await mainPage.openNewThread();
   await mainPage.getPreviewButtonSelector(container).click();
   await expect(
@@ -54,8 +54,7 @@ test("Plugin isn't loaded when navigating to the diff page, check the preview an
 }) => {
   await mainPage.goToOverviewPage();
   await mainPage.clearLocalStorage();
-  await mainPage.getChangesSelector().click();
-  await mainPage.waitPageIsReady();
+  await mainPage.navigateToChangesPage();
   const container = await mainPage.openNewThread();
   await mainPage.getPreviewButtonSelector(container).click();
   await mainPage.getWriteButtonSelector(container).click();
@@ -73,8 +72,7 @@ test("Plugin is not loaded twice when the user navigates back to the diff page",
   );
   await mainPage.goToOverviewPage();
   await mainPage.clearLocalStorage();
-  await mainPage.getChangesSelector().click();
-  await mainPage.waitPageIsReady();
+  await mainPage.navigateToChangesPage();
   const thread = await mainPage.openNewThread();
   await expect(thread.locator("textarea")).toBeFocused();
   await page.keyboard.type("new comment...");

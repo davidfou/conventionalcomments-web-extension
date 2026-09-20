@@ -96,6 +96,17 @@ export abstract class AbstractMainPage<P extends Product> {
   protected abstract getReplyInputLocatorImpl(thread: ThreadMap[P]): Locator;
 
   abstract getChangesSelector(): Locator;
+
+  async navigateToChangesPage(): Promise<void> {
+    await this.getChangesSelector().click();
+    if (new URL(this.page.url()).pathname !== this.config.mainPageUrl) {
+      await this.page.goto(this.config.mainPageUrl, {
+        waitUntil: "domcontentloaded",
+      });
+    }
+    await this.waitPageIsReady();
+  }
+
   abstract getOverviewSelector(): Locator;
   abstract getPreviewButtonSelector(container: Locator): Locator;
   abstract getWriteButtonSelector(container: Locator): Locator;

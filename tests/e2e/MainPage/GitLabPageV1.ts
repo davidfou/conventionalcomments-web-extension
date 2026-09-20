@@ -224,7 +224,6 @@ export default class GitLabPageV1 extends AbstractMainPage<"gitlab"> {
   async waitPageIsReady(): Promise<void> {
     await this.page.waitForLoadState("domcontentloaded");
     await this.page.locator("body[data-page]").waitFor();
-    await this.page.waitForLoadState("networkidle");
   }
 
   getPreviewButtonSelector(container: Locator): Locator {
@@ -249,15 +248,14 @@ export default class GitLabPageV1 extends AbstractMainPage<"gitlab"> {
     });
     await this.waitPageIsReady();
 
-    const currentValue = await this.page
-      .locator("div.gl-form-radio")
-      .filter({
-        has: this.page.locator("input[name='user[color_mode_id]']:checked"),
-      })
-      .locator("label")
-      .textContent();
+    const modeSelector = this.page
+      .locator("section#appearance")
+      .getByRole("group");
+    const currentValue = await modeSelector
+      .locator("button.selected")
+      .innerText();
 
-    if (currentValue === theme) {
+    if (currentValue.trim() === theme) {
       return;
     }
 
@@ -267,15 +265,8 @@ export default class GitLabPageV1 extends AbstractMainPage<"gitlab"> {
         response.status() === 200 &&
         response.request().method() === "POST",
     );
-    await this.page
-      .locator("div.gl-form-radio")
-      .filter({
-        has: this.page.locator("input[name='user[color_mode_id]']"),
-      })
-      .filter({
-        hasText: theme,
-      })
-      .locator("label")
+    await modeSelector
+      .getByRole("button", { name: theme, exact: true })
       .click();
     await waitForResponse;
 
