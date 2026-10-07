@@ -6,8 +6,12 @@ export interface Config {
   password: string;
   token: string;
   project: string;
+  projectConventionValid: string;
+  projectConventionInvalid: string;
   twoFactorSecret: string;
   mainPageUrl: string;
+  mainPageUrlConventionValid: string;
+  mainPageUrlConventionInvalid: string;
   overviewPageUrl: string;
   issuePageUrl: string;
   newPullRequestPageUrl: string;
@@ -21,6 +25,20 @@ function getEnvValue(product: Product, version: number, key: string): string {
     throw new Error(`Environment variable ${envKey} is not set`);
   }
   return value;
+}
+
+function buildMainPageUrl(
+  product: Product,
+  version: number,
+  username: string,
+  project: string,
+): string {
+  switch (product) {
+    case "github":
+      return `/${username}/${project}/pull/1/${version === 1 ? "files" : "changes"}`;
+    case "gitlab":
+      return `/${username}/${project}/-/merge_requests/1/diffs`;
+  }
 }
 
 function getUrls(
@@ -40,7 +58,7 @@ function getUrls(
     case "github":
       return {
         baseUrl: "https://github.com",
-        mainPageUrl: `/${username}/${project}/pull/1/${version === 1 ? "files" : "changes"}`,
+        mainPageUrl: buildMainPageUrl(product, version, username, project),
         overviewPageUrl: `/${username}/${project}/pull/1`,
         issuePageUrl: `/${username}/${project}/issues/2`,
         newPullRequestPageUrl: `/${username}/${project}/compare/new_branch2?expand=1`,
@@ -49,7 +67,7 @@ function getUrls(
     case "gitlab":
       return {
         baseUrl: "https://gitlab.com",
-        mainPageUrl: `/${username}/${project}/-/merge_requests/1/diffs`,
+        mainPageUrl: buildMainPageUrl(product, version, username, project),
         overviewPageUrl: `/${username}/${project}/-/merge_requests/1`,
         issuePageUrl: `/${username}/${project}/-/issues/1`,
         newPullRequestPageUrl: `/${username}/${project}/-/merge_requests/new?merge_request[source_branch]=new_branch2`,
@@ -64,11 +82,33 @@ export function getConfig(product: Product, version: number): Config {
     password: getEnvValue(product, version, "PASSWORD"),
     token: getEnvValue(product, version, "TOKEN"),
     project: getEnvValue(product, version, "PROJECT"),
+    projectConventionValid: getEnvValue(
+      product,
+      version,
+      "PROJECT_CONVENTION_VALID",
+    ),
+    projectConventionInvalid: getEnvValue(
+      product,
+      version,
+      "PROJECT_CONVENTION_INVALID",
+    ),
     twoFactorSecret: getEnvValue(product, version, "TWO_FACTOR_SECRET"),
   };
 
   return {
     ...baseConfig,
     ...getUrls(product, version, baseConfig.username, baseConfig.project),
+    mainPageUrlConventionValid: buildMainPageUrl(
+      product,
+      version,
+      baseConfig.username,
+      baseConfig.projectConventionValid,
+    ),
+    mainPageUrlConventionInvalid: buildMainPageUrl(
+      product,
+      version,
+      baseConfig.username,
+      baseConfig.projectConventionInvalid,
+    ),
   };
 }
