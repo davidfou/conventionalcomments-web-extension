@@ -120,6 +120,7 @@ export default function PopupDomains({
           <div className="flex flex-wrap gap-x-2 gap-y-4">
             <Badge variant="loading">https://github.com/*</Badge>
             <Badge variant="loading">https://gitlab.com/*</Badge>
+            <Badge variant="loading">https://dev.azure.com/*</Badge>
           </div>
         )}
         {domainState.status === "error" && (

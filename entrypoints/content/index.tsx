@@ -14,7 +14,11 @@ import "./global.css";
 
 // oxlint-disable-next-line react/only-export-components
 export default defineContentScript({
-  matches: ["https://github.com/*", "https://gitlab.com/*"],
+  matches: [
+    "https://github.com/*",
+    "https://gitlab.com/*",
+    "https://dev.azure.com/*",
+  ],
   registration: "runtime",
   cssInjectionMode: "manual",
   main(ctx) {

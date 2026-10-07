@@ -1,0 +1,208 @@
+.ccext\:azure-devops-v1 {
+  --ccext-margin: 0.5rem;
+
+  .ccext\:combobox-value {
+    color: var(--text-primary-color, rgba(0, 0, 0, 0.9));
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    padding: 0.375rem 0.75rem;
+  }
+
+  .ccext\:combobox-value-placeholder {
+    color: var(--text-secondary-color, rgba(0, 0, 0, 0.55));
+  }
+
+  .ccext\:popover-button {
+    color: var(--text-primary-color, rgba(0, 0, 0, 0.9));
+    background-color: var(--background-color, #ffffff);
+    border: 1px solid var(--palette-black-alpha-10, rgba(0, 0, 0, 0.1));
+    border-radius: 2px;
+    transition: border-color 0.08s linear;
+
+    &:hover {
+      border-color: var(--palette-black-alpha-20, rgba(0, 0, 0, 0.2));
+    }
+
+    &:focus-visible {
+      outline: none;
+      border-color: var(--communication-background, #0078d4);
+    }
+
+    > svg {
+      fill: none;
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  .ccext\:erase-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+
+    &:hover {
+      background-color: var(
+        --component-grid-row-hover-color,
+        rgba(0, 0, 0, 0.04)
+      );
+    }
+  }
+
+  .ccext\:popover-content {
+    margin-top: 4px;
+    color: var(--text-primary-color, rgba(0, 0, 0, 0.9));
+    background-color: var(--callout-background-color, #ffffff);
+    border-radius: 4px;
+    box-shadow:
+      0 6.4px 14.4px 0 var(--callout-shadow-color, rgba(0, 0, 0, 0.132)),
+      0 1.2px 3.6px 0
+        var(--callout-shadow-secondary-color, rgba(0, 0, 0, 0.108));
+    z-index: 1000;
+  }
+
+  .ccext\:popover-content-list {
+    max-height: 300px;
+  }
+
+  .ccext\:popover-content-input-container {
+    border-bottom: 1px solid var(--palette-black-alpha-10, rgba(0, 0, 0, 0.1));
+
+    .ccext\:popover-content-input-label {
+      padding: 0.75rem 0.75rem 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary-color, rgba(0, 0, 0, 0.55));
+    }
+
+    .ccext\:popover-content-input-wrapper {
+      position: relative;
+      margin: 0 0.5rem 0.5rem;
+
+      > svg {
+        fill: none;
+        position: absolute;
+        top: calc(50% - 12px / 2);
+        left: 0.5rem;
+        width: 12px;
+        height: 12px;
+        color: var(--text-secondary-color, rgba(0, 0, 0, 0.55));
+      }
+
+      > input {
+        width: 100%;
+        padding: 0.375rem 0.5rem 0.375rem 1.75rem;
+        font-size: 0.875rem;
+        color: var(--text-primary-color, rgba(0, 0, 0, 0.9));
+        background-color: var(--background-color, #ffffff);
+        border: 1px solid var(--palette-black-alpha-10, rgba(0, 0, 0, 0.1));
+        border-radius: 2px;
+        appearance: textfield;
+
+        &:focus {
+          outline: none;
+          border-color: var(--communication-background, #0078d4);
+        }
+      }
+    }
+  }
+
+  .ccext\:popover-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    text-align: left;
+    white-space: normal;
+    cursor: pointer;
+    color: var(--text-primary-color, rgba(0, 0, 0, 0.9));
+    background: transparent;
+    border: 0;
+
+    &[aria-selected="true"] {
+      background-color: var(
+        --component-grid-row-hover-color,
+        rgba(0, 0, 0, 0.04)
+      );
+    }
+  }
+
+  .ccext\:popover-item-icon {
+    flex-shrink: 0;
+    align-self: flex-start;
+    margin-top: 0.5rem;
+    margin-right: 0.5rem;
+    color: var(--communication-foreground, #005a9e);
+
+    > svg {
+      fill: none;
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  .ccext\:popover-item-wrapper {
+    flex-grow: 1;
+    min-width: 0;
+    padding: 0.5rem 0;
+  }
+
+  .ccext\:popover-item-title {
+    font-weight: 600;
+  }
+
+  .ccext\:popover-item-description {
+    font-size: 0.75rem;
+    color: var(--text-secondary-color, rgba(0, 0, 0, 0.55));
+
+    p {
+      margin: 0;
+      padding: 0;
+    }
+  }
+
+  .ccext\:badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0 0 0 0.5rem;
+    font-size: 0.75rem;
+    line-height: 1.25rem;
+    white-space: nowrap;
+    color: var(--text-primary-color, rgba(0, 0, 0, 0.9));
+    background-color: var(--palette-black-alpha-6, rgba(0, 0, 0, 0.06));
+    border-radius: 10rem;
+  }
+
+  .ccext\:badge-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1rem;
+    height: 1rem;
+    margin-right: 0.125rem;
+    border-radius: 50%;
+
+    &:hover {
+      background-color: var(--palette-black-alpha-10, rgba(0, 0, 0, 0.1));
+    }
+
+    > svg {
+      fill: none;
+      stroke: currentColor;
+      width: 12px;
+      height: 12px;
+    }
+  }
+
+  .ccext\:popover-empty {
+    padding: 0.5rem 0.75rem;
+    text-align: center;
+    color: var(--text-secondary-color, rgba(0, 0, 0, 0.55));
+  }
+}

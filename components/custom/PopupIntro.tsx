@@ -36,7 +36,7 @@ export default function PopupIntro(): ReactElement {
         <Link href="https://conventionalcomments.org/">
           conventional: comments
         </Link>
-        , right in GitHub and GitLab.
+        , right in GitHub, GitLab and Azure DevOps.
       </p>
       <p>
         The extension is under active development. Feedback, ideas, and bug
