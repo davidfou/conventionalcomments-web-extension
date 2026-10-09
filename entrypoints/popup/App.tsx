@@ -1,11 +1,13 @@
 import { ReactElement, useEffect, useRef, useState } from "react";
 import invariant from "tiny-invariant";
 import { browser } from "wxt/browser";
+import PopupDefaultLabel from "~/components/custom/PopupDefaultLabel";
 import PopupDomains from "~/components/custom/PopupDomains";
 import PopupIntro from "~/components/custom/PopupIntro";
 import PopupLayout from "~/components/custom/PopupLayout";
 import { sendMessage } from "~/lib/messaging";
 import getDomainFromUrl from "./getDomainFromUrl";
+import useDefaultLabel from "./useDefaultLabel";
 import { useCallback } from "#imports";
 
 async function getRegisteredUrls(): Promise<
@@ -75,6 +77,8 @@ export default function App(): ReactElement {
   const [domainState, setDomainState] = useState<DomainsState>({
     status: "loading",
   });
+
+  const [defaultLabelState, onDefaultLabelChange] = useDefaultLabel();
 
   useEffect(() => {
     isMounted.current = true;
@@ -190,6 +194,10 @@ export default function App(): ReactElement {
   return (
     <PopupLayout>
       <PopupIntro />
+      <PopupDefaultLabel
+        defaultLabelState={defaultLabelState}
+        onChange={onDefaultLabelChange}
+      />
       <PopupDomains domainState={domainState} onAction={onAction} />
     </PopupLayout>
   );
