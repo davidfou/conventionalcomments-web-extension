@@ -1,9 +1,27 @@
+type Label =
+  | "none"
+  | "praise"
+  | "nitpick"
+  | "suggestion"
+  | "issue"
+  | "todo"
+  | "question"
+  | "thought"
+  | "chore"
+  | "note"
+  | "typo"
+  | "polish"
+  | "quibble";
+
+type Decoration = "non-blocking" | "blocking" | "if-minor";
+
 interface SelectableItem {
-  label: string;
+  label: Label | Decoration;
   description: string;
 }
 
-const EMPTY_LABEL = "none";
+const EMPTY_LABEL: Label = "none";
+const DEFAULT_LABEL: Label = "praise";
 
 const LABELS: Readonly<Readonly<SelectableItem>[]> = [
   {
@@ -91,4 +109,5 @@ const DECORATIONS: Readonly<Readonly<SelectableItem>[]> = [
   },
 ];
 
-export { EMPTY_LABEL, LABELS, DECORATIONS };
+export type { Label };
+export { EMPTY_LABEL, DEFAULT_LABEL, LABELS, DECORATIONS };
