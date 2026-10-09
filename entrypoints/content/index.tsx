@@ -8,6 +8,7 @@ import { getDefaultLabel, watchDefaultLabel } from "~/lib/defaultLabel";
 import getRandomId from "~/lib/getRandomId";
 import { onMessage } from "~/lib/messaging";
 import commentEditorExtractors from "./commentEditorExtractors";
+import { DEFAULT_LABEL } from "./constants";
 import App from "./App";
 import logger from "./logger";
 
@@ -20,7 +21,11 @@ export default defineContentScript({
   cssInjectionMode: "manual",
   async main(ctx) {
     logger("Content script started");
-    let defaultLabel = await getDefaultLabel();
+    // A failed storage read must not prevent the content script from starting
+    let defaultLabel = await getDefaultLabel().catch(() => {
+      logger("Failed to get default label, using fallback");
+      return DEFAULT_LABEL;
+    });
     const unwatchDefaultLabel = watchDefaultLabel((label) => {
       defaultLabel = label;
     });
