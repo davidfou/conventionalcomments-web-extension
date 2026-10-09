@@ -3,13 +3,14 @@ import { useCallback, useState } from "react";
 import Editor from "./Editor";
 import { ProductType } from "./types";
 import extractComment from "./extractComment";
-import { DECORATIONS, EMPTY_LABEL, LABELS } from "./constants";
+import { DECORATIONS, EMPTY_LABEL, LABELS, type Label } from "./constants";
 import useTextareaWrapper from "./useTextareaWrapper";
 
 interface AppProps {
   productType: ProductType;
   textarea: HTMLTextAreaElement;
   isMainComment: boolean;
+  defaultLabel: Label;
 }
 
 function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>): void {
@@ -19,7 +20,12 @@ function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>): void {
   }
 }
 
-function App({ productType, textarea, isMainComment }: AppProps): ReactElement {
+function App({
+  productType,
+  textarea,
+  isMainComment,
+  defaultLabel,
+}: AppProps): ReactElement {
   const [{ label, decorations }, setState] = useState<{
     label: string;
     decorations: string[];
@@ -39,7 +45,7 @@ function App({ productType, textarea, isMainComment }: AppProps): ReactElement {
 
     return {
       label:
-        isMainComment && textarea.value === "" ? LABELS[1].label : EMPTY_LABEL,
+        isMainComment && textarea.value === "" ? defaultLabel : EMPTY_LABEL,
       decorations: [],
     };
   });
