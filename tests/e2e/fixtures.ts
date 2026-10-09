@@ -101,7 +101,7 @@ export const test = baseTest.extend<MyOptions & MyFixtures>({
   },
   extensionId: async ({ context }, use) => {
     let [background] = context.serviceWorkers();
-    if (background !== undefined) {
+    if (background === undefined) {
       background = await context.waitForEvent("serviceworker");
     }
 

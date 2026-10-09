@@ -4,9 +4,11 @@ import {
   type IntegratedContentScriptUi,
   defineContentScript,
 } from "#imports";
+import { getDefaultLabel, watchDefaultLabel } from "~/lib/defaultLabel";
 import getRandomId from "~/lib/getRandomId";
 import { onMessage } from "~/lib/messaging";
 import commentEditorExtractors from "./commentEditorExtractors";
+import { DEFAULT_LABEL } from "./constants";
 import App from "./App";
 import logger from "./logger";
 
@@ -17,8 +19,17 @@ export default defineContentScript({
   matches: ["https://github.com/*", "https://gitlab.com/*"],
   registration: "runtime",
   cssInjectionMode: "manual",
-  main(ctx) {
+  async main(ctx) {
     logger("Content script started");
+    // A failed storage read must not prevent the content script from starting
+    let defaultLabel = await getDefaultLabel().catch(() => {
+      logger("Failed to get default label, using fallback");
+      return DEFAULT_LABEL;
+    });
+    const unwatchDefaultLabel = watchDefaultLabel((label) => {
+      defaultLabel = label;
+    });
+    ctx.onInvalidated(unwatchDefaultLabel);
     const noteHolders: Map<string, IntegratedContentScriptUi<Root>> = new Map();
     const disposeNoteHolder = (id: string): void => {
       logger("plugin removed (%s)", id);
@@ -49,6 +60,7 @@ export default defineContentScript({
                     productType={productType}
                     textarea={textarea}
                     isMainComment={isMainComment}
+                    defaultLabel={defaultLabel}
                   />,
                 );
                 return root;
@@ -66,6 +78,7 @@ export default defineContentScript({
 
     onMessage("notifyUnregister", () => {
       logger("notifyUnregister received");
+      unwatchDefaultLabel();
       for (const key of noteHolders.keys()) {
         disposeNoteHolder(key);
       }

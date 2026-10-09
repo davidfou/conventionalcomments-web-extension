@@ -3,7 +3,7 @@ import { WrappedApp } from "./App.story.tsx";
 
 test("select another label", async ({ mount, page, helpers }) => {
   const component = await mount(
-    <WrappedApp isMainComment defaultTextareaValue="" />,
+    <WrappedApp isMainComment defaultTextareaValue="" defaultLabel="praise" />,
   );
   await page.keyboard.type("hello world");
   await helpers.setSelectionRange(component, 18, 20);
@@ -27,7 +27,7 @@ test("select another label", async ({ mount, page, helpers }) => {
 
 test("add one decorator", async ({ mount, page, helpers }) => {
   const component = await mount(
-    <WrappedApp isMainComment defaultTextareaValue="" />,
+    <WrappedApp isMainComment defaultTextareaValue="" defaultLabel="praise" />,
   );
   await component.getByTestId("textarea").click();
   await page.keyboard.type("hello world");
@@ -52,7 +52,7 @@ test("add one decorator", async ({ mount, page, helpers }) => {
 
 test("add two decorators", async ({ mount, page, helpers }) => {
   const component = await mount(
-    <WrappedApp isMainComment defaultTextareaValue="" />,
+    <WrappedApp isMainComment defaultTextareaValue="" defaultLabel="praise" />,
   );
   await component.getByTestId("textarea").click();
   await page.keyboard.type("hello world");
@@ -85,7 +85,7 @@ test("add two decorators", async ({ mount, page, helpers }) => {
 
 test("add two decorators and remove one", async ({ mount, page, helpers }) => {
   const component = await mount(
-    <WrappedApp isMainComment defaultTextareaValue="" />,
+    <WrappedApp isMainComment defaultTextareaValue="" defaultLabel="praise" />,
   );
   await component.getByTestId("textarea").click();
   await page.keyboard.type("hello world");
@@ -130,7 +130,7 @@ test("add two decorators and remove one via the clear button", async ({
   helpers,
 }) => {
   const component = await mount(
-    <WrappedApp isMainComment defaultTextareaValue="" />,
+    <WrappedApp isMainComment defaultTextareaValue="" defaultLabel="praise" />,
   );
   await component.getByTestId("textarea").click();
   await page.keyboard.type("hello world");
@@ -168,7 +168,7 @@ test("add two decorators and remove one via the clear button", async ({
 
 test("remove all decorators", async ({ mount, page, helpers }) => {
   const component = await mount(
-    <WrappedApp isMainComment defaultTextareaValue="" />,
+    <WrappedApp isMainComment defaultTextareaValue="" defaultLabel="praise" />,
   );
   await component.getByTestId("textarea").click();
   await page.keyboard.type("hello world");
@@ -217,7 +217,7 @@ test("remove all decorators", async ({ mount, page, helpers }) => {
 
 test("remove label", async ({ mount, page, helpers }) => {
   const component = await mount(
-    <WrappedApp isMainComment defaultTextareaValue="" />,
+    <WrappedApp isMainComment defaultTextareaValue="" defaultLabel="praise" />,
   );
   await component.getByTestId("textarea").click();
   await page.keyboard.type("hello world");

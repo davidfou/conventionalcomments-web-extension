@@ -1,8 +1,10 @@
 import { test, expect } from "../fixtures";
 import { WrappedApp } from "./App.story.tsx";
+import { DEFAULT_LABEL, type Label } from "~/entrypoints/content/constants";
 
 const testCases: {
   isMainComment: boolean;
+  defaultLabel?: Label;
   defaultTextareaValue: string;
   expectedLabel: string;
   expectedDecorations: string[];
@@ -11,9 +13,25 @@ const testCases: {
   {
     isMainComment: true,
     defaultTextareaValue: "",
-    expectedLabel: "praise",
+    expectedLabel: DEFAULT_LABEL,
     expectedDecorations: [],
-    expectedTextareaValue: "**praise:** ",
+    expectedTextareaValue: `**${DEFAULT_LABEL}:** `,
+  },
+  {
+    isMainComment: true,
+    defaultLabel: "question",
+    defaultTextareaValue: "",
+    expectedLabel: "question",
+    expectedDecorations: [],
+    expectedTextareaValue: "**question:** ",
+  },
+  {
+    isMainComment: true,
+    defaultLabel: "none",
+    defaultTextareaValue: "",
+    expectedLabel: "none",
+    expectedDecorations: [],
+    expectedTextareaValue: "",
   },
   {
     isMainComment: false,
@@ -123,18 +141,20 @@ const testCases: {
 ];
 for (const {
   isMainComment,
+  defaultLabel = DEFAULT_LABEL,
   defaultTextareaValue,
   expectedLabel,
   expectedDecorations,
   expectedTextareaValue,
 } of testCases) {
-  test(`initialize the textarea and the combobox with isMainComment=${isMainComment} and defaultTextareaValue="${defaultTextareaValue}"`, async ({
+  test(`initialize the textarea and the combobox with isMainComment=${isMainComment}, defaultLabel=${defaultLabel} and defaultTextareaValue="${defaultTextareaValue}"`, async ({
     mount,
   }) => {
     const component = await mount(
       <WrappedApp
         isMainComment={isMainComment}
         defaultTextareaValue={defaultTextareaValue}
+        defaultLabel={defaultLabel}
       />,
     );
     await expect

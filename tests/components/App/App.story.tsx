@@ -3,16 +3,19 @@ import { useState, useCallback, useRef } from "react";
 import invariant from "tiny-invariant";
 import { ComboboxPortalContainerContext } from "~/components/custom/Combobox";
 import App from "~/entrypoints/content/App";
+import type { Label } from "~/entrypoints/content/constants";
 import "~/entrypoints/content/global.css";
 
 interface WrappedAppProps {
   isMainComment: boolean;
   defaultTextareaValue: string;
+  defaultLabel: Label;
 }
 
 export function WrappedApp({
   isMainComment,
   defaultTextareaValue,
+  defaultLabel,
 }: WrappedAppProps): ReactElement {
   const container = useRef<HTMLElement | null>(null);
   if (container.current === null) {
@@ -37,6 +40,7 @@ export function WrappedApp({
             productType="github-v1"
             isMainComment={isMainComment}
             textarea={textarea}
+            defaultLabel={defaultLabel}
           />
         </ComboboxPortalContainerContext.Provider>
       )}
