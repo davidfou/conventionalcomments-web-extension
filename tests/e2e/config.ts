@@ -15,7 +15,7 @@ export interface Config {
 }
 
 function getEnvValue(product: Product, version: number, key: string): string {
-  const envKey = `E2E_${product.toUpperCase()}_V${version}_${key}`;
+  const envKey = `E2E_${product.toUpperCase().replaceAll("-", "_")}_V${version}_${key}`;
   const value = process.env[envKey];
   if (value === undefined || value === "") {
     throw new Error(`Environment variable ${envKey} is not set`);
@@ -54,6 +54,16 @@ function getUrls(
         issuePageUrl: `/${username}/${project}/-/issues/1`,
         newPullRequestPageUrl: `/${username}/${project}/-/merge_requests/new?merge_request[source_branch]=new_branch2`,
         newIssuePageUrl: `/${username}/${project}/-/issues/new`,
+      };
+    case "azure-devops":
+      return {
+        // TODO: set the right config
+        baseUrl: "https://portal.azure.com",
+        mainPageUrl: "",
+        overviewPageUrl: "",
+        issuePageUrl: "",
+        newPullRequestPageUrl: "",
+        newIssuePageUrl: "",
       };
   }
 }

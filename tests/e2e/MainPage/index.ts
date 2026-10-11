@@ -4,6 +4,7 @@ import GitHubPageV1 from "./GitHubPageV1";
 import GitHubPageV2 from "./GitHubPageV2";
 import GitLabPageV1 from "./GitLabPageV1";
 import GitLabPageV2 from "./GitLabPageV2";
+import AzureDevOpsV1 from "./AzureDevOpsV1";
 import { Product } from "../types";
 import { CommentsMap, ThreadMap } from "./types";
 
@@ -22,6 +23,8 @@ function getMainPage<P extends Product>(
       return new GitLabPageV1(page, config);
     case "gitlab-v2":
       return new GitLabPageV2(page, config);
+    case "azure-devops-v1":
+      return new AzureDevOpsV1("azure-devops", page, config);
     default:
       throw new Error(
         `Unsupported product/version combination: ${product} v${version}`,

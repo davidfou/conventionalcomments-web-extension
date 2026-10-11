@@ -36,3 +36,7 @@ E2E_GITLAB_V2_USERNAME = "op://Conventional comments/GitLab V2/username"
 E2E_GITLAB_V2_PASSWORD = "op://Conventional comments/GitLab V2/password"
 E2E_GITLAB_V2_TOKEN = "op://Conventional comments/GitLab V2/token"
 E2E_GITLAB_V2_TWO_FACTOR_SECRET = "op://Conventional comments/GitLab V2/2fa secret"
+E2E_AZURE_DEVOPS_V1_USERNAME = "op://Conventional comments/Azure DevOps V1/email"
+E2E_AZURE_DEVOPS_V1_PASSWORD = "op://Conventional comments/Azure DevOps V1/Password"
+E2E_AZURE_DEVOPS_V1_TWO_FACTOR_SECRET = "op://Conventional comments/Azure DevOps V1/2fa secret"
+# TODO: let me know what's necessary

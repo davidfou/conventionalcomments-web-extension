@@ -26,9 +26,14 @@ interface GitLabComments extends Comments<"gitlab"> {
   noteIds: string[];
 }
 
+type AzureDevOpsThread = Thread<"azure-devops">;
+
+type AzureDevOpsComments = Thread<"azure-devops">;
+
 type ThreadTypeByProduct = {
   github: GitHubThread;
   gitlab: GitLabThread;
+  "azure-devops": AzureDevOpsThread;
 };
 
 export type ThreadMap = {
@@ -38,6 +43,7 @@ export type ThreadMap = {
 type CommentsTypeByProduct = {
   github: GitHubComments;
   gitlab: GitLabComments;
+  "azure-devops": AzureDevOpsComments;
 };
 
 export type CommentsMap = {
