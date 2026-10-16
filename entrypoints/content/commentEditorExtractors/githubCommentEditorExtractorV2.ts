@@ -1,11 +1,16 @@
 import createExtractor, { type PlatformConfig } from "./createExtractor";
 
-const NEW_FILE_THREAD_SELECTOR_CLASS_PREFIX = "Diff-module__diffAddFileThread";
+const NEW_FILE_THREAD_SELECTOR_CLASS = "diffAddFileThread";
 
+// GitHub removed the CSS module names from these generated class names (for
+// example, `InlineMarkers-module__markersWrapper` became `markersWrapper`).
+// Keep matching the previous names as well while GitHub rolls out the change.
 const MAIN_CSS_SELECTORS = [
   "[class*='InlineMarkers-module__markersWrapper']",
   "[class*='InlineMarkers-module__fileMarkersWrapper']",
-  `[class*=${JSON.stringify(NEW_FILE_THREAD_SELECTOR_CLASS_PREFIX)}]`,
+  "[class*='markersWrapper__']",
+  "[class*='fileMarkersWrapper__']",
+  `[class*=${JSON.stringify(NEW_FILE_THREAD_SELECTOR_CLASS)}]`,
 ];
 
 const config: PlatformConfig = {
@@ -36,9 +41,7 @@ const config: PlatformConfig = {
     if (
       root.classList
         .values()
-        .some((className) =>
-          className.startsWith(NEW_FILE_THREAD_SELECTOR_CLASS_PREFIX),
-        )
+        .some((className) => className.includes(NEW_FILE_THREAD_SELECTOR_CLASS))
     ) {
       allTextareas = allTextareas.concat(
         Array.from(root.querySelectorAll("textarea").values()),
@@ -55,7 +58,7 @@ const config: PlatformConfig = {
     }
 
     const anchorEl = mainEl.querySelector(
-      "[class*='MarkdownInput-module__inputWrapper']",
+      "[class*='MarkdownInput-module__inputWrapper'], [class*='inputWrapper__']",
     );
     if (anchorEl === null) {
       return null;
@@ -69,7 +72,7 @@ const config: PlatformConfig = {
       mainEl.classList
         .values()
         .some((className) =>
-          className.startsWith(NEW_FILE_THREAD_SELECTOR_CLASS_PREFIX),
+          className.includes(NEW_FILE_THREAD_SELECTOR_CLASS),
         ) ||
       textarea.closest("[data-marker-navigation-new-thread='true']") !== null
     );
