@@ -249,7 +249,7 @@ export default class GitLabPageV1 extends AbstractMainPage<"gitlab"> {
     await this.waitPageIsReady();
 
     const modeSelector = this.page
-      .locator("section#appearance")
+      .locator("section#color-mode")
       .getByRole("group");
     const currentValue = await modeSelector
       .locator("button.selected")

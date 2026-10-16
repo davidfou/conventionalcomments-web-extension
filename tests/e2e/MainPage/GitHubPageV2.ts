@@ -20,7 +20,7 @@ export default class GitHubPageV2 extends GitHubPageV1 {
 
   getNewCommentEditorLocator(): Locator {
     return this.page.locator(
-      "[class*='AddCommentEditor-module__AddCommentEditor']",
+      "[class*='AddCommentEditor-module__AddCommentEditor'], [class*='AddCommentEditor__']",
     );
   }
 
@@ -58,6 +58,8 @@ export default class GitHubPageV2 extends GitHubPageV1 {
     await this.page
       .getByRole("button", { name: "Comment on this file" })
       .click();
-    return this.page.locator("[class*='Diff-module__diffAddFileThread']");
+    return this.page.locator(
+      "[class*='Diff-module__diffAddFileThread'], [class*='diffAddFileThread__']",
+    );
   }
 }
