@@ -1,5 +1,5 @@
 import type { ReactElement } from "react";
-import { DECORATIONS, EMPTY_LABEL, LABELS } from "./constants";
+import { DECORATIONS, EMPTY_LABEL, LABELS } from "~/lib/constants";
 import { Combobox } from "~/components/custom/Combobox";
 import { ProductType } from "./types";
 

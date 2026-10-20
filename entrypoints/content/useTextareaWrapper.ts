@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import detectModification from "./detectModification";
 import formatComment from "./formatComment";
-import { EMPTY_LABEL } from "./constants";
+import { EMPTY_LABEL } from "~/lib/constants";
 
 const EVENTS = ["select", "click", "focus", "keyup", "keydown"] as const;
 

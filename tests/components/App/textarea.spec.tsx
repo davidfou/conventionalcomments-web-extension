@@ -7,7 +7,7 @@ test("selecting controlled text brings cursor to the start", async ({
   helpers,
 }) => {
   const component = await mount(
-    <WrappedApp isMainComment defaultTextareaValue="" />,
+    <WrappedApp isMainComment defaultTextareaValue="" defaultLabel="praise" />,
   );
   await expect(component.getByTestId("textarea")).toBeFocused();
   await page.keyboard.type("my comment");
@@ -23,7 +23,7 @@ test("using left key works cannot reaches the controlled part", async ({
   page,
 }) => {
   const component = await mount(
-    <WrappedApp isMainComment defaultTextareaValue="" />,
+    <WrappedApp isMainComment defaultTextareaValue="" defaultLabel="praise" />,
   );
   await expect(component.getByTestId("textarea")).toBeFocused();
   await page.keyboard.type("my");
@@ -53,7 +53,7 @@ test("using up key cannot reaches the controlled part", async ({
   page,
 }) => {
   const component = await mount(
-    <WrappedApp isMainComment defaultTextareaValue="" />,
+    <WrappedApp isMainComment defaultTextareaValue="" defaultLabel="praise" />,
   );
   await expect(component.getByTestId("textarea")).toBeFocused();
   await page.keyboard.type("my");
@@ -88,7 +88,7 @@ test("select all shorcut selects only the uncontrolled part", async ({
   page,
 }) => {
   const component = await mount(
-    <WrappedApp isMainComment defaultTextareaValue="" />,
+    <WrappedApp isMainComment defaultTextareaValue="" defaultLabel="praise" />,
   );
   await expect(component.getByTestId("textarea")).toBeFocused();
   await page.keyboard.type("my comment");
