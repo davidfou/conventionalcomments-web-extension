@@ -205,14 +205,14 @@ export default class GitHubPageV1 extends AbstractMainPage<"github"> {
   protected async editMainCommentFromPullRequestPageImpl(
     comments: GitHubComments,
   ): Promise<void> {
-    await this.page
-      .locator(`#pullrequest-${comments.id}`)
+    await this.page.keyboard.press("Escape");
+    const comment = this.page.locator(`#pullrequest-${comments.id}`);
+    const optionsButton = comment
       .getByRole("button", { name: "Show options" })
-      .click();
-    await this.page
-      .locator(`#pullrequest-${comments.id}`)
-      .getByRole("menuitem", { name: "Edit comment" })
-      .click();
+      .filter({ visible: true });
+    await optionsButton.evaluate((element: HTMLElement) => element.click());
+    await comment.locator("details[open]").waitFor();
+    await comment.getByRole("menuitem", { name: "Edit comment" }).click();
   }
 
   protected async editCommentFromPullRequestPageImpl(
@@ -256,9 +256,12 @@ export default class GitHubPageV1 extends AbstractMainPage<"github"> {
     );
     await this.page
       .locator(`#issuecomment-${commentId}`)
-      .getByRole("button")
+      .getByTestId("comment-header-hamburger")
       .click();
-    await this.page.getByRole("menuitem", { name: "Edit" }).click();
+    await this.page
+      .getByRole("menuitem", { name: /Edit(?: comment)?/ })
+      .filter({ visible: true })
+      .click();
   }
 
   async openNewThread(): Promise<Locator> {

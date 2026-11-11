@@ -8,14 +8,25 @@ import { CommentsMap, ThreadMap } from "./types";
 type GitLabThread = ThreadMap["gitlab"];
 type GitLabComments = CommentsMap["gitlab"];
 
+const RATE_LIMIT_RETRY_DELAYS = [5_000, 10_000];
+
 export default class GitLabPageV1 extends AbstractMainPage<"gitlab"> {
   private apiClient: InstanceType<typeof Gitlab<true>>;
   private projectPath: string;
+  private rateLimited = false;
 
   constructor(page: Page, config: Config) {
     super("gitlab", page, config);
     this.apiClient = new Gitlab({ token: config.token, camelize: true });
     this.projectPath = `${config.username}/${config.project}`;
+    this.page.on("response", (response) => {
+      if (
+        response.status() === 429 &&
+        response.url().startsWith("https://gitlab.com/")
+      ) {
+        this.rateLimited = true;
+      }
+    });
   }
 
   async login(): Promise<null> {
@@ -222,8 +233,29 @@ export default class GitLabPageV1 extends AbstractMainPage<"gitlab"> {
   }
 
   async waitPageIsReady(): Promise<void> {
-    await this.page.waitForLoadState("domcontentloaded");
-    await this.page.locator("body[data-page]").waitFor();
+    for (const retryDelay of [...RATE_LIMIT_RETRY_DELAYS, null]) {
+      await this.page.waitForLoadState("domcontentloaded");
+
+      const body = this.page.locator("body");
+      const rateLimitPage = (await body.textContent())?.startsWith(
+        "Rate limit exceeded",
+      );
+      if (!rateLimitPage) {
+        await this.page.locator("body[data-page]").waitFor({ timeout: 5_000 });
+        await this.page.waitForTimeout(1_000);
+      }
+
+      if (!rateLimitPage && !this.rateLimited) {
+        return;
+      }
+      if (retryDelay === null) {
+        throw new Error("GitLab rate limit persisted after retries.");
+      }
+
+      this.rateLimited = false;
+      await this.page.waitForTimeout(retryDelay);
+      await this.page.reload({ waitUntil: "domcontentloaded" });
+    }
   }
 
   getPreviewButtonSelector(container: Locator): Locator {

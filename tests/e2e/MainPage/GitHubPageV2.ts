@@ -9,13 +9,25 @@ export default class GitHubPageV2 extends GitHubPageV1 {
   protected getThreadContainerImpl(thread: GitHubThread): Locator {
     return this.page
       .getByTestId("review-thread")
-      .filter({ has: this.getMessageContainerImpl(thread, 0) });
+      .filter({ has: this.page.locator(`#r${thread.commentIds[0]}`) })
+      .first();
+  }
+
+  protected getMessageContainerImpl(
+    thread: GitHubThread,
+    commentIndex: number,
+  ): Locator {
+    return super
+      .getMessageContainerImpl(thread, commentIndex)
+      .filter({ visible: true })
+      .first();
   }
 
   protected getReplyInputLocatorImpl(thread: GitHubThread): Locator {
-    return this.getThreadContainerImpl(thread).locator(
-      "[data-marker-navigation-comment-id$='reply-comment']",
-    );
+    return this.getThreadContainerImpl(thread)
+      .locator("button")
+      .filter({ hasText: "Write a reply" })
+      .first();
   }
 
   getNewCommentEditorLocator(): Locator {
@@ -36,13 +48,23 @@ export default class GitHubPageV2 extends GitHubPageV1 {
     await this.getMessageContainer(thread, commentIndex)
       .getByTestId("comment-header-hamburger")
       .click();
-    await this.page.getByRole("menuitem", { name: "Edit" }).click();
+    await this.page
+      .getByRole("menuitem", { name: "Edit" })
+      .filter({ visible: true })
+      .click();
   }
 
   async openNewThread(): Promise<Locator> {
-    const line = this.page.locator("[data-grid-cell-id$='1-0-2']");
-    await line.hover();
-    await line.locator("[data-add-comment-button='true']").click();
+    const line = this.page
+      .locator("td.diff-text-cell[data-diff-side='left'][data-line-number='1']")
+      .filter({ visible: true })
+      .first();
+    await line.hover({ position: { x: 10, y: 10 } });
+    await this.page
+      .getByRole("button", { name: "Add comment" })
+      .filter({ visible: true })
+      .first()
+      .click();
     return line.locator("[data-marker-navigation-new-thread='true']");
   }
 
@@ -57,9 +79,12 @@ export default class GitHubPageV2 extends GitHubPageV1 {
   async openNewFileThread(): Promise<Locator> {
     await this.page
       .getByRole("button", { name: "Comment on this file" })
+      .filter({ visible: true })
       .click();
-    return this.page.locator(
-      "[class*='Diff-module__diffAddFileThread'], [class*='diffAddFileThread__']",
-    );
+    return this.page
+      .locator(
+        "[class*='Diff-module__diffAddFileThread'], [class*='diffAddFileThread__']",
+      )
+      .filter({ visible: true });
   }
 }
