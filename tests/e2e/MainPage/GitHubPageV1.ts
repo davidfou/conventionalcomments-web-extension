@@ -316,6 +316,11 @@ export default class GitHubPageV1 extends AbstractMainPage<"github"> {
   async waitPageIsReady(): Promise<void> {
     await this.page.waitForLoadState("domcontentloaded");
     await this.page.locator("html[data-turbo-loaded]").waitFor();
+
+    const reactApp = this.page.locator("react-app[app-name='repo']");
+    if ((await reactApp.count()) > 0) {
+      await this.page.locator("react-app[app-name='repo'].loaded").waitFor();
+    }
   }
 
   async getAvailableThemes(): Promise<string[]> {

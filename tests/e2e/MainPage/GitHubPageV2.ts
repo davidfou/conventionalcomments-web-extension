@@ -49,7 +49,7 @@ export default class GitHubPageV2 extends GitHubPageV1 {
       .getByTestId("comment-header-hamburger")
       .click();
     await this.page
-      .getByRole("menuitem", { name: "Edit" })
+      .getByRole("menuitem", { name: /Edit(?: comment)?/ })
       .filter({ visible: true })
       .click();
   }
