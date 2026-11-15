@@ -6,9 +6,9 @@ import { authenticator } from "otplib";
 import * as ChromeLauncher from "chrome-launcher";
 
 const version = process.argv[2];
-if (version !== "v1" && version !== "v2") {
+if (version !== "v2") {
   throw new Error(
-    `Expected positional argument "v1" or "v2", received ${JSON.stringify(version)}`,
+    `Expected positional argument "v2", received ${JSON.stringify(version)}`,
   );
 }
 

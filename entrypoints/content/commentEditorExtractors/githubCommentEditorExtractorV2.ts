@@ -6,6 +6,9 @@ const NEW_FILE_THREAD_SELECTOR_CLASS = "diffAddFileThread";
 // example, `InlineMarkers-module__markersWrapper` became `markersWrapper`).
 // Keep matching the previous names as well while GitHub rolls out the change.
 const MAIN_CSS_SELECTORS = [
+  "[data-inline-markers='true']",
+  "[data-marker-navigation-new-thread='true']",
+  "[data-marker-navigation-comment-id$='reply-comment']",
   "[class*='InlineMarkers-module__markersWrapper']",
   "[class*='InlineMarkers-module__fileMarkersWrapper']",
   "[class*='markersWrapper__']",
@@ -57,9 +60,10 @@ const config: PlatformConfig = {
       return null;
     }
 
-    const anchorEl = mainEl.querySelector(
-      "[class*='MarkdownInput-module__inputWrapper'], [class*='inputWrapper__']",
-    );
+    const anchorEl =
+      mainEl.querySelector(
+        "[class*='MarkdownInput-module__inputWrapper'], [class*='inputWrapper__']",
+      ) ?? textarea.parentElement;
     if (anchorEl === null) {
       return null;
     }
@@ -83,7 +87,7 @@ const config: PlatformConfig = {
     observerInit: {
       subtree: true,
       attributes: true,
-      attributeFilter: ["class"],
+      attributeFilter: ["class", "style", "aria-hidden", "hidden"],
     },
   },
 };

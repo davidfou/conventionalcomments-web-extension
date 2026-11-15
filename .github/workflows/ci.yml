@@ -111,7 +111,6 @@ jobs:
       fail-fast: false
       matrix:
         project:
-          - "gitlab-v1"
           - "gitlab-v2"
           - "github-v1"
           - "github-v2"
@@ -129,7 +128,7 @@ jobs:
 
       - name: Dump GitLab cookies
         if: ${{ startsWith(matrix.project, 'gitlab-') }}
-        run: mise exec -- op read --out-file "tests/e2e/playwright/.auth/user-${{ matrix.project }}.json" "op://Conventional comments/GitLab ${{ matrix.project == 'gitlab-v1' && 'V1' || 'V2' }}/cookies"
+        run: mise exec -- op read --out-file "tests/e2e/playwright/.auth/user-${{ matrix.project }}.json" "op://Conventional comments/GitLab V2/cookies"
 
       - name: Build
         run: mise run build

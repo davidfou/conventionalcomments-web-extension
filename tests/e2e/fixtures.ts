@@ -73,19 +73,6 @@ export const test = baseTest.extend<MyOptions & MyFixtures>({
       context.addCookies(cookies);
     }
 
-    if (product === "gitlab") {
-      await context.addCookies([
-        {
-          name: "rapid_diffs_enabled",
-          value: version === 2 ? "true" : "false",
-          domain: ".gitlab.com",
-          path: "/",
-          secure: true,
-          sameSite: "Lax",
-        },
-      ]);
-    }
-
     // Temporary workaround to bypass the modal to present the new GitLab interface
     if (product === "gitlab") {
       const page = await context.newPage();
