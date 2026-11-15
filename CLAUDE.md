@@ -44,7 +44,7 @@ The background service worker dynamically registers/unregisters content scripts 
 
 - **Unit tests** (Vitest): Co-located with source files as `*.test.ts`
 - **Component tests** (Playwright CT): `tests/components/` - test React components in isolation
-- **E2E tests** (Playwright): `tests/e2e/` - four projects: `github-v1`, `github-v2`, `gitlab-v1`, `gitlab-v2`. Uses page object models in `tests/e2e/MainPage/`. Runs sequentially (1 worker). Requires credentials via a local `mise.local.toml` (see Environment) or 1password in CI
+- **E2E tests** (Playwright): `tests/e2e/` - three projects: `github-v1`, `github-v2`, `gitlab-v2` (`gitlab-v1` was dropped once gitlab.com removed its classic diff view in favour of Rapid Diffs; the extension still supports it for older self-managed instances). Uses page object models in `tests/e2e/MainPage/`. Runs sequentially (1 worker). Requires credentials via a local `mise.local.toml` (see Environment) or 1password in CI
 - **Visual regression**: E2E includes screenshot tests (`tests/e2e/__screenshots__/`). Baselines are pinned to CI's rendering (fonts, GPU, OS). Visual tests are **not expected to pass locally** — diffs against CI baselines are normal. To refresh baselines from CI after a UI change, run `mise exec -- pnpm tsx devScripts/getScreenshotsFromCI.ts` (needs `GITHUB_TOKEN`).
 
 ## Environment

@@ -77,5 +77,4 @@ run = "{{vars.op_run}} pnpm playwright test -c tests/e2e/playwright.config.ts"
 # in mise.ci.toml and resolves them at runtime via `op run --`.
 E2E_GITHUB_V1_PROJECT = "ccext-e2e-local"
 E2E_GITHUB_V2_PROJECT = "ccext-e2e-local"
-E2E_GITLAB_V1_PROJECT = "ccext-e2e-local"
 E2E_GITLAB_V2_PROJECT = "ccext-e2e-local"
