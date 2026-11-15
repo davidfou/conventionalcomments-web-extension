@@ -1,68 +1,38 @@
-import { browser, type PublicPath } from "wxt/browser";
+import { browser } from "wxt/browser";
 import runMigrations from "./runMigrations";
 import refreshIcon from "./refreshIcon";
-import {
-  addDeactivatedUrl,
-  getDeactivatedUrls,
-  removeDeactivatedUrl,
-} from "./deactivatedUrls";
+import { getConfiguredUrls } from "./configuredUrls";
 import {
   addAnnouncement,
   getActiveAnnouncements,
   markAnnoucementAsRead,
 } from "./announcements";
-import ApplicationError from "~/lib/ApplicationError";
-import getTabIds from "./getTabIds";
 import { defineBackground } from "#imports";
-import { onMessage, sendMessage } from "~/lib/messaging";
-import getRandomId from "~/lib/getRandomId";
+import { onMessage } from "~/lib/messaging";
 import logger from "./logger";
-
-const CONTENT_SCRIPT: PublicPath = "/content-scripts/content.js";
-const CONTENT_CSS: string = "/content-scripts/content.css";
+import reconcileContentScripts from "./reconcileContentScripts";
+import { registerUrl, unregisterUrl } from "./urlRegistrationActions";
 
 const newRegisteredUrls: Set<string> = new Set();
 const registeredUrls: Map<string, string> = new Map();
 let initPromise: Promise<void> | null = null;
-
-async function registerContentScript(urls: string[]): Promise<void> {
-  logger("Register %d scripts: %o", urls.length, urls);
-  const contentScripts: { id: string; url: string }[] = urls.map((url) => ({
-    id: getRandomId(),
-    url,
-  }));
-  await browser.scripting.registerContentScripts(
-    contentScripts.map(({ id, url }) => ({
-      id,
-      matches: [url],
-      js: [CONTENT_SCRIPT],
-      css: [CONTENT_CSS],
-    })),
-  );
-  for (const { id, url } of contentScripts) {
-    registeredUrls.set(url, id);
-  }
-  logger("Script registered");
-}
 
 function init(): Promise<void> {
   initPromise ??= Promise.resolve()
     .then(async () => {
       logger("Start initialization");
       await runMigrations();
-      const [permissions, deactivatedUrls] = await Promise.all([
-        browser.permissions.getAll(),
-        getDeactivatedUrls(),
+      const [configuredUrls, registrations] = await Promise.all([
+        getConfiguredUrls(),
+        browser.scripting.getRegisteredContentScripts(),
         refreshIcon(),
       ]);
 
-      await browser.scripting.unregisterContentScripts();
-
-      const contentScriptUrls = (permissions.origins ?? []).filter(
-        (url) => !deactivatedUrls.includes(url),
+      await reconcileContentScripts(
+        configuredUrls,
+        registrations,
+        registeredUrls,
       );
-
-      await registerContentScript(contentScriptUrls);
       logger("Initialization complete");
       return;
     })
@@ -99,17 +69,7 @@ const onRegisterUrl: Parameters<typeof onMessage<"registerUrl">>[1] = async (
 ) => {
   logger("registerUrl received: %s", message.data);
   await init();
-  const url = message.data;
-  if (registeredUrls.has(url) || newRegisteredUrls.has(url)) {
-    throw ApplicationError.alreadyRegistered();
-  }
-  newRegisteredUrls.add(url);
-  try {
-    await registerContentScript([url]);
-    await removeDeactivatedUrl(url);
-  } finally {
-    newRegisteredUrls.delete(url);
-  }
+  await registerUrl(message.data, registeredUrls, newRegisteredUrls);
 };
 
 const onUnregisterUrl: Parameters<
@@ -117,22 +77,7 @@ const onUnregisterUrl: Parameters<
 >[1] = async (message) => {
   logger("unregisterUrl received: %s", message.data);
   await init();
-  const url = message.data;
-  const id = registeredUrls.get(url);
-  if (id === undefined) {
-    throw ApplicationError.notRegistered();
-  }
-  const tabIds = await getTabIds(url);
-  await Promise.allSettled(
-    tabIds.map((tabId) => sendMessage("notifyUnregister", tabId, tabId)),
-  );
-  await browser.scripting.unregisterContentScripts({ ids: [id] });
-  try {
-    await browser.permissions.remove({ origins: [url] });
-  } catch {
-    await addDeactivatedUrl(url);
-  }
-  registeredUrls.delete(url);
+  await unregisterUrl(message.data, registeredUrls);
 };
 
 const onGetAnnouncementsMessage: Parameters<
