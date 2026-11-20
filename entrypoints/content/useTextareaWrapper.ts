@@ -5,6 +5,20 @@ import { EMPTY_LABEL } from "./constants";
 
 const EVENTS = ["select", "click", "focus", "keyup", "keydown"] as const;
 
+// Use the native setter so React-controlled textareas (e.g. Azure DevOps)
+// notice the change on the next input event instead of reverting it
+function setTextareaValue(textarea: HTMLTextAreaElement, value: string): void {
+  const setter = Object.getOwnPropertyDescriptor(
+    HTMLTextAreaElement.prototype,
+    "value",
+  )?.set;
+  if (setter === undefined) {
+    textarea.value = value;
+    return;
+  }
+  setter.call(textarea, value);
+}
+
 function useTextareaPrefix(
   textarea: HTMLTextAreaElement,
   label: string,
@@ -22,8 +36,10 @@ function useTextareaPrefix(
     const newSelectionEnd = textarea.selectionEnd + selectionShift;
     const newSelectionDirection = textarea.selectionDirection;
 
-    textarea.value =
-      prependedText.current + textarea.value.slice(previousPrependedTextLength);
+    setTextareaValue(
+      textarea,
+      prependedText.current + textarea.value.slice(previousPrependedTextLength),
+    );
 
     textarea.dispatchEvent(new Event("input", { bubbles: true }));
     textarea.dispatchEvent(new Event("change", { bubbles: true }));
@@ -80,7 +96,7 @@ function forceComment(
     return;
   }
 
-  textarea.value = newValue;
+  setTextareaValue(textarea, newValue);
   textarea.dispatchEvent(new Event("change"));
 }
 

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Browser web extension (Chrome & Firefox) that formats [conventional comments](https://conventionalcomments.org) in GitHub and GitLab pull/merge request review UIs. Built with React 19, TypeScript, WXT (web extension framework), Vite, and Tailwind CSS 4.
+Browser web extension (Chrome & Firefox) that formats [conventional comments](https://conventionalcomments.org) in GitHub, GitLab and Azure DevOps pull/merge request review UIs. Built with React 19, TypeScript, WXT (web extension framework), Vite, and Tailwind CSS 4.
 
 ## Commands
 
@@ -24,17 +24,17 @@ Anything not exposed as a task (e.g. a single unit test) goes through `mise exec
 The extension has three entry points following the Manifest V3 model:
 
 - **`entrypoints/background/`** - Service worker that manages content script registration, icon state, storage migrations, and deactivated URLs
-- **`entrypoints/content/`** - Content script injected into GitHub/GitLab pages. Contains the React app that provides the comment formatting UI (combobox for label/decoration selection, comment formatting/extraction logic)
+- **`entrypoints/content/`** - Content script injected into GitHub/GitLab/Azure DevOps pages. Contains the React app that provides the comment formatting UI (combobox for label/decoration selection, comment formatting/extraction logic)
 - **`entrypoints/popup/`** - Extension popup showing configured domains and intro
 
 Key shared code:
 
-- **`components/custom/`** - Reusable React components (Combobox with platform-specific stylesheets for GitHub vs GitLab)
+- **`components/custom/`** - Reusable React components (Combobox with platform-specific stylesheets for GitHub, GitLab and Azure DevOps)
 - **`lib/`** - Shared utilities including WebExt messaging (`lib/messaging.ts`)
 
 ### Content Script Design
 
-The content script detects comment editors on GitHub/GitLab pages via extractors (`commentEditorExtractors/`). There are multiple extractor versions (e.g., `githubCommentEditorExtractorV1.ts`, `V2.ts`) to handle different UI versions. The `formatComment.ts` and `extractComment.ts` modules handle bidirectional conversion between plain text and conventional comment format.
+The content script detects comment editors on GitHub/GitLab/Azure DevOps pages via extractors (`commentEditorExtractors/`). There are multiple extractor versions (e.g., `githubCommentEditorExtractorV1.ts`, `V2.ts`) to handle different UI versions. All extractors run on every page and are distinguished only by their DOM selectors. The `formatComment.ts` and `extractComment.ts` modules handle bidirectional conversion between plain text and conventional comment format.
 
 ### Dynamic Content Script Registration
 
