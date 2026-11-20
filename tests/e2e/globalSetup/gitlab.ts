@@ -1,6 +1,11 @@
 import { Gitlab } from "@gitbeaker/rest";
 import { z } from "zod";
 import { Config } from "../config";
+import {
+  CONVENTION_FILE_PATH,
+  INVALID_CONVENTION,
+  VALID_CONVENTION,
+} from "../conventionFixtures";
 
 async function checkIfRepositoryExists(
   client: InstanceType<typeof Gitlab<false>>,
@@ -21,16 +26,24 @@ async function checkIfRepositoryExists(
   return false;
 }
 
-export default async function globalSetup(config: Config): Promise<void> {
-  const client = new Gitlab({ token: config.token });
-  const projectName = config.project;
-  const projectPath = [config.username, projectName].join("/");
-
+async function bootstrapRepo(
+  client: InstanceType<typeof Gitlab<false>>,
+  username: string,
+  projectName: string,
+  conventionContent: string | null,
+): Promise<void> {
+  const projectPath = [username, projectName].join("/");
   if (await checkIfRepositoryExists(client, projectPath)) {
     return;
   }
 
-  await client.Projects.create({ name: projectName });
+  // Repos that ship a `.conventional-comments.json` must be public so the
+  // extension's same-origin fetch from a content script can read raw files
+  // without an auth header.
+  await client.Projects.create({
+    name: projectName,
+    visibility: conventionContent === null ? "private" : "public",
+  });
   await client.RepositoryFiles.create(
     projectPath,
     "README.md",
@@ -38,6 +51,16 @@ export default async function globalSetup(config: Config): Promise<void> {
     "# Main title\n\nMy first line.\n",
     "Initial commit",
   );
+
+  if (conventionContent !== null) {
+    await client.RepositoryFiles.create(
+      projectPath,
+      CONVENTION_FILE_PATH,
+      "master",
+      conventionContent,
+      "Add conventional-comments config",
+    );
+  }
 
   await client.RepositoryFiles.edit(
     projectPath,
@@ -72,4 +95,24 @@ export default async function globalSetup(config: Config): Promise<void> {
     description: "My first issue content",
   });
   await client.IssueNotes.create(projectPath, 1, "My comment");
+}
+
+export default async function globalSetup(config: Config): Promise<void> {
+  const client = new Gitlab({ token: config.token });
+
+  await Promise.all([
+    bootstrapRepo(client, config.username, config.project, null),
+    bootstrapRepo(
+      client,
+      config.username,
+      config.projectConventionValid,
+      JSON.stringify(VALID_CONVENTION, null, 2),
+    ),
+    bootstrapRepo(
+      client,
+      config.username,
+      config.projectConventionInvalid,
+      JSON.stringify(INVALID_CONVENTION, null, 2),
+    ),
+  ]);
 }

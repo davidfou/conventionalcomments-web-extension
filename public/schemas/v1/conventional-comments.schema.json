@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://davidfou.github.io/conventionalcomments-web-extension/schemas/v1/conventional-comments.schema.json",
+  "title": "Conventional comments convention (v1)",
+  "description": "Repo-defined vocabulary for the Conventional Comments browser extension.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "labels"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "version": { "const": 1 },
+    "labels": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/selectableItem" }
+    },
+    "decorations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/selectableItem" }
+    },
+    "defaultLabel": {
+      "type": ["string", "null"],
+      "description": "Must match one of the declared labels. Use null (or omit) to default the comment to no label."
+    }
+  },
+  "$defs": {
+    "selectableItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "description"],
+      "properties": {
+        "label": { "type": "string", "minLength": 1 },
+        "description": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
