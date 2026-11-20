@@ -7,8 +7,10 @@ import {
   getActiveAnnouncements,
   markAnnoucementAsRead,
 } from "./announcements";
+import { getDefaultLabel, setDefaultLabel } from "./defaultLabel";
+import getTabIds from "./getTabIds";
 import { defineBackground } from "#imports";
-import { onMessage } from "~/lib/messaging";
+import { onMessage, sendMessage } from "~/lib/messaging";
 import logger from "./logger";
 import reconcileContentScripts from "./reconcileContentScripts";
 import { registerUrl, unregisterUrl } from "./urlRegistrationActions";
@@ -99,6 +101,31 @@ const onMarkAnnouncementAsRead: Parameters<
   await refreshIcon();
 };
 
+const onGetDefaultLabel: Parameters<
+  typeof onMessage<"getDefaultLabel">
+>[1] = async () => {
+  logger("getDefaultLabel received");
+  await init();
+  return getDefaultLabel();
+};
+
+const onSetDefaultLabel: Parameters<
+  typeof onMessage<"setDefaultLabel">
+>[1] = async (message) => {
+  logger("setDefaultLabel received: %s", message.data);
+  await init();
+  const label = message.data;
+  await setDefaultLabel(label);
+  const tabIds = await Promise.all(
+    Array.from(registeredUrls.keys(), (url) => getTabIds(url)),
+  );
+  await Promise.allSettled(
+    tabIds
+      .flat()
+      .map((tabId) => sendMessage("notifyDefaultLabelChange", label, tabId)),
+  );
+};
+
 export default defineBackground(() => {
   init();
 
@@ -108,4 +135,6 @@ export default defineBackground(() => {
   onMessage("unregisterUrl", onUnregisterUrl);
   onMessage("getAnnouncements", onGetAnnouncementsMessage);
   onMessage("markAnnoucementAsRead", onMarkAnnouncementAsRead);
+  onMessage("getDefaultLabel", onGetDefaultLabel);
+  onMessage("setDefaultLabel", onSetDefaultLabel);
 });

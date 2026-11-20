@@ -3,6 +3,7 @@ import { WrappedApp } from "./App.story.tsx";
 
 const testCases: {
   isMainComment: boolean;
+  defaultLabel: string;
   defaultTextareaValue: string;
   expectedLabel: string;
   expectedDecorations: string[];
@@ -10,13 +11,31 @@ const testCases: {
 }[] = [
   {
     isMainComment: true,
+    defaultLabel: "praise",
     defaultTextareaValue: "",
     expectedLabel: "praise",
     expectedDecorations: [],
     expectedTextareaValue: "**praise:** ",
   },
   {
+    isMainComment: true,
+    defaultLabel: "question",
+    defaultTextareaValue: "",
+    expectedLabel: "question",
+    expectedDecorations: [],
+    expectedTextareaValue: "**question:** ",
+  },
+  {
+    isMainComment: true,
+    defaultLabel: "none",
+    defaultTextareaValue: "",
+    expectedLabel: "none",
+    expectedDecorations: [],
+    expectedTextareaValue: "",
+  },
+  {
     isMainComment: false,
+    defaultLabel: "praise",
     defaultTextareaValue: "",
     expectedLabel: "none",
     expectedDecorations: [],
@@ -24,6 +43,7 @@ const testCases: {
   },
   {
     isMainComment: true,
+    defaultLabel: "praise",
     defaultTextareaValue: "Random text...",
     expectedLabel: "none",
     expectedDecorations: [],
@@ -31,6 +51,7 @@ const testCases: {
   },
   {
     isMainComment: false,
+    defaultLabel: "praise",
     defaultTextareaValue: "Random text...",
     expectedLabel: "none",
     expectedDecorations: [],
@@ -38,6 +59,7 @@ const testCases: {
   },
   {
     isMainComment: true,
+    defaultLabel: "praise",
     defaultTextareaValue: "**unkown:** existing comment",
     expectedLabel: "none",
     expectedDecorations: [],
@@ -45,6 +67,7 @@ const testCases: {
   },
   {
     isMainComment: false,
+    defaultLabel: "praise",
     defaultTextareaValue: "**unkown:** existing comment",
     expectedLabel: "none",
     expectedDecorations: [],
@@ -52,6 +75,7 @@ const testCases: {
   },
   {
     isMainComment: true,
+    defaultLabel: "praise",
     defaultTextareaValue: "**issue (unkown):** existing comment",
     expectedLabel: "none",
     expectedDecorations: [],
@@ -59,6 +83,7 @@ const testCases: {
   },
   {
     isMainComment: false,
+    defaultLabel: "praise",
     defaultTextareaValue: "**issue (unkown):** existing comment",
     expectedLabel: "none",
     expectedDecorations: [],
@@ -66,6 +91,7 @@ const testCases: {
   },
   {
     isMainComment: true,
+    defaultLabel: "praise",
     defaultTextareaValue: "**issue:** existing comment",
     expectedLabel: "issue",
     expectedDecorations: [],
@@ -73,6 +99,7 @@ const testCases: {
   },
   {
     isMainComment: false,
+    defaultLabel: "praise",
     defaultTextareaValue: "**issue:** existing comment",
     expectedLabel: "issue",
     expectedDecorations: [],
@@ -80,6 +107,7 @@ const testCases: {
   },
   {
     isMainComment: true,
+    defaultLabel: "praise",
     defaultTextareaValue: "**issue (blocking):** existing comment",
     expectedLabel: "issue",
     expectedDecorations: ["blocking"],
@@ -87,6 +115,7 @@ const testCases: {
   },
   {
     isMainComment: false,
+    defaultLabel: "praise",
     defaultTextareaValue: "**issue (blocking):** existing comment",
     expectedLabel: "issue",
     expectedDecorations: ["blocking"],
@@ -94,6 +123,7 @@ const testCases: {
   },
   {
     isMainComment: true,
+    defaultLabel: "praise",
     defaultTextareaValue: "**issue (blocking, if-minor):** existing comment",
     expectedLabel: "issue",
     expectedDecorations: ["blocking", "if-minor"],
@@ -101,6 +131,7 @@ const testCases: {
   },
   {
     isMainComment: false,
+    defaultLabel: "praise",
     defaultTextareaValue: "**issue (blocking, if-minor):** existing comment",
     expectedLabel: "issue",
     expectedDecorations: ["blocking", "if-minor"],
@@ -108,6 +139,7 @@ const testCases: {
   },
   {
     isMainComment: true,
+    defaultLabel: "praise",
     defaultTextareaValue: "**issue (blocking, if-minor):** ",
     expectedLabel: "issue",
     expectedDecorations: ["blocking", "if-minor"],
@@ -115,6 +147,7 @@ const testCases: {
   },
   {
     isMainComment: false,
+    defaultLabel: "praise",
     defaultTextareaValue: "**issue (blocking, if-minor):** ",
     expectedLabel: "issue",
     expectedDecorations: ["blocking", "if-minor"],
@@ -123,18 +156,20 @@ const testCases: {
 ];
 for (const {
   isMainComment,
+  defaultLabel,
   defaultTextareaValue,
   expectedLabel,
   expectedDecorations,
   expectedTextareaValue,
 } of testCases) {
-  test(`initialize the textarea and the combobox with isMainComment=${isMainComment} and defaultTextareaValue="${defaultTextareaValue}"`, async ({
+  test(`initialize the textarea and the combobox with isMainComment=${isMainComment}, defaultLabel=${defaultLabel} and defaultTextareaValue="${defaultTextareaValue}"`, async ({
     mount,
   }) => {
     const component = await mount(
       <WrappedApp
         isMainComment={isMainComment}
         defaultTextareaValue={defaultTextareaValue}
+        defaultLabel={defaultLabel}
       />,
     );
     await expect

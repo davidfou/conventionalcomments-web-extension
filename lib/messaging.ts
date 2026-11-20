@@ -7,6 +7,9 @@ interface ProtocolMap {
   getAnnouncements(): string[];
   markAnnoucementAsRead(announcement: string): void;
   notifyUnregister(tabId: number): void;
+  getDefaultLabel(): string;
+  setDefaultLabel(label: string): void;
+  notifyDefaultLabelChange(label: string): void;
 }
 
 export const { sendMessage, onMessage } =
