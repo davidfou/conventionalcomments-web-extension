@@ -56,7 +56,9 @@ export default class GitHubPageV2 extends GitHubPageV1 {
 
   async openNewThread(): Promise<Locator> {
     const line = this.page
-      .locator("td.diff-text-cell[data-diff-side='left'][data-line-number='1']")
+      .locator(
+        "td:is(.diff-text-cell, [data-diff-cell='text'])[data-diff-side='left'][data-line-number='1']",
+      )
       .filter({ visible: true })
       .first();
     await line.hover({ position: { x: 10, y: 10 } });
