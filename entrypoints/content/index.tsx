@@ -4,8 +4,9 @@ import {
   type IntegratedContentScriptUi,
   defineContentScript,
 } from "#imports";
+import { EMPTY_LABEL } from "~/lib/constants";
 import getRandomId from "~/lib/getRandomId";
-import { onMessage } from "~/lib/messaging";
+import { onMessage, sendMessage } from "~/lib/messaging";
 import commentEditorExtractors from "./commentEditorExtractors";
 import App from "./App";
 import logger from "./logger";
@@ -19,6 +20,17 @@ export default defineContentScript({
   cssInjectionMode: "manual",
   main(ctx) {
     logger("Content script started");
+    let defaultLabel = sendMessage("getDefaultLabel").catch((error) => {
+      logger("Failed to retrieve the default label: %o", error);
+      return EMPTY_LABEL;
+    });
+    const removeDefaultLabelListener = onMessage(
+      "notifyDefaultLabelChange",
+      ({ data }) => {
+        defaultLabel = Promise.resolve(data);
+      },
+    );
+    ctx.onInvalidated(removeDefaultLabelListener);
     const noteHolders: Map<string, IntegratedContentScriptUi<Root>> = new Map();
     const disposeNoteHolder = (id: string): void => {
       logger("plugin removed (%s)", id);
@@ -44,13 +56,21 @@ export default defineContentScript({
                 rootEl.dataset.testid = "ccext-container";
                 container.append(rootEl);
                 const root = createRoot(rootEl);
-                root.render(
-                  <App
-                    productType={productType}
-                    textarea={textarea}
-                    isMainComment={isMainComment}
-                  />,
-                );
+                defaultLabel
+                  .then((label) => {
+                    root.render(
+                      <App
+                        productType={productType}
+                        textarea={textarea}
+                        isMainComment={isMainComment}
+                        defaultLabel={label}
+                      />,
+                    );
+                    return;
+                  })
+                  .catch((error) => {
+                    logger("plugin render failed (%s): %o", id, error);
+                  });
                 return root;
               },
               onRemove: (root) => {
@@ -66,6 +86,7 @@ export default defineContentScript({
 
     onMessage("notifyUnregister", () => {
       logger("notifyUnregister received");
+      removeDefaultLabelListener();
       for (const key of noteHolders.keys()) {
         disposeNoteHolder(key);
       }
